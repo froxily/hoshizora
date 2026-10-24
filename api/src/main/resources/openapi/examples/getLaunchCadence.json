@@ -1,0 +1,36 @@
+{
+  "source": "launch-library",
+  "group_by": "program",
+  "groups": [
+    {
+      "group": {
+        "kind": "program",
+        "key": "japan",
+        "name": "Japan",
+        "name_lang": "en"
+      },
+      "total_attempts": 3,
+      "records_url": "/api/v1/launches?program=japan",
+      "years": [
+        {
+          "year": 2020,
+          "attempts": 1,
+          "successes": 1,
+          "failures": 0,
+          "partial_failures": 0,
+          "scheduled": 0,
+          "records_url": "/api/v1/launches?program=japan&from=2020-01-01T00:00:00Z&to=2021-01-01T00:00:00Z"
+        },
+        {
+          "year": 2021,
+          "attempts": 2,
+          "successes": 2,
+          "failures": 0,
+          "partial_failures": 0,
+          "scheduled": 0,
+          "records_url": "/api/v1/launches?program=japan&from=2021-01-01T00:00:00Z&to=2022-01-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

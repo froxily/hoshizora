@@ -1,0 +1,40 @@
+{
+  "fact": {
+    "id": 1,
+    "key": "near-earth.closest_this_week",
+    "module": "near-earth",
+    "text": "This week's closest asteroid, 2026 TS, passes at 2.4× the Earth–Moon distance.",
+    "text_lang": "en",
+    "params": {
+      "designation": "2026 TS",
+      "distance_ld": 2.4
+    },
+    "score": 0.9,
+    "kind": {
+      "code": "computed",
+      "name": "Computed from data",
+      "name_lang": "en"
+    },
+    "entity": {
+      "type": "small_body",
+      "key": "2026 TS"
+    },
+    "sources": [
+      {
+        "entity": "core.close_approach",
+        "key": "2026 TS|Earth|2026-10-18 06:16:00",
+        "records_url": "/api/v1/close-approaches?designation=2026%20TS"
+      }
+    ],
+    "generated_at": "2026-10-16T07:30:00Z",
+    "valid_until": "2026-10-23T00:00:00Z"
+  },
+  "lineage": [
+    {
+      "source": "jpl",
+      "url": "https://ssd-api.jpl.nasa.gov/cad.api?date-max=2026-12-31&date-min=2026-10-01",
+      "fetched_at": "2026-10-16T06:01:00Z",
+      "content_hash": "9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d"
+    }
+  ]
+}

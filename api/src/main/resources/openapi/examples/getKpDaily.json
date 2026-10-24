@@ -1,0 +1,43 @@
+{
+  "source": "swpc",
+  "from": "2026-09-17",
+  "to": "2026-10-17",
+  "items": [
+    {
+      "day": "2026-10-14",
+      "kp_max": 2.67,
+      "kp_mean": 2.223333333333333,
+      "intervals": 6,
+      "g_scale": {
+        "code": "g0",
+        "name": "No geomagnetic storm",
+        "name_lang": "en"
+      },
+      "records_url": "/api/v1/space-weather/kp?from=2026-10-14T00:00:00Z&to=2026-10-15T00:00:00Z"
+    },
+    {
+      "day": "2026-10-15",
+      "kp_max": 3.0,
+      "kp_mean": 2.16625,
+      "intervals": 8,
+      "g_scale": {
+        "code": "g0",
+        "name": "No geomagnetic storm",
+        "name_lang": "en"
+      },
+      "records_url": "/api/v1/space-weather/kp?from=2026-10-15T00:00:00Z&to=2026-10-16T00:00:00Z"
+    },
+    {
+      "day": "2026-10-16",
+      "kp_max": 3.33,
+      "kp_mean": 2.665,
+      "intervals": 2,
+      "g_scale": {
+        "code": "g0",
+        "name": "No geomagnetic storm",
+        "name_lang": "en"
+      },
+      "records_url": "/api/v1/space-weather/kp?from=2026-10-16T00:00:00Z&to=2026-10-17T00:00:00Z"
+    }
+  ]
+}

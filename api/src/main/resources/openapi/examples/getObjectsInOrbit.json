@@ -1,0 +1,91 @@
+{
+  "source": "celestrak",
+  "orbit_state": {
+    "code": "earth_orbit",
+    "name": "In Earth orbit",
+    "name_lang": "en"
+  },
+  "totals": {
+    "payloads": 42,
+    "rocket_bodies": 22,
+    "debris": 17,
+    "unknown": 6,
+    "total": 87
+  },
+  "countries": [
+    {
+      "country": {
+        "code": "JP",
+        "name": "Japan"
+      },
+      "counts": {
+        "payloads": 11,
+        "rocket_bodies": 7,
+        "debris": 3,
+        "unknown": 1,
+        "total": 22
+      },
+      "shared": 0
+    },
+    {
+      "country": {
+        "code": "CN",
+        "name": "China"
+      },
+      "counts": {
+        "payloads": 9,
+        "rocket_bodies": 2,
+        "debris": 4,
+        "unknown": 2,
+        "total": 17
+      },
+      "shared": 4
+    }
+  ],
+  "organizations": [
+    {
+      "owner_code": "ESA",
+      "label": "European Space Agency",
+      "label_lang": "en",
+      "organization": {
+        "key": "esa",
+        "name": "European Space Agency",
+        "name_lang": "en",
+        "type": {
+          "code": "international",
+          "name": "International organization",
+          "name_lang": "en"
+        }
+      },
+      "counts": {
+        "payloads": 2,
+        "rocket_bodies": 2,
+        "debris": 2,
+        "unknown": 0,
+        "total": 6
+      }
+    },
+    {
+      "owner_code": "SES",
+      "label": "SES",
+      "label_lang": "en",
+      "organization": {
+        "key": "ses",
+        "name": "SES",
+        "name_lang": "en",
+        "type": {
+          "code": "company",
+          "name": "Company",
+          "name_lang": "en"
+        }
+      },
+      "counts": {
+        "payloads": 2,
+        "rocket_bodies": 0,
+        "debris": 0,
+        "unknown": 0,
+        "total": 2
+      }
+    }
+  ]
+}

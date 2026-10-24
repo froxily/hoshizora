@@ -1,0 +1,160 @@
+- key: space-weather.strongest_flare_week
+  module: space-weather
+  min_score: 0.3
+  valid_for: P7D
+  scoring: {base: 0.4, half_life_days: 7}
+  query: |
+    SELECT 'space_weather_event' AS entity_type, concat_ws('|', e.kind, e.external_id) AS entity_key,
+           e.event_class AS flare_class, coalesce(e.peak_at, e.begin_at) AS peak,
+           coalesce(e.peak_at, e.begin_at) AS event_at,
+           coalesce(e.peak_at, e.begin_at) + interval '7 days' AS valid_until,
+           least(1.0, 0.4 + 0.2 * mart.r_scale(e.peak_flux_wm2)) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.space_weather_event', 'key', concat_ws('|', e.kind, e.external_id)
+           )) AS source_refs
+    FROM core.space_weather_event e
+    WHERE e.kind = 'xray_flare'
+      AND e.peak_flux_wm2 IS NOT NULL
+      AND e.event_class IS NOT NULL
+      AND coalesce(e.peak_at, e.begin_at) >= %(as_of)s::timestamptz - interval '7 days'
+      AND coalesce(e.peak_at, e.begin_at) < %(as_of)s::timestamptz
+      AND EXISTS (
+          SELECT 1 FROM mart.source_status s
+          WHERE s.source = 'swpc' AND s.last_fetched_at >= %(as_of)s::timestamptz - interval '1 day'
+      )
+    ORDER BY e.peak_flux_wm2 DESC, peak DESC
+    LIMIT 1
+  params:
+    flare_class: {type: text, from: flare_class}
+    date: {type: date, from: peak}
+  text:
+    en: "The strongest solar flare of the past 7 days was class {flare_class}, peaking on {date, date}."
+    ja: "過去7日間でもっとも強い太陽フレアは{flare_class}クラスで、{date, date}にピークに達しました。"
+  examples:
+    - params: {flare_class: M2.3, date: "2026-10-16"}
+      en: "The strongest solar flare of the past 7 days was class M2.3, peaking on October 16, 2026."
+      ja: "過去7日間でもっとも強い太陽フレアはM2.3クラスで、2026年10月16日にピークに達しました。"
+
+- key: space-weather.flares_week
+  module: space-weather
+  min_score: 0.4
+  valid_for: PT6H
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS flares,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.space_weather_event',
+               'key', (array_agg(
+                   concat_ws('|', e.kind, e.external_id) ORDER BY e.peak_flux_wm2 DESC NULLS LAST
+               ))[1]
+           )) AS source_refs
+    FROM core.space_weather_event e
+    WHERE e.kind = 'xray_flare'
+      AND left(e.event_class, 1) IN ('C', 'M', 'X')
+      AND coalesce(e.peak_at, e.begin_at) >= %(as_of)s::timestamptz - interval '7 days'
+      AND coalesce(e.peak_at, e.begin_at) < %(as_of)s::timestamptz
+      AND EXISTS (
+          SELECT 1 FROM mart.source_status s
+          WHERE s.source = 'swpc' AND s.last_fetched_at >= %(as_of)s::timestamptz - interval '1 day'
+      )
+    HAVING count(*) >= 2
+  params:
+    flares: {type: integer, from: flares}
+  text:
+    en: "The Sun fired {flares, number, integer} C-class or stronger flares in the past 7 days."
+    ja: "過去7日間に、太陽ではCクラス以上のフレアが{flares, number, integer}回発生しました。"
+  examples:
+    - params: {flares: 59}
+      en: "The Sun fired 59 C-class or stronger flares in the past 7 days."
+      ja: "過去7日間に、太陽ではCクラス以上のフレアが59回発生しました。"
+
+- key: space-weather.kp_peak_week
+  module: space-weather
+  min_score: 0.3
+  valid_for: PT6H
+  scoring: {base: 0.4, half_life_days: 7}
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, d.kp_max AS kp, d.day, d.day AS event_at,
+           d.kp_max / 9.0 AS percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.kp_daily', 'key', d.day::text)
+           ) AS source_refs
+    FROM mart.kp_daily d
+    WHERE d.day >= (%(as_of)s::timestamptz - interval '7 days')::date
+      AND d.day <= %(as_of)s::timestamptz::date
+      AND EXISTS (
+          SELECT 1 FROM mart.source_status s
+          WHERE s.source = 'swpc' AND s.last_fetched_at >= %(as_of)s::timestamptz - interval '1 day'
+      )
+    ORDER BY d.kp_max DESC, d.day DESC
+    LIMIT 1
+  params:
+    kp: {type: number, from: kp, decimals: 2}
+    date: {type: date, from: day}
+  text:
+    en: "Geomagnetic activity peaked at Kp {kp} in the past 7 days, on {date, date}."
+    ja: "過去7日間の地磁気活動はKp指数{kp}が最大で、{date, date}に記録されました。"
+  examples:
+    - params: {kp: 6.33, date: "2026-10-15"}
+      en: "Geomagnetic activity peaked at Kp 6.33 in the past 7 days, on October 15, 2026."
+      ja: "過去7日間の地磁気活動はKp指数6.33が最大で、2026年10月15日に記録されました。"
+
+- key: space-weather.fastest_wind_day
+  module: space-weather
+  min_score: 0.4
+  valid_for: PT6H
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, h.speed_kms_max AS speed,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.solar_wind_hourly', 'key', h.hour::text)
+           ) AS source_refs
+    FROM mart.solar_wind_hourly h
+    WHERE h.hour >= %(as_of)s::timestamptz - interval '24 hours'
+      AND h.hour < %(as_of)s::timestamptz
+      AND h.speed_kms_max IS NOT NULL
+      AND EXISTS (
+          SELECT 1 FROM mart.source_status s
+          WHERE s.source = 'swpc' AND s.last_fetched_at >= %(as_of)s::timestamptz - interval '1 day'
+      )
+    ORDER BY h.speed_kms_max DESC, h.hour DESC
+    LIMIT 1
+  params:
+    speed: {type: integer, from: speed}
+    minutes: {type: integer, from: speed, humanize: minutes_to_cross_earth_moon}
+  text:
+    en: "The solar wind reached {speed, number, integer} km/s in the past 24 hours, fast enough to cross the Earth–Moon distance in about {minutes, number, integer} minutes."
+    ja: "過去24時間の太陽風の最高速度は秒速{speed, number, integer}kmで、地球から月までの距離を約{minutes, number, integer}分で進む速さです。"
+  examples:
+    - params: {speed: 612, minutes: 10}
+      en: "The solar wind reached 612 km/s in the past 24 hours, fast enough to cross the Earth–Moon distance in about 10 minutes."
+      ja: "過去24時間の太陽風の最高速度は秒速612kmで、地球から月までの距離を約10分で進む速さです。"
+
+- key: space-weather.alerts_week
+  module: space-weather
+  min_score: 0.4
+  valid_for: PT6H
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS alerts,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.space_weather_event',
+               'key', (array_agg(
+                   concat_ws('|', e.kind, e.external_id) ORDER BY coalesce(e.begin_at, e.peak_at) DESC
+               ))[1]
+           )) AS source_refs
+    FROM core.space_weather_event e
+    WHERE e.kind = 'alert'
+      AND coalesce(e.begin_at, e.peak_at) >= %(as_of)s::timestamptz - interval '7 days'
+      AND coalesce(e.begin_at, e.peak_at) < %(as_of)s::timestamptz
+      AND EXISTS (
+          SELECT 1 FROM mart.source_status s
+          WHERE s.source = 'swpc' AND s.last_fetched_at >= %(as_of)s::timestamptz - interval '1 day'
+      )
+    HAVING count(*) >= 2
+  params:
+    alerts: {type: integer, from: alerts}
+  text:
+    en: "NOAA's Space Weather Prediction Center issued {alerts, number, integer} alerts, watches and warnings in the past 7 days."
+    ja: "NOAA宇宙天気予報センターは、過去7日間に{alerts, number, integer}件の警報や注意報などを発表しました。"
+  examples:
+    - params: {alerts: 23}
+      en: "NOAA's Space Weather Prediction Center issued 23 alerts, watches and warnings in the past 7 days."
+      ja: "NOAA宇宙天気予報センターは、過去7日間に23件の警報や注意報などを発表しました。"

@@ -1,0 +1,71 @@
+{
+  "source": "launch-library",
+  "items": [
+    {
+      "id": 101,
+      "serial_number": "B1067",
+      "status": {
+        "code": "active",
+        "name": "Active",
+        "name_lang": "en"
+      },
+      "vehicle": {
+        "id": 164,
+        "name": "Falcon 9 Block 5",
+        "name_lang": "en",
+        "family": "Falcon"
+      },
+      "rank": 1,
+      "flights": 37,
+      "landing_attempts": 37,
+      "landings": 37,
+      "first_flight_at": "2021-06-03T17:29:15Z",
+      "last_flight_at": "2026-08-25T09:33:38Z",
+      "fastest_turnaround_days": 22.7022
+    },
+    {
+      "id": 84,
+      "serial_number": "B1063",
+      "status": {
+        "code": "active",
+        "name": "Active",
+        "name_lang": "en"
+      },
+      "vehicle": {
+        "id": 164,
+        "name": "Falcon 9 Block 5",
+        "name_lang": "en",
+        "family": "Falcon"
+      },
+      "rank": 2,
+      "flights": 35,
+      "landing_attempts": 35,
+      "landings": 35,
+      "first_flight_at": "2020-11-21T17:17:08Z",
+      "last_flight_at": "2026-09-02T08:42:12Z",
+      "fastest_turnaround_days": 28.6508
+    },
+    {
+      "id": 105,
+      "serial_number": "B1069",
+      "status": {
+        "code": "expended",
+        "name": "Expended",
+        "name_lang": "en"
+      },
+      "vehicle": {
+        "id": 164,
+        "name": "Falcon 9 Block 5",
+        "name_lang": "en",
+        "family": "Falcon"
+      },
+      "rank": 4,
+      "flights": 32,
+      "landing_attempts": 31,
+      "landings": 31,
+      "first_flight_at": "2021-12-21T10:07:08Z",
+      "last_flight_at": "2026-07-21T21:15:00Z",
+      "fastest_turnaround_days": 25.7645
+    }
+  ]
+}

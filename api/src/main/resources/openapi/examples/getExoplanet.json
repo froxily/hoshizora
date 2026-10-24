@@ -1,0 +1,41 @@
+{
+  "planet": {
+    "name": "Proxima Cen b",
+    "host_name": "Proxima Cen",
+    "discovery": {
+      "year": 2016,
+      "method": {
+        "code": "radial_velocity",
+        "name": "Radial velocity",
+        "name_lang": "en"
+      },
+      "facility": "European Southern Observatory",
+      "locale": "ground"
+    },
+    "orbital_period_days": 11.18465,
+    "semi_major_axis_au": 0.04848,
+    "radius_earth": 1.02,
+    "mass_earth": 1.055,
+    "eccentricity": 0.0,
+    "equilibrium_temp_k": 218.0,
+    "insolation_earth": 0.641,
+    "star": {
+      "temp_k": 2900.0,
+      "radius_sun": 0.141,
+      "mass_sun": 0.1221,
+      "star_count": 3,
+      "planet_count": 2
+    },
+    "distance_pc": 1.30119,
+    "distance_ly": 4.2439092564,
+    "controversial": false
+  },
+  "lineage": [
+    {
+      "source": "exoplanet-archive",
+      "url": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?format=json&query=select pl_name,hostname,sy_snum,sy_pnum,discoverymethod,disc_year,disc_facility,disc_locale,pl_orbper,pl_orbsmax,pl_rade,pl_bmasse,pl_orbeccen,pl_eqt,pl_insol,st_teff,st_rad,st_mass,sy_dist,pl_controv_flag from pscomppars order by pl_name",
+      "fetched_at": "2026-10-19T17:43:31.786783Z",
+      "content_hash": "1600c70b2567c63ca3dad113d2a866534ca303bd9fd439f04ad1f8beedcab283"
+    }
+  ]
+}

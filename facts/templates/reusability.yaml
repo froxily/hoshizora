@@ -1,0 +1,126 @@
+- key: launches.most_flown_booster
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'launcher' AS entity_type, b.launcher_id::text AS entity_key,
+           b.serial_number AS serial, b.flights, true AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.launcher', 'key', b.launcher_id::text)
+           ) AS source_refs
+    FROM mart.booster_ranking b
+    WHERE b.flights_rank = 1 AND b.flights >= 2
+      AND (SELECT count(*) FROM mart.booster_ranking r WHERE r.flights_rank = 1) = 1
+  params:
+    serial: {type: text, from: serial}
+    flights: {type: integer, from: flights}
+  text:
+    en: "Booster {serial} has flown {flights, number, integer} times, more than any other rocket stage."
+    ja: "ブースター{serial}はこれまでに{flights, number, integer}回飛行しており、ロケットの1段機体として最多です。"
+  examples:
+    - params: {serial: B1067, flights: 37}
+      en: "Booster B1067 has flown 37 times, more than any other rocket stage."
+      ja: "ブースターB1067はこれまでに37回飛行しており、ロケットの1段機体として最多です。"
+
+- key: launches.landing_success_year
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH yearly AS (
+        SELECT r.year, r.landing_attempts, r.landings,
+               r.landings::float8 / nullif(r.landing_attempts, 0) AS rate
+        FROM mart.reusability_yearly r
+        WHERE r.group_kind = 'all' AND r.landing_attempts >= 10
+    ),
+    ranked AS (
+        SELECT y.*, percent_rank() OVER (ORDER BY y.landings) AS percentile,
+               y.landings = max(y.landings) OVER () AS is_record
+        FROM yearly y
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, r.year, r.landings, r.landing_attempts AS attempts,
+           r.rate, r.percentile, r.is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.reusability_yearly', 'key', 'all|all|' || r.year)
+           ) AS source_refs
+    FROM ranked r
+    WHERE r.year = extract(year FROM %(as_of)s::timestamptz)
+  params:
+    year: {type: year, from: year}
+    landings: {type: integer, from: landings}
+    attempts: {type: integer, from: attempts}
+    rate: {type: percent, from: rate, decimals: 1}
+  text:
+    en: "Rocket boosters have landed {landings, number, integer} times in {year} so far, {rate, number, percent} of {attempts, number, integer} attempts."
+    ja: "{year}年はこれまでにロケットの1段機体が{landings, number, integer}回着陸しました。着陸を試みた{attempts, number, integer}回の{rate, number, percent}にあたります。"
+  examples:
+    - params: {year: "2026", landings: 124, attempts: 126, rate: 0.984}
+      en: "Rocket boosters have landed 124 times in 2026 so far, 98.4% of 126 attempts."
+      ja: "2026年はこれまでにロケットの1段機体が124回着陸しました。着陸を試みた126回の98.4%にあたります。"
+
+- key: launches.reflown_share
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH yearly AS (
+        SELECT r.year, r.launches, r.launches_reflown,
+               r.launches_reflown::float8 / r.launches AS share
+        FROM mart.reusability_yearly r
+        WHERE r.group_kind = 'all' AND r.launches >= 10
+          AND r.year < extract(year FROM %(as_of)s::timestamptz)
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, y.year, y.share, y.launches_reflown AS reflown,
+           percent_rank() OVER (ORDER BY y.share) AS percentile,
+           y.share = max(y.share) OVER () AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.reusability_yearly', 'key', 'all|all|' || y.year)
+           ) AS source_refs
+    FROM yearly y
+    ORDER BY y.year DESC
+    LIMIT 1
+  params:
+    year: {type: year, from: year}
+    share: {type: percent, from: share, decimals: 0}
+    reflown: {type: integer, from: reflown}
+  text:
+    en: "In {year}, {share, number, percent} of launches with a recorded first stage flew on a booster that had flown before: {reflown, number, integer} launches."
+    ja: "{year}年、1段機体が記録されている打ち上げの{share, number, percent}にあたる{reflown, number, integer}回が、飛行経験のあるブースターを再使用しました。"
+  examples:
+    - params: {year: "2025", share: 0.92, reflown: 168}
+      en: "In 2025, 92% of launches with a recorded first stage flew on a booster that had flown before: 168 launches."
+      ja: "2025年、1段機体が記録されている打ち上げの92%にあたる168回が、飛行経験のあるブースターを再使用しました。"
+
+- key: launches.fastest_turnaround
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'landing' AS entity_type, f.landing_id::text AS entity_key,
+           f.serial_number AS serial, extract(epoch FROM f.turnaround) / 86400 AS days,
+           f.flight_at::date AS flown_on, true AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.landing', 'key', f.landing_id::text),
+               jsonb_build_object('entity', 'core.launch', 'key', f.launch_id::text)
+           ) AS source_refs
+    FROM mart.landing_flight f
+    WHERE f.flown AND f.reflight AND f.turnaround IS NOT NULL AND NOT f.is_placeholder
+    ORDER BY f.turnaround, f.flight_at
+    LIMIT 1
+  params:
+    serial: {type: text, from: serial}
+    days: {type: number, from: days, decimals: 1}
+    flown_on: {type: date, from: flown_on}
+  text:
+    en: "The quickest reflight of a rocket booster: {serial} flew again {days, number} days after its previous launch, on {flown_on, date}."
+    ja: "ロケットの1段機体の最短再飛行記録は、ブースター{serial}が{flown_on, date}に達成した、前回の打ち上げから{days, number}日後の再飛行です。"
+  examples:
+    - params: {serial: B1088, days: 9.2, flown_on: "2025-03-21"}
+      en: "The quickest reflight of a rocket booster: B1088 flew again 9.2 days after its previous launch, on March 21, 2025."
+      ja: "ロケットの1段機体の最短再飛行記録は、ブースターB1088が2025年3月21日に達成した、前回の打ち上げから9.2日後の再飛行です。"

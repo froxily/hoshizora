@@ -1,0 +1,83 @@
+name: hoshizora
+
+services:
+  postgres:
+    image: postgres:18.6-trixie
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hoshizora}
+      POSTGRES_USER: ${POSTGRES_USER:-hoshizora}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hoshizora_dev}
+      POSTGRES_INITDB_ARGS: --locale-provider=builtin --builtin-locale=C.UTF-8
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+  flyway:
+    image: flyway/flyway:13.10.3
+    profiles: [tools]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-hoshizora}
+      FLYWAY_USER: ${POSTGRES_USER:-hoshizora}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD:-hoshizora_dev}
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql,filesystem:/flyway/dev
+      FLYWAY_VALIDATE_MIGRATION_NAMING: "true"
+      FLYWAY_PLACEHOLDERS_INGEST_PASSWORD: ${HOSHIZORA_INGEST_DB_PASSWORD:-hoshizora_ingest_dev}
+      FLYWAY_PLACEHOLDERS_API_PASSWORD: ${HOSHIZORA_API_DB_PASSWORD:-hoshizora_api_dev}
+      REDGATE_DISABLE_TELEMETRY: "true"
+    volumes:
+      - ../db/migration:/flyway/sql:ro
+      - ./flyway/dev:/flyway/dev:ro
+
+  preview-flyway:
+    image: flyway/flyway:13.10.3
+    profiles: [preview]
+    environment:
+      PREVIEW_DATABASE_URL: ${PREVIEW_DATABASE_URL:-}
+      PREVIEW_DB_SSLMODE: ${PREVIEW_DB_SSLMODE:-require}
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql,filesystem:/flyway/dev
+      FLYWAY_VALIDATE_MIGRATION_NAMING: "true"
+      FLYWAY_PLACEHOLDERS_INGEST_PASSWORD: ${PREVIEW_INGEST_DB_PASSWORD:-}
+      FLYWAY_PLACEHOLDERS_API_PASSWORD: ${PREVIEW_API_DB_PASSWORD:-}
+      REDGATE_DISABLE_TELEMETRY: "true"
+    volumes:
+      - ../db/migration:/flyway/sql:ro
+      - ./flyway/dev:/flyway/dev:ro
+      - ./preview:/preview:ro
+    entrypoint: ["sh", "/preview/migrate.sh"]
+
+  preview-load:
+    image: postgres:18.6-trixie
+    profiles: [preview]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SOURCE_DB: ${POSTGRES_DB:-hoshizora}
+      SOURCE_USER: ${POSTGRES_USER:-hoshizora}
+      SOURCE_PASSWORD: ${POSTGRES_PASSWORD:-hoshizora_dev}
+      PREVIEW_DATABASE_URL: ${PREVIEW_DATABASE_URL:-}
+    volumes:
+      - ./preview:/preview:ro
+    entrypoint: ["sh", "/preview/load-data.sh"]
+
+  preview-refresh:
+    image: postgres:18.6-trixie
+    profiles: [preview]
+    environment:
+      PREVIEW_DATABASE_URL: ${PREVIEW_DATABASE_URL:-}
+    volumes:
+      - ./preview:/preview:ro
+    entrypoint: ["sh", "/preview/refresh-marts.sh"]
+
+volumes:
+  pgdata:

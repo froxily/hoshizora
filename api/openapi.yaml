@@ -1,0 +1,5942 @@
+openapi: 3.1.0
+info:
+  description: "Read-only space data analytics in English and Japanese. Localized\
+    \ text follows Accept-Language (en or ja), and each localized field has a sibling\
+    \ *_lang field naming the language actually returned, because some names exist\
+    \ only in English."
+  title: Hoshizora API
+  version: v1
+servers:
+- url: /
+tags:
+- description: "Geomagnetic activity, solar flares, solar wind and the aurora forecast,\
+    \ from NOAA SWPC."
+  name: Space weather
+- description: "Asteroid and comet close approaches and Sentry impact monitoring,\
+    \ from JPL."
+  name: Near-Earth
+- description: "Sources, credits and data freshness."
+  name: Meta
+- description: "Every orbital launch attempt and planned launch, from Launch Library\
+    \ 2."
+  name: Launches
+- description: "Aggregates from the analytics marts, each linking to the records behind\
+    \ it."
+  name: Statistics
+- description: Confirmed exoplanets from the NASA Exoplanet Archive.
+  name: Exoplanets
+- description: "Space agencies, launch companies, armed forces and international bodies,\
+    \ as one model."
+  name: Agencies
+- description: "Data-driven fun facts in English and Japanese, each traced to its\
+    \ records."
+  name: Facts
+paths:
+  /api/v1/agencies:
+    get:
+      description: "Organizations from Launch Library 2 and the curated reference\
+        \ data, with their countries, national programs and launch totals as provider.\
+        \ A launch provider is not necessarily an agency: Chinese launches are mostly\
+        \ attributed to CASC, a state company."
+      operationId: listAgencies
+      parameters:
+      - description: Only organizations of this type.
+        in: query
+        name: type
+        required: false
+        schema:
+          type: string
+          enum:
+          - agency
+          - company
+          - military
+          - academic
+          - international
+      - description: "ISO 3166-1 alpha-2 country, e.g. JP."
+        in: query
+        name: country
+        required: false
+        schema:
+          type: string
+          pattern: "[A-Za-z]{2}"
+      - description: "National program slug, e.g. japan."
+        in: query
+        name: program
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 0
+      - description: "true for launch providers only, false for organizations that\
+          \ never launched."
+        in: query
+        name: has_launches
+        required: false
+        schema:
+          type: boolean
+      - description: Text to find in the English or Japanese name or the abbreviation.
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "-launches for most launches first, name for alphabetical."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: -launches
+          enum:
+          - -launches
+          - name
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - key: mhi
+                      name: Mitsubishi Heavy Industries
+                      name_lang: en
+                      abbrev: MHI
+                      type:
+                        code: company
+                        name: Company
+                        name_lang: en
+                      countries:
+                      - code: JP
+                        name: Japan
+                      programs:
+                      - slug: japan
+                        name: Japan
+                      founding_year: 1884
+                      launches:
+                        attempts: 9
+                        successes: 9
+                        failures: 0
+                        partial_failures: 0
+                        scheduled: 0
+                        success_rate: 1.0
+                        first_launch_at: 2016-11-02T06:20:00Z
+                        last_launch_at: 2021-12-22T15:32:00Z
+                    - key: arianespace
+                      name: Arianespace
+                      name_lang: en
+                      abbrev: ASA
+                      type:
+                        code: company
+                        name: Company
+                        name_lang: en
+                      countries:
+                      - code: FR
+                        name: France
+                      programs:
+                      - slug: europe
+                        name: Europe
+                      founding_year: 1980
+                      launches:
+                        attempts: 4
+                        successes: 3
+                        failures: 0
+                        partial_failures: 1
+                        scheduled: 1
+                        success_rate: 0.75
+                        first_launch_at: 2018-01-25T22:20:00Z
+                        last_launch_at: 2021-11-16T09:27:55Z
+                    page: 1
+                    size: 2
+                    total_items: 15
+                    total_pages: 8
+              schema:
+                $ref: "#/components/schemas/PageAgencySummary"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List organizations
+      tags:
+      - Agencies
+  /api/v1/agencies/{key}:
+    get:
+      description: "One organization with its launch record and recent reliability,\
+        \ the vehicles it flew most, its latest and next launches, objects catalogued\
+        \ under its own owner codes, and the source responses behind the record. Accepts\
+        \ the curated slug or ll2-<agency id>."
+      operationId: getAgency
+      parameters:
+      - description: "Organization key, e.g. jaxa, nasa, spacex or ll2-154."
+        in: path
+        name: key
+        required: true
+        schema:
+          type: string
+          pattern: "[a-z0-9-]{1,64}"
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    key: jaxa
+                    name: Japan Aerospace Exploration Agency
+                    name_lang: en
+                    name_ja_source: https://ja.wikipedia.org/wiki/宇宙航空研究開発機構
+                    abbrev: JAXA
+                    type:
+                      code: agency
+                      name: Space agency
+                      name_lang: en
+                    countries:
+                    - code: JP
+                      name: Japan
+                    programs:
+                    - slug: japan
+                      name: Japan
+                    founding_year: 2003
+                    launches:
+                      attempts: 3
+                      successes: 2
+                      failures: 1
+                      partial_failures: 0
+                      scheduled: 0
+                      success_rate: 0.6666666666666666
+                      first_launch_at: 2017-01-14T23:33:00Z
+                      last_launch_at: 2018-02-27T04:34:00Z
+                    reliability:
+                      recent_attempts: 3
+                      recent_successes: 2
+                      recent_success_rate: 0.6666666666666666
+                      current_streak: 2
+                      longest_streak: 2
+                    members: []
+                    top_vehicles:
+                    - id: 32
+                      name: H-IIA 202
+                      name_lang: en
+                      family: H-II
+                      attempts: 1
+                      successes: 1
+                    - id: 122
+                      name: SS-520-4
+                      name_lang: en
+                      family: S-Series
+                      attempts: 1
+                      successes: 0
+                    - id: 144
+                      name: SS-520-5
+                      name_lang: en
+                      family: S-Series
+                      attempts: 1
+                      successes: 1
+                    recent_launches:
+                    - id: 50fbc68f-5db2-4b11-99fc-0f778697139a
+                      name: H-IIA 202 | IGS Optical 6
+                      name_lang: en
+                      net: 2018-02-27T04:34:00Z
+                      status:
+                        code: success
+                        name: Success
+                        name_lang: en
+                      launch_designator: 2018-021
+                      provider:
+                        key: jaxa
+                        name: Japan Aerospace Exploration Agency
+                        name_lang: en
+                        type:
+                          code: agency
+                          name: Space agency
+                          name_lang: en
+                      vehicle:
+                        id: 32
+                        name: H-IIA 202
+                        name_lang: en
+                        family: H-II
+                        variant: "202"
+                      pad:
+                        id: 41
+                        name: Yoshinobu Launch Complex LP-1
+                        name_lang: en
+                        location: "Tanegashima Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 30.400813
+                        longitude: 130.977748
+                      mission:
+                        id: 492
+                        name: IGS Optical 6
+                        name_lang: en
+                        type:
+                          code: government_top_secret
+                          name: Government or classified
+                          name_lang: en
+                        orbit:
+                          code: sso
+                          name: Sun-synchronous orbit
+                          name_lang: en
+                    - id: bcc303eb-0a53-4b95-bbb2-a0296cca2f2a
+                      name: SS-520-5 | TRICOM-1R
+                      name_lang: en
+                      net: 2018-02-03T05:03:00Z
+                      status:
+                        code: success
+                        name: Success
+                        name_lang: en
+                      launch_designator: 2018-016
+                      provider:
+                        key: jaxa
+                        name: Japan Aerospace Exploration Agency
+                        name_lang: en
+                        type:
+                          code: agency
+                          name: Space agency
+                          name_lang: en
+                      vehicle:
+                        id: 144
+                        name: SS-520-5
+                        name_lang: en
+                        family: S-Series
+                        variant: "5"
+                      pad:
+                        id: 43
+                        name: KS Center
+                        name_lang: en
+                        location: "Uchinoura Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 31.2519752
+                        longitude: 131.0791609
+                      mission:
+                        id: 479
+                        name: TRICOM-1R
+                        name_lang: en
+                        type:
+                          code: earth_science
+                          name: Earth science
+                          name_lang: en
+                        orbit:
+                          code: leo
+                          name: Low Earth orbit
+                          name_lang: en
+                    - id: decf3c30-a1af-46dd-a016-559af24e259b
+                      name: SS-520-4 | TRICOM-1
+                      name_lang: en
+                      net: 2017-01-14T23:33:00Z
+                      status:
+                        code: failure
+                        name: Failure
+                        name_lang: en
+                      provider:
+                        key: jaxa
+                        name: Japan Aerospace Exploration Agency
+                        name_lang: en
+                        type:
+                          code: agency
+                          name: Space agency
+                          name_lang: en
+                      vehicle:
+                        id: 122
+                        name: SS-520-4
+                        name_lang: en
+                        family: S-Series
+                        variant: "4"
+                      pad:
+                        id: 43
+                        name: KS Center
+                        name_lang: en
+                        location: "Uchinoura Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 31.2519752
+                        longitude: 131.0791609
+                      mission:
+                        id: 379
+                        name: TRICOM-1
+                        name_lang: en
+                        type:
+                          code: earth_science
+                          name: Earth science
+                          name_lang: en
+                        orbit:
+                          code: leo
+                          name: Low Earth orbit
+                          name_lang: en
+                    partner_missions: 1
+                    lineage: []
+              schema:
+                $ref: "#/components/schemas/AgencyDetail"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get an organization
+      tags:
+      - Agencies
+  /api/v1/close-approaches:
+    get:
+      description: "Approaches within 0.05 au of Earth from 1900 to 2200, past and\
+        \ predicted, with distances in km and Earth–Moon distances, UTC times, and\
+        \ a size range estimated from absolute magnitude where no measured diameter\
+        \ exists."
+      operationId: listCloseApproaches
+      parameters:
+      - description: Only approaches on or after this TDB calendar date (YYYY-MM-DD).
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: Only approaches before this TDB calendar date (YYYY-MM-DD).
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: Only approaches at most this many Earth–Moon distances away.
+        in: query
+        name: max_dist_ld
+        required: false
+        schema:
+          type: number
+          format: double
+          exclusiveMinimum: 0
+          maximum: 20.0
+      - description: "Only objects with absolute magnitude H at most this, i.e. larger\
+          \ objects."
+        in: query
+        name: max_h
+        required: false
+        schema:
+          type: number
+          format: double
+          maximum: 40.0
+          minimum: 0.0
+      - description: "Only this object, by JPL designation, e.g. 99942 or 2026 TS."
+        in: query
+        name: designation
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: true for objects on the active Sentry impact-risk list only.
+        in: query
+        name: sentry
+        required: false
+        schema:
+          type: boolean
+      - description: "date for soonest first, -date for latest first, distance for\
+          \ closest first."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: date
+          enum:
+          - date
+          - -date
+          - distance
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - designation: 2026 TE2
+                      fullname: (2026 TE2)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2026-10-16T03:46:00
+                      approach_utc: 2026-10-16T03:44:50.816Z
+                      time_uncertainty:
+                        minutes: 1.0
+                        less_than: true
+                      dist_au: 0.015316737211391
+                      dist_km: 2291351.2728955494
+                      dist_ld: 5.960851386304759
+                      dist_min_km: 2279975.565935806
+                      dist_max_km: 2302726.7980991006
+                      v_rel_kms: 14.7104986280676
+                      v_inf_kms: 14.6986683931841
+                      h_mag: 25.772
+                      size:
+                        estimated_min_km: 0.018627517351171775
+                        estimated_max_km: 0.04165239504927692
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: false
+                    - designation: 2026 TB2
+                      fullname: (2026 TB2)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2026-10-16T07:16:00
+                      approach_utc: 2026-10-16T07:14:50.816Z
+                      time_uncertainty:
+                        minutes: 12.0
+                        less_than: false
+                      dist_au: 0.0127281767390542
+                      dist_km: 1904108.1380557779
+                      dist_ld: 4.953455093797549
+                      dist_min_km: 1893483.481615875
+                      dist_max_km: 1914732.2096668305
+                      v_rel_kms: 8.81719755880445
+                      v_inf_kms: 8.79342360137459
+                      h_mag: 25.205
+                      size:
+                        estimated_min_km: 0.024185494786565273
+                        estimated_max_km: 0.05408041041222672
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: false
+                    page: 1
+                    size: 2
+                    total_items: 7
+                    total_pages: 4
+              schema:
+                $ref: "#/components/schemas/PageCloseApproach"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List close approaches
+      tags:
+      - Near-Earth
+  /api/v1/exoplanets:
+    get:
+      description: "Confirmed exoplanets from the archive's composite table, filtered\
+        \ by discovery method, year and distance. Planets whose confirmation has been\
+        \ questioned are hidden unless asked for."
+      operationId: listExoplanets
+      parameters:
+      - description: "Discovery method code, e.g. transit, radial_velocity or microlensing."
+        in: query
+        name: method
+        required: false
+        schema:
+          type: string
+          pattern: "[a-z_]{1,40}"
+      - description: "First discovery year, inclusive."
+        in: query
+        name: from_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1989
+      - description: "Last discovery year, inclusive."
+        in: query
+        name: to_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1989
+      - description: Only systems at most this many light-years away.
+        in: query
+        name: max_distance_ly
+        required: false
+        schema:
+          type: number
+          format: double
+          exclusiveMinimum: 0
+      - description: true to include planets whose confirmation has been questioned.
+        in: query
+        name: include_controversial
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - description: "distance (nearest first), -discovery_year, radius or name."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: distance
+          enum:
+          - distance
+          - -discovery_year
+          - radius
+          - name
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - name: Proxima Cen b
+                      host_name: Proxima Cen
+                      discovery:
+                        year: 2016
+                        method:
+                          code: radial_velocity
+                          name: Radial velocity
+                          name_lang: en
+                        facility: European Southern Observatory
+                        locale: ground
+                      orbital_period_days: 11.18465
+                      semi_major_axis_au: 0.04848
+                      radius_earth: 1.02
+                      mass_earth: 1.055
+                      eccentricity: 0.0
+                      equilibrium_temp_k: 218.0
+                      insolation_earth: 0.641
+                      star:
+                        temp_k: 2900.0
+                        radius_sun: 0.141
+                        mass_sun: 0.1221
+                        star_count: 3
+                        planet_count: 2
+                      distance_pc: 1.30119
+                      distance_ly: 4.2439092564
+                      controversial: false
+                    - name: Proxima Cen d
+                      host_name: Proxima Cen
+                      discovery:
+                        year: 2025
+                        method:
+                          code: radial_velocity
+                          name: Radial velocity
+                          name_lang: en
+                        facility: La Silla Observatory
+                        locale: ground
+                      orbital_period_days: 5.12338
+                      semi_major_axis_au: 0.02881
+                      radius_earth: 0.692
+                      mass_earth: 0.26
+                      eccentricity: 0.0
+                      equilibrium_temp_k: 282.0
+                      insolation_earth: 1.814
+                      star:
+                        temp_k: 2900.0
+                        radius_sun: 0.141
+                        mass_sun: 0.1221
+                        star_count: 3
+                        planet_count: 2
+                      distance_pc: 1.30119
+                      distance_ly: 4.2439092564
+                      controversial: false
+                    - name: Barnard b
+                      host_name: Barnard's star
+                      discovery:
+                        year: 2024
+                        method:
+                          code: radial_velocity
+                          name: Radial velocity
+                          name_lang: en
+                        facility: Paranal Observatory
+                        locale: ground
+                      orbital_period_days: 3.1542
+                      semi_major_axis_au: 0.0229
+                      radius_earth: 0.72
+                      mass_earth: 0.299
+                      eccentricity: 0.03
+                      equilibrium_temp_k: 438.0
+                      insolation_earth: 6.76
+                      star:
+                        temp_k: 3195.0
+                        radius_sun: 0.185
+                        mass_sun: 0.162
+                        star_count: 1
+                        planet_count: 4
+                      distance_pc: 1.82655
+                      distance_ly: 5.957402417999999
+                      controversial: false
+                    page: 1
+                    size: 3
+                    total_items: 6393
+                    total_pages: 2131
+              schema:
+                $ref: "#/components/schemas/PageExoplanet"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List confirmed exoplanets
+      tags:
+      - Exoplanets
+  /api/v1/exoplanets/{name}:
+    get:
+      description: "One confirmed exoplanet, including questioned ones, with the archive\
+        \ responses behind its record."
+      operationId: getExoplanet
+      parameters:
+      - description: "Planet name, e.g. Proxima Cen b."
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    planet:
+                      name: Proxima Cen b
+                      host_name: Proxima Cen
+                      discovery:
+                        year: 2016
+                        method:
+                          code: radial_velocity
+                          name: Radial velocity
+                          name_lang: en
+                        facility: European Southern Observatory
+                        locale: ground
+                      orbital_period_days: 11.18465
+                      semi_major_axis_au: 0.04848
+                      radius_earth: 1.02
+                      mass_earth: 1.055
+                      eccentricity: 0.0
+                      equilibrium_temp_k: 218.0
+                      insolation_earth: 0.641
+                      star:
+                        temp_k: 2900.0
+                        radius_sun: 0.141
+                        mass_sun: 0.1221
+                        star_count: 3
+                        planet_count: 2
+                      distance_pc: 1.30119
+                      distance_ly: 4.2439092564
+                      controversial: false
+                    lineage:
+                    - source: exoplanet-archive
+                      url: "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?format=json&query=select\
+                        \ pl_name,hostname,sy_snum,sy_pnum,discoverymethod,disc_year,disc_facility,disc_locale,pl_orbper,pl_orbsmax,pl_rade,pl_bmasse,pl_orbeccen,pl_eqt,pl_insol,st_teff,st_rad,st_mass,sy_dist,pl_controv_flag\
+                        \ from pscomppars order by pl_name"
+                      fetched_at: 2026-10-19T17:43:31.786783Z
+                      content_hash: 1600c70b2567c63ca3dad113d2a866534ca303bd9fd439f04ad1f8beedcab283
+              schema:
+                $ref: "#/components/schemas/ExoplanetDetail"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get an exoplanet
+      tags:
+      - Exoplanets
+  /api/v1/facts:
+    get:
+      description: "The highest-scoring facts that are still current, rendered in\
+        \ the requested language. Facts below their template's minimum score never\
+        \ show. Without module or entity filters the list mixes modules: every module's\
+        \ best fact first, then every module's second best, and so on, each round\
+        \ best first."
+      operationId: listFacts
+      parameters:
+      - description: "Only facts for this page, e.g. home, launches, near-earth, sun\
+          \ or agencies."
+        in: query
+        name: module
+        required: false
+        schema:
+          type: string
+          pattern: "[a-z-]{1,32}"
+      - description: "Only facts about this kind of record, e.g. organization."
+        in: query
+        name: entity_type
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "Only facts about this record, together with entity_type."
+        in: query
+        name: entity_key
+        required: false
+        schema:
+          type: string
+          maxLength: 128
+          minLength: 1
+      - description: "How many facts, at most 20."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 3
+          maximum: 20
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - id: 1
+                      key: near-earth.closest_this_week
+                      module: near-earth
+                      text: "This week's closest asteroid, 2026 TS, passes at 2.4×\
+                        \ the Earth–Moon distance."
+                      text_lang: en
+                      params:
+                        designation: 2026 TS
+                        distance_ld: 2.4
+                      score: 0.9
+                      kind:
+                        code: computed
+                        name: Computed from data
+                        name_lang: en
+                      entity:
+                        type: small_body
+                        key: 2026 TS
+                      sources:
+                      - entity: core.close_approach
+                        key: 2026 TS|Earth|2026-10-18 06:16:00
+                        records_url: /api/v1/close-approaches?designation=2026%20TS
+                      generated_at: 2026-10-16T07:30:00Z
+                      valid_until: 2026-10-23T00:00:00Z
+                    - id: 4
+                      key: sun.strongest_flare_month
+                      module: sun
+                      text: "This month's strongest flare, class M6.4, peaked on October\
+                        \ 10, 2026."
+                      text_lang: en
+                      params:
+                        date: 2026-10-10
+                        class: M6.4
+                      score: 0.8
+                      kind:
+                        code: computed
+                        name: Computed from data
+                        name_lang: en
+                      sources: []
+                      generated_at: 2026-10-16T07:30:00Z
+                      valid_until: 2026-11-01T00:00:00Z
+              schema:
+                $ref: "#/components/schemas/Facts"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List top facts
+      tags:
+      - Facts
+  /api/v1/facts/{id}:
+    get:
+      description: One fact with the records behind it and the source responses that
+        produced those records.
+      operationId: getFact
+      parameters:
+      - description: Fact id.
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    fact:
+                      id: 1
+                      key: near-earth.closest_this_week
+                      module: near-earth
+                      text: "This week's closest asteroid, 2026 TS, passes at 2.4×\
+                        \ the Earth–Moon distance."
+                      text_lang: en
+                      params:
+                        designation: 2026 TS
+                        distance_ld: 2.4
+                      score: 0.9
+                      kind:
+                        code: computed
+                        name: Computed from data
+                        name_lang: en
+                      entity:
+                        type: small_body
+                        key: 2026 TS
+                      sources:
+                      - entity: core.close_approach
+                        key: 2026 TS|Earth|2026-10-18 06:16:00
+                        records_url: /api/v1/close-approaches?designation=2026%20TS
+                      generated_at: 2026-10-16T07:30:00Z
+                      valid_until: 2026-10-23T00:00:00Z
+                    lineage:
+                    - source: jpl
+                      url: https://ssd-api.jpl.nasa.gov/cad.api?date-max=2026-12-31&date-min=2026-10-01
+                      fetched_at: 2026-10-16T06:01:00Z
+                      content_hash: 9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d
+              schema:
+                $ref: "#/components/schemas/FactDetail"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get a fact
+      tags:
+      - Facts
+  /api/v1/impact-risks:
+    get:
+      description: "Objects JPL Sentry monitors for possible future Earth impacts,\
+        \ highest cumulative Palermo scale first. Objects removed from Sentry after\
+        \ new observations are hidden unless asked for."
+      operationId: listImpactRisks
+      parameters:
+      - description: Only objects with a cumulative Palermo scale at least this.
+        in: query
+        name: min_palermo
+        required: false
+        schema:
+          type: number
+          format: double
+      - description: Only objects with a maximum Torino scale at least this (0 to
+          10).
+        in: query
+        name: min_torino
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 0
+      - description: true to include objects Sentry has removed from its list.
+        in: query
+        name: include_removed
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - description: "-palermo, -probability, -torino or designation."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: -palermo
+          enum:
+          - -palermo
+          - -probability
+          - -torino
+          - designation
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - designation: "29075"
+                      fullname: 29075 (1950 DA)
+                      impact_probability: 3.633E-4
+                      palermo_cumulative: -0.95
+                      palermo_max: -0.95
+                      potential_impacts: 1
+                      impact_year_first: 2880
+                      impact_year_last: 2880
+                      last_observed: 2026-10-05
+                      sentry_diameter_km: 1.3
+                      h_mag: 17.94
+                      v_inf_kms: 14.1
+                      size:
+                        estimated_min_km: 0.6863647586706756
+                        estimated_max_km: 1.534758257747869
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                    - designation: "101955"
+                      fullname: 101955 Bennu (1999 RQ36)
+                      impact_probability: 5.71699999999996E-4
+                      palermo_cumulative: -1.4
+                      palermo_max: -1.58
+                      potential_impacts: 157
+                      impact_year_first: 2178
+                      impact_year_last: 2290
+                      last_observed: 2020-10-03
+                      sentry_diameter_km: 0.49
+                      h_mag: 20.63
+                      v_inf_kms: 5.9916984432395
+                      size:
+                        estimated_min_km: 0.1988634532358651
+                        estimated_max_km: 0.4446721996757449
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                    page: 1
+                    size: 2
+                    total_items: 3
+                    total_pages: 2
+              schema:
+                $ref: "#/components/schemas/PageImpactRisk"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List Sentry impact risks
+      tags:
+      - Near-Earth
+  /api/v1/impact-risks/{designation}:
+    get:
+      description: "One Sentry object, monitored or removed, with every close approach\
+        \ JPL lists for it and the source responses behind the record."
+      operationId: getImpactRisk
+      parameters:
+      - description: "JPL designation, e.g. 29075 or 2010 RF12."
+        in: path
+        name: designation
+        required: true
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    risk:
+                      designation: "29075"
+                      fullname: 29075 (1950 DA)
+                      impact_probability: 3.633E-4
+                      palermo_cumulative: -0.95
+                      palermo_max: -0.95
+                      potential_impacts: 1
+                      impact_year_first: 2880
+                      impact_year_last: 2880
+                      last_observed: 2026-10-05
+                      sentry_diameter_km: 1.3
+                      h_mag: 17.94
+                      v_inf_kms: 14.1
+                      size:
+                        estimated_min_km: 0.6863647586706756
+                        estimated_max_km: 1.534758257747869
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                    close_approaches:
+                    - designation: "29075"
+                      fullname: 29075 (1950 DA)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2105-03-10T01:40:00
+                      approach_utc: 2105-03-10T01:38:50.816Z
+                      time_uncertainty:
+                        minutes: 1.0
+                        less_than: true
+                      dist_au: 0.0363158656165644
+                      dist_km: 5432776.168865376
+                      dist_ld: 14.133132593302227
+                      dist_min_km: 5432755.533418791
+                      dist_max_km: 5432796.80816261
+                      v_rel_kms: 13.8033676265384
+                      v_inf_kms: 13.7980512645527
+                      h_mag: 17.28
+                      size:
+                        measured_km: 1.3
+                        measured_sigma_km: 0.13
+                        estimated_min_km: 0.9301542539613729
+                        estimated_max_km: 2.0798881414182326
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: true
+                    - designation: "29075"
+                      fullname: 29075 (1950 DA)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2136-03-11T20:44:00
+                      approach_utc: 2136-03-11T20:42:50.816Z
+                      time_uncertainty:
+                        minutes: 2.0
+                        less_than: false
+                      dist_au: 0.0425960938385146
+                      dist_km: 6372284.938379173
+                      dist_ld: 16.577224085273603
+                      dist_min_km: 6371424.685897678
+                      dist_max_km: 6373145.450911405
+                      v_rel_kms: 13.3555681365563
+                      v_inf_kms: 13.3508837105343
+                      h_mag: 17.28
+                      size:
+                        measured_km: 1.3
+                        measured_sigma_km: 0.13
+                        estimated_min_km: 0.9301542539613729
+                        estimated_max_km: 2.0798881414182326
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: true
+                    - designation: "29075"
+                      fullname: 29075 (1950 DA)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2187-03-08T23:09:00
+                      approach_utc: 2187-03-08T23:07:50.816Z
+                      time_uncertainty:
+                        minutes: 6.0
+                        less_than: false
+                      dist_au: 0.0352237071326856
+                      dist_km: 5269391.585210168
+                      dist_ld: 13.708094654552985
+                      dist_min_km: 5267037.917800405
+                      dist_max_km: 5271752.106894571
+                      v_rel_kms: 14.2981779404818
+                      v_inf_kms: 14.292886462819
+                      h_mag: 17.28
+                      size:
+                        measured_km: 1.3
+                        measured_sigma_km: 0.13
+                        estimated_min_km: 0.9301542539613729
+                        estimated_max_km: 2.0798881414182326
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: true
+                    lineage: []
+              schema:
+                $ref: "#/components/schemas/ImpactRiskDetail"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get a Sentry object
+      tags:
+      - Near-Earth
+  /api/v1/launches:
+    get:
+      description: "Launches filtered by time, outcome, provider, national program,\
+        \ vehicle family or launch site country. Entity names fall back to English\
+        \ where no Japanese name is curated yet."
+      operationId: listLaunches
+      parameters:
+      - description: "Only launches at or after this instant (ISO-8601, UTC)."
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: "Only launches before this instant (ISO-8601, UTC)."
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: Only launches with this outcome.
+        in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - success
+          - failure
+          - partial_failure
+          - in_flight
+          - upcoming
+          - unknown
+      - description: "Provider key: a curated slug such as jaxa, or ll2-<agency id>."
+        in: query
+        name: provider
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 0
+      - description: "National program slug, e.g. japan, usa, china, russia, europe\
+          \ or india."
+        in: query
+        name: program
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 0
+      - description: "Vehicle family, e.g. Falcon, Long March or Soyuz (case-insensitive)."
+        in: query
+        name: vehicle_family
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 0
+      - description: "ISO 3166-1 alpha-2 country of the launch site, e.g. JP."
+        in: query
+        name: site_country
+        required: false
+        schema:
+          type: string
+          pattern: "[A-Za-z]{2}"
+      - description: "Launch Library 2 pad id, as in /api/v1/stats/launches/pads."
+        in: query
+        name: pad
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      - description: "net for oldest first, -net for newest first."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: -net
+          enum:
+          - net
+          - -net
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - id: e7f1ab18-908c-46b0-a16d-7deb6a52a8c1
+                      name: H-IIA 204 | Inmarsat-6 F1
+                      name_lang: en
+                      net: 2021-12-22T15:32:00Z
+                      status:
+                        code: success
+                        name: Success
+                        name_lang: en
+                      launch_designator: 2021-128
+                      provider:
+                        key: mhi
+                        name: Mitsubishi Heavy Industries
+                        name_lang: en
+                        type:
+                          code: company
+                          name: Company
+                          name_lang: en
+                      vehicle:
+                        id: 48
+                        name: H-IIA 204
+                        name_lang: en
+                        family: H-II
+                        variant: "204"
+                      pad:
+                        id: 41
+                        name: Yoshinobu Launch Complex LP-1
+                        name_lang: en
+                        location: "Tanegashima Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 30.400813
+                        longitude: 130.977748
+                      mission:
+                        id: 5893
+                        name: Inmarsat-6 F1
+                        name_lang: en
+                        type:
+                          code: communications
+                          name: Communications
+                          name_lang: en
+                        orbit:
+                          code: gto
+                          name: Geostationary transfer orbit
+                          name_lang: en
+                    - id: 56e548c8-ff60-4cf5-bc60-d50a546a6a79
+                      name: H-IIA 202 | QZS-1R
+                      name_lang: en
+                      net: 2021-10-26T02:19:37Z
+                      status:
+                        code: success
+                        name: Success
+                        name_lang: en
+                      launch_designator: 2021-096
+                      provider:
+                        key: mhi
+                        name: Mitsubishi Heavy Industries
+                        name_lang: en
+                        type:
+                          code: company
+                          name: Company
+                          name_lang: en
+                      vehicle:
+                        id: 32
+                        name: H-IIA 202
+                        name_lang: en
+                        family: H-II
+                        variant: "202"
+                      pad:
+                        id: 41
+                        name: Yoshinobu Launch Complex LP-1
+                        name_lang: en
+                        location: "Tanegashima Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 30.400813
+                        longitude: 130.977748
+                      mission:
+                        id: 5840
+                        name: QZS-1R
+                        name_lang: en
+                        type:
+                          code: navigation
+                          name: Navigation
+                          name_lang: en
+                        orbit:
+                          code: gsto
+                          name: Geosynchronous Transfer Orbit
+                          name_lang: en
+                    page: 1
+                    size: 2
+                    total_items: 9
+                    total_pages: 5
+              schema:
+                $ref: "#/components/schemas/PageLaunchSummary"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List launches
+      tags:
+      - Launches
+  /api/v1/launches/{id}:
+    get:
+      description: "One launch with its window, the provider's national programs,\
+        \ mission partners, the objects CelesTrak catalogued from it, and the source\
+        \ responses behind the record."
+      operationId: getLaunch
+      parameters:
+      - description: Launch Library 2 launch id (UUID).
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    id: 2dd0f8af-5182-4a97-b8b4-4846983ddf59
+                    name: H-IIA 202 | Michibiki 4 (QZS-4)
+                    name_lang: en
+                    net: 2017-10-09T22:01:37Z
+                    status:
+                      code: success
+                      name: Success
+                      name_lang: en
+                    launch_designator: 2017-062
+                    provider:
+                      key: mhi
+                      name: Mitsubishi Heavy Industries
+                      name_lang: en
+                      type:
+                        code: company
+                        name: Company
+                        name_lang: en
+                    vehicle:
+                      id: 32
+                      name: H-IIA 202
+                      name_lang: en
+                      family: H-II
+                      variant: "202"
+                    pad:
+                      id: 41
+                      name: Yoshinobu Launch Complex LP-1
+                      name_lang: en
+                      location: "Tanegashima Space Center, Japan"
+                      country:
+                        code: JP
+                        name: Japan
+                      latitude: 30.400813
+                      longitude: 130.977748
+                    mission:
+                      id: 680
+                      name: Michibiki 4 (QZS-4)
+                      name_lang: en
+                      type:
+                        code: navigation
+                        name: Navigation
+                        name_lang: en
+                      orbit:
+                        code: gsto
+                        name: Geosynchronous Transfer Orbit
+                        name_lang: en
+                      description: "The Quasi-Zenith Satellite System (QZSS) is a\
+                        \ three-satellite regional time transfer system and the satellite-based\
+                        \ augmentation system for the GPS that would be receivable\
+                        \ within Japan. The primary purpose of QZSS is to increase\
+                        \ the availability of GPS in Japan's numerous urban canyons,\
+                        \ where only satellites at very high elevation can be seen.\
+                        \ A secondary function is performance enhancement, increasing\
+                        \ the accuracy and reliability of GPS derived navigation solutions.\
+                        \ A single satellite weighs about 4000 kg, has an expected\
+                        \ lifetime of 15 years and is put in a elliptical, highly\
+                        \ inclined geosynchronous orbit."
+                      description_lang: en
+                    window_start: 2017-10-09T22:01:37Z
+                    window_end: 2017-10-09T22:01:37Z
+                    programs:
+                    - slug: japan
+                      name: Japan
+                    partners: []
+                    objects:
+                    - norad_id: 42965
+                      object_id: 2017-062A
+                      name: QZS-4 (MICHIBIKI-4)
+                      object_type:
+                        code: payload
+                        name: Payload
+                        name_lang: en
+                      orbit_state:
+                        code: earth_orbit
+                        name: In Earth orbit
+                        name_lang: en
+                      owner_code: JPN
+                    - norad_id: 42966
+                      object_id: 2017-062B
+                      name: H-2A R/B
+                      object_type:
+                        code: rocket_body
+                        name: Rocket body
+                        name_lang: en
+                      orbit_state:
+                        code: earth_orbit
+                        name: In Earth orbit
+                        name_lang: en
+                      owner_code: JPN
+                    objects_total: 2
+                    lineage:
+                    - source: launch-library
+                      url: https://ll.thespacedevs.com/2.3.0/launches/?limit=100&mode=normal&offset=100&ordering=last_updated
+                      fetched_at: 2026-10-16T07:15:40Z
+                      content_hash: 0a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a5b6c7d8e9f
+                    - source: launch-library
+                      url: https://ll.thespacedevs.com/2.3.0/launches/?limit=100&mode=normal&offset=0&ordering=last_updated
+                      fetched_at: 2026-10-16T06:50:30Z
+                      content_hash: 6d1f0c9a2b7e4f31a8c5d2e9b0f7a6c3d4e5f60718293a4b5c6d7e8f90a1b2c3
+              schema:
+                $ref: "#/components/schemas/LaunchDetail"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get a launch
+      tags:
+      - Launches
+  /api/v1/meta/sources:
+    get:
+      description: "Every source Hoshizora ingests, with its localized name, credit,\
+        \ license and cadence, the latest ingestion run and fetch, a freshness verdict,\
+        \ and open data-quality problems."
+      operationId: listSources
+      parameters:
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - slug: celestrak
+                      name: CelesTrak SATCAT and GP
+                      description: "Every catalogued object, with its owner, launch\
+                        \ and decay dates, and current orbital elements."
+                      credit: "Orbital data: CelesTrak (celestrak.org)"
+                      license: No attribution requirement is stated. The data is freely
+                        available.
+                      homepage_url: https://celestrak.org
+                      cadence: "SATCAT at most every 12 hours, active orbital elements\
+                        \ at most every 2 hours."
+                      update_interval_seconds: 7200
+                      status:
+                        last_run:
+                          code: succeeded
+                          name: Succeeded
+                          name_lang: en
+                        last_run_started_at: 2026-10-15T20:00:00Z
+                        last_run_finished_at: 2026-10-15T20:01:30Z
+                        last_succeeded_at: 2026-10-15T20:01:30Z
+                        last_fetched_at: 2026-10-15T20:01:00Z
+                        freshness:
+                          code: stale
+                          name: Behind schedule
+                          name_lang: en
+                      quality:
+                        blocking: 0
+                        warnings: 0
+                        level:
+                          code: ok
+                          name: No issues
+                          name_lang: en
+                    - slug: jpl
+                      name: NASA/JPL Solar System Dynamics
+                      description: "Close approaches of asteroids and comets to Earth,\
+                        \ and the Sentry impact-monitoring list."
+                      credit: "Small-body data: NASA/JPL Solar System Dynamics (SBDB\
+                        \ Close Approach and Sentry APIs)"
+                      license: No license or attribution requirement is stated.
+                      homepage_url: https://ssd.jpl.nasa.gov
+                      cadence: "A rolling close-approach window and Sentry, every\
+                        \ 12 hours."
+                      update_interval_seconds: 43200
+                      status:
+                        last_run:
+                          code: succeeded
+                          name: Succeeded
+                          name_lang: en
+                        last_run_started_at: 2026-10-16T06:00:00Z
+                        last_run_finished_at: 2026-10-16T06:03:00Z
+                        last_succeeded_at: 2026-10-16T06:03:00Z
+                        last_fetched_at: 2026-10-16T06:01:00Z
+                        freshness:
+                          code: fresh
+                          name: Up to date
+                          name_lang: en
+                      quality:
+                        blocking: 0
+                        warnings: 0
+                        level:
+                          code: ok
+                          name: No issues
+                          name_lang: en
+                    page: 1
+                    size: 2
+                    total_items: 5
+                    total_pages: 3
+              schema:
+                $ref: "#/components/schemas/PageSourceView"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List data sources
+      tags:
+      - Meta
+  /api/v1/space-weather/aurora:
+    get:
+      description: "The latest OVATION forecast of the probability of visible aurora\
+        \ on a 1° grid, with each hemisphere's peak and its 10 % boundary, plus one\
+        \ summary per forecast for the past 48 hours."
+      operationId: getAurora
+      parameters:
+      - description: "Only cells at or above this probability, in percent."
+        in: query
+        name: min_percent
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    latest:
+                      observed_at: 2026-10-18T15:45:00Z
+                      forecast_at: 2026-10-18T16:48:00Z
+                      north:
+                        max_percent: 26
+                        boundary_lat: 64
+                      south:
+                        max_percent: 24
+                        boundary_lat: -47
+                      cells:
+                      - - 140
+                        - 67
+                        - 26
+                      - - 141
+                        - 66
+                        - 12
+                      - - 0
+                        - -51
+                        - 14
+                    history:
+                    - observed_at: 2026-10-18T14:24:00Z
+                      north_max_percent: 17
+                      south_max_percent: 14
+                    - observed_at: 2026-10-18T15:45:00Z
+                      north_max_percent: 26
+                      south_max_percent: 24
+              schema:
+                $ref: "#/components/schemas/Aurora"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get the aurora forecast
+      tags:
+      - Space weather
+  /api/v1/space-weather/flares:
+    get:
+      description: "GOES X-ray flares with their class, peak flux and NOAA radio blackout\
+        \ level, newest or strongest first."
+      operationId: listFlares
+      parameters:
+      - description: "Only flares peaking at or after this instant (ISO-8601, UTC)."
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: "Only flares peaking before this instant (ISO-8601, UTC)."
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: "Only flares of at least this class: A, B, C, M or X."
+        in: query
+        name: min_class
+        required: false
+        schema:
+          type: string
+          enum:
+          - A
+          - B
+          - C
+          - M
+          - X
+      - description: "-time for newest first, -flux for strongest first."
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          default: -time
+          enum:
+          - -time
+          - -flux
+      - description: 1-based page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+          minimum: 1
+      - description: "Items per page, at most 100."
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    items:
+                    - id: 2026-10-10T14:58:00+00:00
+                      begin_at: 2026-10-10T14:58:00Z
+                      peak_at: 2026-10-10T15:10:00Z
+                      end_at: 2026-10-10T15:20:00Z
+                      xray_class: M6.4
+                      class_letter: M
+                      peak_flux_wm2: 6.485381163656712E-5
+                      r_scale:
+                        code: r2
+                        name: Moderate radio blackout (R2)
+                        name_lang: en
+                      in_progress: false
+                      satellite: 18
+                    - id: 2026-10-09T13:55:00+00:00
+                      begin_at: 2026-10-09T13:55:00Z
+                      peak_at: 2026-10-09T14:09:00Z
+                      end_at: 2026-10-09T14:17:00Z
+                      xray_class: M1.3
+                      class_letter: M
+                      peak_flux_wm2: 1.387703468935797E-5
+                      r_scale:
+                        code: r1
+                        name: Minor radio blackout (R1)
+                        name_lang: en
+                      in_progress: false
+                      satellite: 18
+                    page: 1
+                    size: 2
+                    total_items: 9
+                    total_pages: 5
+              schema:
+                $ref: "#/components/schemas/PageFlare"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List solar flares
+      tags:
+      - Space weather
+  /api/v1/space-weather/kp:
+    get:
+      description: Planetary Kp per 3-hour interval with the NOAA geomagnetic storm
+        level. Defaults to the past seven days; a range spans at most 366 days.
+      operationId: listKp
+      parameters:
+      - description: "Start of the range (ISO-8601, UTC). Defaults to seven days before\
+          \ to."
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: "End of the range, exclusive (ISO-8601, UTC). Defaults to the\
+          \ next full hour."
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    from: 2026-10-15T12:00:00Z
+                    to: 2026-10-16T00:00:00Z
+                    items:
+                    - observed_at: 2026-10-15T12:00:00Z
+                      kp: 2.67
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                    - observed_at: 2026-10-15T15:00:00Z
+                      kp: 3.0
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                    - observed_at: 2026-10-15T18:00:00Z
+                      kp: 2.33
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                    - observed_at: 2026-10-15T21:00:00Z
+                      kp: 2.33
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+              schema:
+                $ref: "#/components/schemas/Kp"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List planetary Kp
+      tags:
+      - Space weather
+  /api/v1/space-weather/now:
+    get:
+      description: "The latest planetary Kp with its NOAA storm level, the latest\
+        \ solar wind minute, and the strongest classified flare of the past 24 hours,\
+        \ as of the next full hour."
+      operationId: getSpaceWeatherNow
+      parameters:
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    as_of: 2026-10-16T09:00:00Z
+                    kp:
+                      observed_at: 2026-10-16T03:00:00Z
+                      kp: 2.0
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                    solar_wind:
+                      observed_at: 2026-10-16T07:27:00Z
+                      speed_kms: 433.9
+                      density_cm3: 3.49
+                      temperature_k: 78198.0
+                      bt_nt: 4.61
+                      bz_gsm_nt: 3.19
+                    strongest_flare_last_day:
+                      id: 2026-10-16T04:20:00+00:00
+                      begin_at: 2026-10-16T04:20:00Z
+                      peak_at: 2026-10-16T04:31:00Z
+                      end_at: 2026-10-16T04:45:00Z
+                      xray_class: C1.7
+                      class_letter: C
+                      peak_flux_wm2: 1.7015463527059183E-6
+                      r_scale:
+                        code: r0
+                        name: No radio blackout
+                        name_lang: en
+                      in_progress: false
+                      satellite: 18
+                    flares_last_day: 3
+              schema:
+                $ref: "#/components/schemas/SpaceWeatherNow"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Get current space weather
+      tags:
+      - Space weather
+  /api/v1/space-weather/solar-wind:
+    get:
+      description: "Solar wind at L1 from the spacecraft SWPC marks active: one point\
+        \ per minute (default one day, at most three) or hourly means (default seven\
+        \ days, at most 92)."
+      operationId: listSolarWind
+      parameters:
+      - description: "Start of the range (ISO-8601, UTC)."
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: "End of the range, exclusive (ISO-8601, UTC). Defaults to the\
+          \ next full hour."
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - description: minute or hour.
+        in: query
+        name: resolution
+        required: false
+        schema:
+          type: string
+          default: minute
+          enum:
+          - minute
+          - hour
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    from: 2026-10-09T09:00:00Z
+                    to: 2026-10-16T09:00:00Z
+                    resolution: hour
+                    items:
+                    - observed_at: 2026-10-16T05:00:00Z
+                      speed_kms: 446.7612903225806
+                      density_cm3: 3.2645161290322577
+                      temperature_k: 99035.96774193548
+                      bt_nt: 4.222424242424243
+                      bz_gsm_nt: -0.8342424242424243
+                      speed_kms_max: 464.9
+                      bz_gsm_nt_min: -2.4
+                      samples: 33
+                    - observed_at: 2026-10-16T06:00:00Z
+                      speed_kms: 437.62280701754383
+                      density_cm3: 3.313508771929824
+                      temperature_k: 97503.43859649122
+                      bt_nt: 4.592372881355933
+                      bz_gsm_nt: 1.1099999999999999
+                      speed_kms_max: 448.3
+                      bz_gsm_nt_min: -2.3
+                      samples: 59
+                    - observed_at: 2026-10-16T07:00:00Z
+                      speed_kms: 433.9923076923077
+                      density_cm3: 2.9726923076923084
+                      temperature_k: 83348.46153846153
+                      bt_nt: 4.597857142857142
+                      bz_gsm_nt: -0.6021428571428571
+                      speed_kms_max: 446.6
+                      bz_gsm_nt_min: -3.36
+                      samples: 28
+              schema:
+                $ref: "#/components/schemas/SolarWind"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: List solar wind
+      tags:
+      - Space weather
+  /api/v1/stats/close-approaches/monthly:
+    get:
+      description: "Approaches per TDB calendar month with how many came closer than\
+        \ the Moon, the closest and the likely largest object. Defaults to ten years\
+        \ back and two years ahead."
+      operationId: getCloseApproachesMonthly
+      parameters:
+      - description: Only months starting on or after this date (YYYY-MM-DD).
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: Only months starting before this date (YYYY-MM-DD).
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: jpl
+                    from: 2016-01-01
+                    to: 2029-01-01
+                    items:
+                    - month: 2026-09-01
+                      approaches: 3
+                      within_lunar_distance: 3
+                      closest_dist_ld: 0.054539868408845754
+                      closest_designation: 2026 RT34
+                      min_absolute_magnitude: 26.158
+                      largest_designation: 2026 RG15
+                      predicted: false
+                      records_url: /api/v1/close-approaches?from=2026-09-01&to=2026-10-01&sort=distance
+                    - month: 2026-10-01
+                      approaches: 10
+                      within_lunar_distance: 6
+                      closest_dist_ld: 0.14418172481667388
+                      closest_designation: 2026 TN77
+                      min_absolute_magnitude: 24.047
+                      largest_designation: 2026 TS
+                      predicted: false
+                      records_url: /api/v1/close-approaches?from=2026-10-01&to=2026-11-01&sort=distance
+              schema:
+                $ref: "#/components/schemas/CloseApproachMonthly"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Close approaches per month
+      tags:
+      - Statistics
+  /api/v1/stats/exoplanets/discoveries:
+    get:
+      description: "Confirmed exoplanets per discovery year, split by the method that\
+        \ found them, with the number found from space. Each year links to its planets."
+      operationId: getExoplanetDiscoveries
+      parameters:
+      - description: "First discovery year, inclusive."
+        in: query
+        name: from_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1989
+      - description: "Last discovery year, inclusive."
+        in: query
+        name: to_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1989
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: exoplanet-archive
+                    methods:
+                    - method:
+                        code: transit
+                        name: Transit
+                        name_lang: en
+                      planets: 556
+                    - method:
+                        code: radial_velocity
+                        name: Radial velocity
+                        name_lang: en
+                      planets: 147
+                    - method:
+                        code: microlensing
+                        name: Microlensing
+                        name_lang: en
+                      planets: 81
+                    - method:
+                        code: imaging
+                        name: Direct imaging
+                        name_lang: en
+                      planets: 26
+                    - method:
+                        code: transit_timing_variations
+                        name: Transit timing variations
+                        name_lang: en
+                      planets: 13
+                    - method:
+                        code: astrometry
+                        name: Astrometry
+                        name_lang: en
+                      planets: 4
+                    - method:
+                        code: eclipse_timing_variations
+                        name: Eclipse timing variations
+                        name_lang: en
+                      planets: 1
+                    - method:
+                        code: pulsar_timing
+                        name: Pulsar timing
+                        name_lang: en
+                      planets: 1
+                    years:
+                    - year: 2023
+                      planets: 323
+                      from_space: 221
+                      methods:
+                      - code: transit
+                        planets: 225
+                      - code: radial_velocity
+                        planets: 56
+                      - code: microlensing
+                        planets: 30
+                      - code: imaging
+                        planets: 7
+                      - code: transit_timing_variations
+                        planets: 3
+                      - code: astrometry
+                        planets: 1
+                      - code: eclipse_timing_variations
+                        planets: 1
+                      records_url: /api/v1/exoplanets?from_year=2023&to_year=2023
+                    - year: 2024
+                      planets: 260
+                      from_space: 193
+                      methods:
+                      - code: transit
+                        planets: 187
+                      - code: radial_velocity
+                        planets: 29
+                      - code: microlensing
+                        planets: 28
+                      - code: imaging
+                        planets: 11
+                      - code: transit_timing_variations
+                        planets: 4
+                      - code: pulsar_timing
+                        planets: 1
+                      records_url: /api/v1/exoplanets?from_year=2024&to_year=2024
+                    - year: 2025
+                      planets: 246
+                      from_space: 141
+                      methods:
+                      - code: transit
+                        planets: 144
+                      - code: radial_velocity
+                        planets: 62
+                      - code: microlensing
+                        planets: 23
+                      - code: imaging
+                        planets: 8
+                      - code: transit_timing_variations
+                        planets: 6
+                      - code: astrometry
+                        planets: 3
+                      records_url: /api/v1/exoplanets?from_year=2025&to_year=2025
+              schema:
+                $ref: "#/components/schemas/ExoplanetDiscoveries"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Exoplanet discoveries per year
+      tags:
+      - Statistics
+  /api/v1/stats/exoplanets/size-orbit:
+    get:
+      description: "Transiting exoplanets counted on a logarithmic grid: 0.25 powers\
+        \ of ten of orbital period by 0.125 powers of ten of radius. Only transits\
+        \ measure the radius directly."
+      operationId: getExoplanetSizeOrbit
+      parameters:
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: exoplanet-archive
+                    period_step_dex: 0.25
+                    radius_step_dex: 0.125
+                    planets: 844
+                    cells:
+                    - period_min_days: 5.623413251903491
+                      period_max_days: 10.0
+                      radius_min_earth: 1.7782794100389228
+                      radius_max_earth: 2.371373705661655
+                      planets: 202
+                    - period_min_days: 5.623413251903491
+                      period_max_days: 10.0
+                      radius_min_earth: 2.371373705661655
+                      radius_max_earth: 3.1622776601683795
+                      planets: 198
+                    - period_min_days: 10.0
+                      period_max_days: 17.78279410038923
+                      radius_min_earth: 1.7782794100389228
+                      radius_max_earth: 2.371373705661655
+                      planets: 231
+                    - period_min_days: 10.0
+                      period_max_days: 17.78279410038923
+                      radius_min_earth: 2.371373705661655
+                      radius_max_earth: 3.1622776601683795
+                      planets: 213
+              schema:
+                $ref: "#/components/schemas/ExoplanetSizeOrbit"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Exoplanet sizes against orbital periods
+      tags:
+      - Statistics
+  /api/v1/stats/launches/boosters:
+    get:
+      description: "Identified first stages ranked by flights, with their vehicle,\
+        \ landings, first and latest flight and fastest turnaround. Placeholder stages\
+        \ with no published serial are left out."
+      operationId: getLaunchBoosters
+      parameters:
+      - description: "Only stages whose latest launch this provider flew, e.g. spacex."
+        in: query
+        name: provider
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "true for stages still in service, false for the rest."
+        in: query
+        name: active
+        required: false
+        schema:
+          type: boolean
+      - description: "How many stages, at most 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: launch-library
+                    items:
+                    - id: 101
+                      serial_number: B1067
+                      status:
+                        code: active
+                        name: Active
+                        name_lang: en
+                      vehicle:
+                        id: 164
+                        name: Falcon 9 Block 5
+                        name_lang: en
+                        family: Falcon
+                      rank: 1
+                      flights: 37
+                      landing_attempts: 37
+                      landings: 37
+                      first_flight_at: 2021-06-03T17:29:15Z
+                      last_flight_at: 2026-08-25T09:33:38Z
+                      fastest_turnaround_days: 22.7022
+                    - id: 84
+                      serial_number: B1063
+                      status:
+                        code: active
+                        name: Active
+                        name_lang: en
+                      vehicle:
+                        id: 164
+                        name: Falcon 9 Block 5
+                        name_lang: en
+                        family: Falcon
+                      rank: 2
+                      flights: 35
+                      landing_attempts: 35
+                      landings: 35
+                      first_flight_at: 2020-11-21T17:17:08Z
+                      last_flight_at: 2026-09-02T08:42:12Z
+                      fastest_turnaround_days: 28.6508
+                    - id: 105
+                      serial_number: B1069
+                      status:
+                        code: expended
+                        name: Expended
+                        name_lang: en
+                      vehicle:
+                        id: 164
+                        name: Falcon 9 Block 5
+                        name_lang: en
+                        family: Falcon
+                      rank: 4
+                      flights: 32
+                      landing_attempts: 31
+                      landings: 31
+                      first_flight_at: 2021-12-21T10:07:08Z
+                      last_flight_at: 2026-07-21T21:15:00Z
+                      fastest_turnaround_days: 25.7645
+              schema:
+                $ref: "#/components/schemas/LaunchBoosters"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Most flown first stages
+      tags:
+      - Statistics
+  /api/v1/stats/launches/cadence:
+    get:
+      description: "Launch attempts and outcomes per UTC year, grouped by national\
+        \ program, provider, vehicle family or launch-site country, busiest groups\
+        \ first. Each count links to its launches."
+      operationId: getLaunchCadence
+      parameters:
+      - description: How to group launches.
+        in: query
+        name: group_by
+        required: false
+        schema:
+          type: string
+          default: program
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+      - description: "Only this group, e.g. japan for group_by=program."
+        in: query
+        name: key
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "First year, inclusive."
+        in: query
+        name: from_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1957
+      - description: "Last year, inclusive."
+        in: query
+        name: to_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1957
+      - description: "How many groups, at most 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: launch-library
+                    group_by: program
+                    groups:
+                    - group:
+                        kind: program
+                        key: japan
+                        name: Japan
+                        name_lang: en
+                      total_attempts: 3
+                      records_url: /api/v1/launches?program=japan
+                      years:
+                      - year: 2020
+                        attempts: 1
+                        successes: 1
+                        failures: 0
+                        partial_failures: 0
+                        scheduled: 0
+                        records_url: /api/v1/launches?program=japan&from=2020-01-01T00:00:00Z&to=2021-01-01T00:00:00Z
+                      - year: 2021
+                        attempts: 2
+                        successes: 2
+                        failures: 0
+                        partial_failures: 0
+                        scheduled: 0
+                        records_url: /api/v1/launches?program=japan&from=2021-01-01T00:00:00Z&to=2022-01-01T00:00:00Z
+              schema:
+                $ref: "#/components/schemas/LaunchCadence"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Launches per year
+      tags:
+      - Statistics
+  /api/v1/stats/launches/pads:
+    get:
+      description: "Launch pads ranked by launch attempts, with outcomes, first and\
+        \ latest launch and their busiest year."
+      operationId: getBusiestPads
+      parameters:
+      - description: "Only pads in this ISO 3166-1 alpha-2 country, e.g. JP."
+        in: query
+        name: country
+        required: false
+        schema:
+          type: string
+          pattern: "[A-Za-z]{2}"
+      - description: "How many pads, at most 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: launch-library
+                    items:
+                    - pad:
+                        id: 41
+                        name: Yoshinobu Launch Complex LP-1
+                        name_lang: en
+                        location: "Tanegashima Space Center, Japan"
+                        country:
+                          code: JP
+                          name: Japan
+                        latitude: 30.400813
+                        longitude: 130.977748
+                      attempts: 10
+                      successes: 10
+                      failures: 0
+                      scheduled: 0
+                      first_launch_at: 2016-11-02T06:20:00Z
+                      last_launch_at: 2021-12-22T15:32:00Z
+                      busiest_year: 2017
+                      busiest_year_attempts: 5
+                      records_url: /api/v1/launches?pad=41
+                    - pad:
+                        id: 77
+                        name: Ariane Launch Area 3
+                        name_lang: en
+                        location: "Guiana Space Centre, French Guiana"
+                        country:
+                          code: GF
+                          name: French Guiana
+                        latitude: 5.239
+                        longitude: -52.768
+                      attempts: 3
+                      successes: 2
+                      failures: 1
+                      scheduled: 0
+                      first_launch_at: 2018-01-25T22:20:00Z
+                      last_launch_at: 2021-10-24T02:10:00Z
+                      busiest_year: 2021
+                      busiest_year_attempts: 2
+                      records_url: /api/v1/launches?pad=77
+              schema:
+                $ref: "#/components/schemas/LaunchPads"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Busiest launch pads
+      tags:
+      - Statistics
+  /api/v1/stats/launches/reusability:
+    get:
+      description: "For each group and UTC year: launches with a recorded first stage,\
+        \ how many flew a stage that had flown before, stage flights and reflights,\
+        \ and landing attempts and successes. Launch Library 2 landings carry no launch\
+        \ link, so each is matched to the launch at its stage's previous flight plus\
+        \ the reported turnaround."
+      operationId: getLaunchReusability
+      parameters:
+      - description: How to group launches.
+        in: query
+        name: group_by
+        required: false
+        schema:
+          type: string
+          default: all
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+      - description: "Only this group, e.g. spacex for group_by=provider."
+        in: query
+        name: key
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "First year, inclusive."
+        in: query
+        name: from_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1957
+      - description: "Last year, inclusive."
+        in: query
+        name: to_year
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 2100
+          minimum: 1957
+      - description: "How many groups, at most 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: launch-library
+                    group_by: all
+                    groups:
+                    - group:
+                        kind: all
+                        key: all
+                        name: All launches
+                        name_lang: en
+                      total_stage_flights: 448
+                      records_url: /api/v1/launches
+                      years:
+                      - year: 2023
+                        launches: 108
+                        launches_reflown: 93
+                        reflown_share: 0.8611111111111112
+                        stage_flights: 118
+                        stage_reflights: 98
+                        landing_attempts: 104
+                        landings: 103
+                        landing_success_rate: 0.9903846153846154
+                        records_url: /api/v1/launches?from=2023-01-01T00:00:00Z&to=2024-01-01T00:00:00Z
+                      - year: 2024
+                        launches: 143
+                        launches_reflown: 131
+                        reflown_share: 0.916083916083916
+                        stage_flights: 147
+                        stage_reflights: 132
+                        landing_attempts: 141
+                        landings: 138
+                        landing_success_rate: 0.9787234042553191
+                        records_url: /api/v1/launches?from=2024-01-01T00:00:00Z&to=2025-01-01T00:00:00Z
+                      - year: 2025
+                        launches: 183
+                        launches_reflown: 168
+                        reflown_share: 0.9180327868852459
+                        stage_flights: 183
+                        stage_reflights: 168
+                        landing_attempts: 181
+                        landings: 177
+                        landing_success_rate: 0.9779005524861878
+                        records_url: /api/v1/launches?from=2025-01-01T00:00:00Z&to=2026-01-01T00:00:00Z
+              schema:
+                $ref: "#/components/schemas/LaunchReusability"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: First-stage reuse and landings per year
+      tags:
+      - Statistics
+  /api/v1/stats/launches/success:
+    get:
+      description: "Each group's success rate over its whole history and over its\
+        \ latest 20 completed attempts, its current and longest runs of successes,\
+        \ and the record at the end of each year."
+      operationId: getLaunchSuccess
+      parameters:
+      - description: How to group launches.
+        in: query
+        name: group_by
+        required: false
+        schema:
+          type: string
+          default: program
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+      - description: "Only this group, e.g. spacex for group_by=provider."
+        in: query
+        name: key
+        required: false
+        schema:
+          type: string
+          maxLength: 64
+          minLength: 1
+      - description: "How many groups, most attempts first, at most 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: launch-library
+                    group_by: program
+                    groups:
+                    - group:
+                        kind: program
+                        key: japan
+                        name: Japan
+                        name_lang: en
+                      attempts: 12
+                      successes: 11
+                      success_rate: 0.9166666666666666
+                      recent_attempts: 12
+                      recent_successes: 11
+                      recent_success_rate: 0.9166666666666666
+                      current_streak: 10
+                      longest_streak: 10
+                      records_url: /api/v1/launches?program=japan
+                      years:
+                      - year: 2016
+                        attempts_to_date: 1
+                        successes_to_date: 1
+                        success_rate_to_date: 1.0
+                        recent_success_rate: 1.0
+                      - year: 2017
+                        attempts_to_date: 7
+                        successes_to_date: 6
+                        success_rate_to_date: 0.8571428571428571
+                        recent_success_rate: 0.8571428571428571
+                      - year: 2018
+                        attempts_to_date: 9
+                        successes_to_date: 8
+                        success_rate_to_date: 0.8888888888888888
+                        recent_success_rate: 0.8888888888888888
+                      - year: 2020
+                        attempts_to_date: 10
+                        successes_to_date: 9
+                        success_rate_to_date: 0.9
+                        recent_success_rate: 0.9
+                      - year: 2021
+                        attempts_to_date: 12
+                        successes_to_date: 11
+                        success_rate_to_date: 0.9166666666666666
+                        recent_success_rate: 0.9166666666666666
+              schema:
+                $ref: "#/components/schemas/LaunchSuccess"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Launch success rates
+      tags:
+      - Statistics
+  /api/v1/stats/orbits/countries:
+    get:
+      description: "Catalogued payloads, rocket bodies and debris per owner country\
+        \ and per owning organization. SATCAT owner codes are countries or organizations,\
+        \ not agencies: a US object may be NASA's, the military's or a company's."
+      operationId: getObjectsInOrbit
+      parameters:
+      - description: "earth_orbit (default), beyond_earth or decayed."
+        in: query
+        name: orbit_state
+        required: false
+        schema:
+          type: string
+          default: earth_orbit
+          enum:
+          - earth_orbit
+          - beyond_earth
+          - decayed
+      - description: "How many countries and organizations, at most 300."
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 300
+          minimum: 1
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: celestrak
+                    orbit_state:
+                      code: earth_orbit
+                      name: In Earth orbit
+                      name_lang: en
+                    totals:
+                      payloads: 42
+                      rocket_bodies: 22
+                      debris: 17
+                      unknown: 6
+                      total: 87
+                    countries:
+                    - country:
+                        code: JP
+                        name: Japan
+                      counts:
+                        payloads: 11
+                        rocket_bodies: 7
+                        debris: 3
+                        unknown: 1
+                        total: 22
+                      shared: 0
+                    - country:
+                        code: CN
+                        name: China
+                      counts:
+                        payloads: 9
+                        rocket_bodies: 2
+                        debris: 4
+                        unknown: 2
+                        total: 17
+                      shared: 4
+                    organizations:
+                    - owner_code: ESA
+                      label: European Space Agency
+                      label_lang: en
+                      organization:
+                        key: esa
+                        name: European Space Agency
+                        name_lang: en
+                        type:
+                          code: international
+                          name: International organization
+                          name_lang: en
+                      counts:
+                        payloads: 2
+                        rocket_bodies: 2
+                        debris: 2
+                        unknown: 0
+                        total: 6
+                    - owner_code: SES
+                      label: SES
+                      label_lang: en
+                      organization:
+                        key: ses
+                        name: SES
+                        name_lang: en
+                        type:
+                          code: company
+                          name: Company
+                          name_lang: en
+                      counts:
+                        payloads: 2
+                        rocket_bodies: 0
+                        debris: 0
+                        unknown: 0
+                        total: 2
+              schema:
+                $ref: "#/components/schemas/ObjectsInOrbit"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Objects in orbit by country
+      tags:
+      - Statistics
+  /api/v1/stats/overview:
+    get:
+      description: "The numbers for the home ticker, as of the start of the current\
+        \ UTC hour: the next scheduled launch, launch attempts this year against the\
+        \ same span of last year, the latest Kp, the closest asteroid approach in\
+        \ the coming week, and objects in Earth orbit."
+      operationId: getOverview
+      parameters:
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    as_of: 2026-10-16T08:00:00Z
+                    next_launch:
+                      id: 0c84ad4e-3a67-43fb-ab85-77f66127d732
+                      name: SLS Block 1B | Artemis VI
+                      name_lang: en
+                      net: 2030-09-30T00:00:00Z
+                      status:
+                        code: upcoming
+                        name: Upcoming
+                        name_lang: en
+                      provider:
+                        key: nasa
+                        name: National Aeronautics and Space Administration
+                        name_lang: en
+                        type:
+                          code: agency
+                          name: Space agency
+                          name_lang: en
+                      vehicle:
+                        id: 205
+                        name: Space Launch System Block 1B
+                        name_lang: en
+                        family: Space Launch System
+                        variant: Block 1B
+                      pad:
+                        id: 4
+                        name: Launch Complex 39B
+                        name_lang: en
+                        location: "Kennedy Space Center, FL, USA"
+                        country:
+                          code: US
+                          name: United States
+                        latitude: 28.62711233
+                        longitude: -80.62101503
+                    launches_this_year:
+                      year: 2026
+                      attempts: 0
+                      same_period_last_year: 0
+                      records_url: /api/v1/launches?from=2026-01-01T00:00:00Z&to=2026-10-16T08:00:00Z
+                    kp:
+                      observed_at: 2026-10-16T03:00:00Z
+                      kp: 2.0
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                    closest_approach_this_week:
+                      designation: 2026 TS
+                      fullname: (2026 TS)
+                      body:
+                        code: earth
+                        name: Earth
+                        name_lang: en
+                      approach_tdb: 2026-10-18T06:16:00
+                      approach_utc: 2026-10-18T06:14:50.816Z
+                      time_uncertainty:
+                        minutes: 1.0
+                        less_than: true
+                      dist_au: 0.00606186873313466
+                      dist_km: 906842.6549398516
+                      dist_ld: 2.3591120055667316
+                      dist_min_km: 905943.4081038706
+                      dist_max_km: 907741.8877418292
+                      v_rel_kms: 10.331155635023
+                      v_inf_kms: 10.2885218435398
+                      h_mag: 24.047
+                      size:
+                        estimated_min_km: 0.04122446010296545
+                        estimated_max_km: 0.09218069512595874
+                        assumed_albedo_min: 0.05
+                        assumed_albedo_max: 0.25
+                      sentry: false
+                    objects_in_earth_orbit:
+                      total: 87
+                      payloads: 42
+                      records_url: /api/v1/stats/orbits/countries
+                    sources:
+                    - launch-library
+                    - swpc
+                    - jpl
+                    - celestrak
+              schema:
+                $ref: "#/components/schemas/Overview"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Home overview
+      tags:
+      - Statistics
+  /api/v1/stats/space-weather/flares:
+    get:
+      description: "Classified X-ray flares per UTC month by class letter, with the\
+        \ strongest of each month. Defaults to the past twelve months. History grows\
+        \ with every ingestion, since SWPC publishes only the latest week."
+      operationId: getFlaresMonthly
+      parameters:
+      - description: Only months starting on or after this date (YYYY-MM-DD).
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: Only months starting before this date (YYYY-MM-DD).
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: swpc
+                    from: 2025-11-01
+                    to: 2026-11-01
+                    items:
+                    - month: 2026-10-01
+                      total: 8
+                      by_class:
+                        a: 0
+                        b: 2
+                        c: 3
+                        m: 3
+                        x: 0
+                      max_peak_flux_wm2: 6.485381163656712E-5
+                      strongest_class: M6.4
+                      records_url: /api/v1/space-weather/flares?min_class=A&from=2026-10-01T00:00:00Z&to=2026-11-01T00:00:00Z
+              schema:
+                $ref: "#/components/schemas/FlaresMonthly"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Solar flares per month
+      tags:
+      - Statistics
+  /api/v1/stats/space-weather/kp:
+    get:
+      description: Daily maximum and mean planetary Kp with the NOAA storm level of
+        the maximum. Defaults to the past 30 days.
+      operationId: getKpDaily
+      parameters:
+      - description: "First UTC day, inclusive (YYYY-MM-DD)."
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: "Last UTC day, exclusive (YYYY-MM-DD)."
+        in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - $ref: "#/components/parameters/AcceptLanguage"
+      - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                seed:
+                  value:
+                    source: swpc
+                    from: 2026-09-17
+                    to: 2026-10-17
+                    items:
+                    - day: 2026-10-14
+                      kp_max: 2.67
+                      kp_mean: 2.223333333333333
+                      intervals: 6
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                      records_url: /api/v1/space-weather/kp?from=2026-10-14T00:00:00Z&to=2026-10-15T00:00:00Z
+                    - day: 2026-10-15
+                      kp_max: 3.0
+                      kp_mean: 2.16625
+                      intervals: 8
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                      records_url: /api/v1/space-weather/kp?from=2026-10-15T00:00:00Z&to=2026-10-16T00:00:00Z
+                    - day: 2026-10-16
+                      kp_max: 3.33
+                      kp_mean: 2.665
+                      intervals: 2
+                      g_scale:
+                        code: g0
+                        name: No geomagnetic storm
+                        name_lang: en
+                      records_url: /api/v1/space-weather/kp?from=2026-10-16T00:00:00Z&to=2026-10-17T00:00:00Z
+              schema:
+                $ref: "#/components/schemas/KpDaily"
+          description: OK
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            Content-Language:
+              $ref: "#/components/headers/ContentLanguage"
+            ETag:
+              $ref: "#/components/headers/ETag"
+        "304":
+          $ref: "#/components/responses/NotModified"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      summary: Kp per day
+      tags:
+      - Statistics
+components:
+  headers:
+    CacheControl:
+      description: "public, max-age matched to the source's update cadence."
+      schema:
+        type: string
+    ContentLanguage:
+      description: "The language the response was localized to: en or ja."
+      schema:
+        type: string
+        enum:
+        - en
+        - ja
+    ETag:
+      description: "Strong validator: a hash of this exact response body."
+      schema:
+        type: string
+  parameters:
+    AcceptLanguage:
+      description: "Language for localized text: en (default) or ja. Region subtags\
+        \ and q-values are honored, e.g. ja-JP,ja;q=0.9."
+      in: header
+      name: Accept-Language
+      schema:
+        type: string
+        default: en
+        example: ja
+    IfNoneMatch:
+      description: An ETag from an earlier response; a match returns 304 with no body.
+      in: header
+      name: If-None-Match
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+      description: A query or path parameter is invalid.
+    InternalError:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+      description: Unexpected error. No internal details are exposed.
+    NotFound:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+      description: No resource exists with this identifier.
+    NotModified:
+      description: "Not modified: the If-None-Match ETag still matches."
+  schemas:
+    AgencyCataloguedObjects:
+      type: object
+      description: Catalogued objects by orbit state.
+      properties:
+        beyond_earth:
+          type: integer
+          format: int64
+        decayed:
+          type: integer
+          format: int64
+        in_earth_orbit:
+          type: integer
+          format: int64
+        owner_codes:
+          type: array
+          items:
+            type: string
+        payloads_in_earth_orbit:
+          type: integer
+          format: int64
+      required:
+      - beyond_earth
+      - decayed
+      - in_earth_orbit
+      - owner_codes
+      - payloads_in_earth_orbit
+    AgencyDetail:
+      type: object
+      description: "An organization profile: identity, launch record, vehicles, catalogued\
+        \ objects and lineage."
+      properties:
+        abbrev:
+          type: string
+        catalogued_objects:
+          $ref: "#/components/schemas/AgencyCataloguedObjects"
+          description: "Objects in the CelesTrak SATCAT owned under its own owner\
+            \ codes, such as ESA."
+        countries:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountryRef"
+        founding_year:
+          type: integer
+          format: int32
+        key:
+          type: string
+        launches:
+          $ref: "#/components/schemas/LaunchStats"
+        lineage:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineageEntry"
+        members:
+          type: array
+          description: Organizations whose parent is this one.
+          items:
+            $ref: "#/components/schemas/OrganizationRef"
+        name:
+          type: string
+        name_ja_source:
+          type: string
+          description: "Where the Japanese name was verified: the official Japanese\
+            \ site or Japanese Wikipedia."
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        next_launch:
+          $ref: "#/components/schemas/LaunchSummary"
+        parent:
+          $ref: "#/components/schemas/OrganizationRef"
+        partner_missions:
+          type: integer
+          format: int64
+          description: Missions it took part in as a customer or partner.
+        programs:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProgramRef"
+        recent_launches:
+          type: array
+          description: "Its latest launch attempts, newest first, at most five."
+          items:
+            $ref: "#/components/schemas/LaunchSummary"
+        reliability:
+          $ref: "#/components/schemas/AgencyReliability"
+        top_vehicles:
+          type: array
+          description: "The vehicles it flew most, at most five."
+          items:
+            $ref: "#/components/schemas/AgencyVehicleUsage"
+        type:
+          $ref: "#/components/schemas/Term"
+      required:
+      - countries
+      - key
+      - lineage
+      - members
+      - name
+      - name_lang
+      - partner_missions
+      - programs
+      - recent_launches
+      - top_vehicles
+    AgencyReliability:
+      type: object
+      description: Recent reliability as a launch provider.
+      properties:
+        current_streak:
+          type: integer
+          format: int32
+          description: Consecutive successes since the latest failure.
+        longest_streak:
+          type: integer
+          format: int32
+        recent_attempts:
+          type: integer
+          format: int32
+          description: Completed attempts in the latest window of up to 20.
+        recent_success_rate:
+          type: number
+          format: double
+        recent_successes:
+          type: integer
+          format: int32
+      required:
+      - current_streak
+      - longest_streak
+      - recent_attempts
+      - recent_successes
+    AgencySummary:
+      type: object
+      description: "An organization with its countries, national programs and launch\
+        \ totals."
+      properties:
+        abbrev:
+          type: string
+        countries:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountryRef"
+        founding_year:
+          type: integer
+          format: int32
+        key:
+          type: string
+          description: "Curated slug, or ll2-<Launch Library 2 agency id>."
+          example: jaxa
+        launches:
+          $ref: "#/components/schemas/LaunchStats"
+          description: Launches as provider; absent for organizations that never provided
+            one.
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        programs:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProgramRef"
+        type:
+          $ref: "#/components/schemas/Term"
+          description: "agency, company, military, academic or international."
+      required:
+      - countries
+      - key
+      - name
+      - name_lang
+      - programs
+    AgencyVehicleUsage:
+      type: object
+      description: A vehicle and how often this organization flew it.
+      properties:
+        attempts:
+          type: integer
+          format: int64
+        family:
+          type: string
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        successes:
+          type: integer
+          format: int64
+      required:
+      - attempts
+      - id
+      - name
+      - name_lang
+      - successes
+    Aurora:
+      type: object
+      description: "NOAA SWPC's OVATION aurora forecast: the latest probability of\
+        \ visible aurora on a 1° grid, and one summary per forecast for the past 48\
+        \ hours."
+      properties:
+        history:
+          type: array
+          description: "One summary per stored forecast in the 48 hours up to the\
+            \ latest, oldest first."
+          items:
+            $ref: "#/components/schemas/AuroraSummary"
+        latest:
+          $ref: "#/components/schemas/AuroraForecast"
+          description: The latest forecast; absent until one has been ingested.
+      required:
+      - history
+    AuroraForecast:
+      type: object
+      properties:
+        cells:
+          type: array
+          description: "Cells at or above min_percent as [longitude 0–359 °E, latitude,\
+            \ probability %]. Cells below it are omitted."
+          items:
+            type: array
+            items:
+              type: integer
+              format: int32
+        forecast_at:
+          type: string
+          format: date-time
+          description: "The time the forecast is for, usually 30 to 90 minutes later."
+        north:
+          $ref: "#/components/schemas/AuroraHemisphere"
+        observed_at:
+          type: string
+          format: date-time
+          description: When the model ran on the latest solar wind.
+        south:
+          $ref: "#/components/schemas/AuroraHemisphere"
+      required:
+      - cells
+      - forecast_at
+      - north
+      - observed_at
+      - south
+    AuroraHemisphere:
+      type: object
+      properties:
+        boundary_lat:
+          type: integer
+          format: int32
+          description: Latitude closest to the equator where the probability reaches
+            10 %.
+        max_percent:
+          type: integer
+          format: int32
+          description: "Highest probability of visible aurora anywhere in the hemisphere,\
+            \ in percent."
+      required:
+      - max_percent
+    AuroraSummary:
+      type: object
+      properties:
+        north_max_percent:
+          type: integer
+          format: int32
+        observed_at:
+          type: string
+          format: date-time
+        south_max_percent:
+          type: integer
+          format: int32
+      required:
+      - north_max_percent
+      - observed_at
+      - south_max_percent
+    CloseApproach:
+      type: object
+      description: "A close approach of an asteroid or comet to Earth within 0.05\
+        \ au, from JPL SBDB."
+      properties:
+        approach_tdb:
+          type: string
+          format: tdb-date-time
+          description: "Time of closest approach in TDB (Barycentric Dynamical Time),\
+            \ as JPL gives it. It has no UTC offset because TDB is not a civil time\
+            \ zone."
+          example: 2026-10-18T06:16:00
+          pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$"
+        approach_utc:
+          type: string
+          format: date-time
+          description: "The same instant in UTC, using IERS leap seconds. Absent before\
+            \ 1972."
+        body:
+          $ref: "#/components/schemas/Term"
+          description: The body approached. Currently always Earth.
+        designation:
+          type: string
+          description: JPL primary designation.
+          example: 2026 TS
+        dist_au:
+          type: number
+          format: double
+          description: Nominal approach distance in astronomical units.
+        dist_km:
+          type: number
+          format: double
+        dist_ld:
+          type: number
+          format: double
+          description: "Distance in Earth–Moon distances (1 LD = 384,400 km)."
+        dist_max_km:
+          type: number
+          format: double
+          description: Maximum possible distance at 3 sigma.
+        dist_min_km:
+          type: number
+          format: double
+          description: Minimum possible distance at 3 sigma.
+        fullname:
+          type: string
+        h_mag:
+          type: number
+          format: double
+          description: "Absolute magnitude H: lower means larger."
+        sentry:
+          type: boolean
+          description: Whether the object is on the active Sentry impact-monitoring
+            list.
+        size:
+          $ref: "#/components/schemas/SmallBodySize"
+        time_uncertainty:
+          $ref: "#/components/schemas/TimeUncertainty"
+        v_inf_kms:
+          type: number
+          format: double
+          description: "Velocity relative to a massless Earth, as if no gravity bent\
+            \ the path."
+        v_rel_kms:
+          type: number
+          format: double
+          description: Velocity relative to Earth at closest approach.
+      required:
+      - approach_tdb
+      - body
+      - designation
+      - dist_au
+      - dist_km
+      - dist_ld
+      - sentry
+      - size
+    CloseApproachMonth:
+      type: object
+      properties:
+        approaches:
+          type: integer
+          format: int64
+        closest_designation:
+          type: string
+        closest_dist_ld:
+          type: number
+          format: double
+        largest_designation:
+          type: string
+        min_absolute_magnitude:
+          type: number
+          format: double
+          description: "Lowest absolute magnitude H that month: the likely largest\
+            \ object."
+        month:
+          type: string
+          format: date
+          description: First day of the month.
+        predicted:
+          type: boolean
+          description: "True when the whole month lies in the future, so every approach\
+            \ is predicted."
+        records_url:
+          type: string
+        within_lunar_distance:
+          type: integer
+          format: int64
+          description: "Approaches closer than the Moon (1 LD = 384,400 km)."
+      required:
+      - approaches
+      - closest_designation
+      - closest_dist_ld
+      - month
+      - predicted
+      - records_url
+      - within_lunar_distance
+    CloseApproachMonthly:
+      type: object
+      description: "Close approaches within 0.05 au of Earth per TDB calendar month,\
+        \ past and predicted."
+      properties:
+        from:
+          type: string
+          format: date
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CloseApproachMonth"
+        source:
+          type: string
+        to:
+          type: string
+          format: date
+      required:
+      - from
+      - items
+      - source
+      - to
+    CountryRef:
+      type: object
+      description: "A country or territory, named from Unicode CLDR."
+      properties:
+        code:
+          type: string
+          description: ISO 3166-1 alpha-2 code.
+          example: JP
+        name:
+          type: string
+      required:
+      - code
+      - name
+    Exoplanet:
+      type: object
+      description: "A confirmed exoplanet with the NASA Exoplanet Archive's best value\
+        \ for each parameter, which may come from different publications."
+      properties:
+        controversial:
+          type: boolean
+          description: The planet's confirmation has been questioned in the literature.
+        discovery:
+          $ref: "#/components/schemas/ExoplanetDiscovery"
+        distance_ly:
+          type: number
+          format: double
+          description: Distance in light-years (1 pc = 3.26156 ly).
+        distance_pc:
+          type: number
+          format: double
+          description: Distance to the planetary system in parsecs.
+        eccentricity:
+          type: number
+          format: double
+        equilibrium_temp_k:
+          type: number
+          format: double
+          description: Modeled equilibrium temperature in kelvin.
+        host_name:
+          type: string
+          description: Host star name.
+          example: Proxima Cen
+        insolation_earth:
+          type: number
+          format: double
+          description: "Starlight received, relative to what Earth gets from the Sun."
+        mass_earth:
+          type: number
+          format: double
+          description: Best available mass in Earth masses; M sin i for most radial-velocity
+            planets.
+        name:
+          type: string
+          description: Planet name as most commonly used in the literature.
+          example: Proxima Cen b
+        orbital_period_days:
+          type: number
+          format: double
+          description: Orbital period in days.
+        radius_earth:
+          type: number
+          format: double
+          description: "Radius in Earth radii. Measured for transiting planets, mostly\
+            \ estimated otherwise."
+        semi_major_axis_au:
+          type: number
+          format: double
+          description: Semi-major axis in astronomical units.
+        star:
+          $ref: "#/components/schemas/ExoplanetStar"
+      required:
+      - controversial
+      - discovery
+      - host_name
+      - name
+      - star
+    ExoplanetDetail:
+      type: object
+      description: One exoplanet and the archive responses behind its record.
+      properties:
+        lineage:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineageEntry"
+        planet:
+          $ref: "#/components/schemas/Exoplanet"
+      required:
+      - lineage
+      - planet
+    ExoplanetDiscoveries:
+      type: object
+      description: "Confirmed exoplanets per discovery year, split by discovery method."
+      properties:
+        methods:
+          type: array
+          description: "Every method in the years returned, most planets first."
+          items:
+            $ref: "#/components/schemas/ExoplanetDiscoveryMethod"
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+        years:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExoplanetDiscoveryYear"
+      required:
+      - methods
+      - source
+      - years
+    ExoplanetDiscovery:
+      type: object
+      properties:
+        facility:
+          type: string
+          description: "Facility behind the discovery observations, e.g. Transiting\
+            \ Exoplanet Survey Satellite (TESS)."
+        locale:
+          type: string
+          description: "ground, space or multiple locales."
+        method:
+          $ref: "#/components/schemas/Term"
+          description: "Discovery method, e.g. transit or radial_velocity."
+        year:
+          type: integer
+          format: int32
+      required:
+      - method
+    ExoplanetDiscoveryMethod:
+      type: object
+      properties:
+        method:
+          $ref: "#/components/schemas/Term"
+        planets:
+          type: integer
+          format: int64
+      required:
+      - method
+      - planets
+    ExoplanetDiscoveryYear:
+      type: object
+      properties:
+        from_space:
+          type: integer
+          format: int64
+          description: Planets found with space telescopes.
+        methods:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExoplanetMethodCount"
+        planets:
+          type: integer
+          format: int64
+        records_url:
+          type: string
+          description: The planets behind these numbers.
+        year:
+          type: integer
+          format: int32
+      required:
+      - from_space
+      - methods
+      - planets
+      - records_url
+      - year
+    ExoplanetMethodCount:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "Method code, as in methods[].method.code."
+        planets:
+          type: integer
+          format: int64
+      required:
+      - code
+      - planets
+    ExoplanetSizeOrbit:
+      type: object
+      description: "Transiting exoplanets counted on a logarithmic grid of orbital\
+        \ period and radius. Transits measure a planet's radius directly; other methods\
+        \ mostly estimate it, so they are left out."
+      properties:
+        cells:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExoplanetSizeOrbitCell"
+        period_step_dex:
+          type: number
+          format: double
+          description: Width of a period cell in powers of ten.
+          example: 0.25
+        planets:
+          type: integer
+          format: int64
+        radius_step_dex:
+          type: number
+          format: double
+          description: Height of a radius cell in powers of ten.
+          example: 0.125
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+      required:
+      - cells
+      - period_step_dex
+      - planets
+      - radius_step_dex
+      - source
+    ExoplanetSizeOrbitCell:
+      type: object
+      properties:
+        period_max_days:
+          type: number
+          format: double
+          description: "Longest orbital period in the cell, days (exclusive)."
+        period_min_days:
+          type: number
+          format: double
+          description: "Shortest orbital period in the cell, days."
+        planets:
+          type: integer
+          format: int64
+        radius_max_earth:
+          type: number
+          format: double
+          description: "Largest radius in the cell, Earth radii (exclusive)."
+        radius_min_earth:
+          type: number
+          format: double
+          description: "Smallest radius in the cell, Earth radii."
+      required:
+      - period_max_days
+      - period_min_days
+      - planets
+      - radius_max_earth
+      - radius_min_earth
+    ExoplanetStar:
+      type: object
+      description: The host star and its system.
+      properties:
+        mass_sun:
+          type: number
+          format: double
+          description: Mass in solar masses.
+        planet_count:
+          type: integer
+          format: int32
+          description: Confirmed planets in the system.
+        radius_sun:
+          type: number
+          format: double
+          description: Radius in solar radii.
+        star_count:
+          type: integer
+          format: int32
+          description: Stars in the system.
+        temp_k:
+          type: number
+          format: double
+          description: Effective temperature in kelvin.
+    Fact:
+      type: object
+      description: "A fun fact computed from ingested data, or curated with a citation,\
+        \ rendered for Accept-Language."
+      properties:
+        citation_url:
+          type: string
+          description: "Required for curated facts: where the fact is documented."
+        entity:
+          $ref: "#/components/schemas/FactEntity"
+        generated_at:
+          type: string
+          format: date-time
+        id:
+          type: integer
+          format: int64
+        key:
+          type: string
+          description: Template key.
+          example: near-earth.closest_this_week
+        kind:
+          $ref: "#/components/schemas/Term"
+          description: computed or curated.
+        module:
+          type: string
+          description: "The page it belongs to, e.g. home, launches, near-earth, sun\
+            \ or agencies."
+        params:
+          type: object
+          additionalProperties: {}
+          description: "The numbers and names in the text, unformatted, so the data\
+            \ stays inspectable."
+        score:
+          type: number
+          format: double
+          description: How extreme or novel the fact is; higher shows first.
+        sources:
+          type: array
+          description: "The records behind the fact, linked to the API where a route\
+            \ exists."
+          items:
+            $ref: "#/components/schemas/FactReference"
+        text:
+          type: string
+        text_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        valid_until:
+          type: string
+          format: date-time
+      required:
+      - generated_at
+      - id
+      - key
+      - kind
+      - module
+      - params
+      - score
+      - sources
+      - text
+      - text_lang
+    FactDetail:
+      type: object
+      description: "A fact with the source responses behind every record it uses:\
+        \ how we know this."
+      properties:
+        fact:
+          $ref: "#/components/schemas/Fact"
+        lineage:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineageEntry"
+      required:
+      - fact
+      - lineage
+    FactEntity:
+      type: object
+      description: The record the fact is about.
+      properties:
+        key:
+          type: string
+        type:
+          type: string
+      required:
+      - key
+      - type
+    FactReference:
+      type: object
+      properties:
+        entity:
+          type: string
+          example: core.close_approach
+        key:
+          type: string
+        records_url:
+          type: string
+          description: "API route for the record, where one exists."
+      required:
+      - entity
+      - key
+    Facts:
+      type: object
+      description: "The highest-scoring current facts, best first."
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fact"
+      required:
+      - items
+    Flare:
+      type: object
+      description: A solar X-ray flare seen by a GOES satellite in the 0.1–0.8 nm
+        band.
+      properties:
+        begin_at:
+          type: string
+          format: date-time
+        class_letter:
+          type: string
+          description: "A, B, C, M or X: each letter is ten times the one before."
+        end_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+          description: SWPC event id.
+        in_progress:
+          type: boolean
+          description: True while the flare has no end time yet.
+        peak_at:
+          type: string
+          format: date-time
+        peak_flux_wm2:
+          type: number
+          format: double
+          description: Peak X-ray flux in W/m².
+        r_scale:
+          $ref: "#/components/schemas/Term"
+          description: "NOAA radio blackout level, r0 to r5."
+        satellite:
+          type: integer
+          format: int32
+          description: GOES satellite number.
+        xray_class:
+          type: string
+          description: GOES class such as M6.4; absent until SWPC classifies the flare.
+          example: M6.4
+      required:
+      - id
+      - in_progress
+    FlareClassCounts:
+      type: object
+      properties:
+        a:
+          type: integer
+          format: int64
+        b:
+          type: integer
+          format: int64
+        c:
+          type: integer
+          format: int64
+        m:
+          type: integer
+          format: int64
+        x:
+          type: integer
+          format: int64
+      required:
+      - a
+      - b
+      - c
+      - m
+      - x
+    FlareMonth:
+      type: object
+      properties:
+        by_class:
+          $ref: "#/components/schemas/FlareClassCounts"
+          description: Flares per class letter; each letter is ten times stronger
+            than the one before.
+        max_peak_flux_wm2:
+          type: number
+          format: double
+        month:
+          type: string
+          format: date
+          description: First day of the month.
+        records_url:
+          type: string
+        strongest_class:
+          type: string
+          example: M6.4
+        total:
+          type: integer
+          format: int64
+      required:
+      - by_class
+      - month
+      - records_url
+      - total
+    FlaresMonthly:
+      type: object
+      description: Classified GOES X-ray flares per UTC month by class letter.
+      properties:
+        from:
+          type: string
+          format: date
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FlareMonth"
+        source:
+          type: string
+        to:
+          type: string
+          format: date
+      required:
+      - from
+      - items
+      - source
+      - to
+    ImpactRisk:
+      type: object
+      description: "An object on JPL's Sentry impact-monitoring list, with its cumulative\
+        \ impact risk."
+      properties:
+        designation:
+          type: string
+          example: "29075"
+        fullname:
+          type: string
+        h_mag:
+          type: number
+          format: double
+        impact_probability:
+          type: number
+          format: double
+          description: "Cumulative probability of any listed potential impact, from\
+            \ 0 to 1."
+        impact_year_first:
+          type: integer
+          format: int32
+        impact_year_last:
+          type: integer
+          format: int32
+        last_observed:
+          type: string
+          format: date
+        palermo_cumulative:
+          type: number
+          format: double
+          description: "Cumulative Palermo scale: below -2 means no concern; 0 means\
+            \ as risky as the background until the impact date."
+        palermo_max:
+          type: number
+          format: double
+        potential_impacts:
+          type: integer
+          format: int32
+          description: How many potential impacts Sentry lists.
+        removed_at:
+          type: string
+          format: date-time
+          description: When Sentry removed the object from its list; absent while
+            it is monitored.
+        sentry_diameter_km:
+          type: number
+          format: double
+          description: "Sentry's own diameter estimate, weighted by impact probability."
+        size:
+          $ref: "#/components/schemas/SmallBodySize"
+        torino:
+          $ref: "#/components/schemas/Term"
+          description: "Torino category: no_hazard, normal, meriting_attention, threatening\
+            \ or certain_collision."
+        torino_max:
+          type: integer
+          format: int32
+          description: "Highest Torino scale value, 0 to 10."
+        v_inf_kms:
+          type: number
+          format: double
+          description: Velocity relative to a massless Earth.
+      required:
+      - designation
+      - size
+    ImpactRiskDetail:
+      type: object
+      description: A Sentry object with every close approach JPL lists for it and
+        the source lineage.
+      properties:
+        close_approaches:
+          type: array
+          description: "Its close approaches within 0.05 au from 1900 to 2200, soonest\
+            \ first, at most 100."
+          items:
+            $ref: "#/components/schemas/CloseApproach"
+        lineage:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineageEntry"
+        risk:
+          $ref: "#/components/schemas/ImpactRisk"
+      required:
+      - close_approaches
+      - lineage
+      - risk
+    Kp:
+      type: object
+      description: The planetary Kp index per 3-hour interval.
+      properties:
+        from:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/KpReading"
+        to:
+          type: string
+          format: date-time
+      required:
+      - from
+      - items
+      - to
+    KpDaily:
+      type: object
+      description: Planetary Kp per UTC day.
+      properties:
+        from:
+          type: string
+          format: date
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/KpDay"
+        source:
+          type: string
+        to:
+          type: string
+          format: date
+      required:
+      - from
+      - items
+      - source
+      - to
+    KpDay:
+      type: object
+      properties:
+        day:
+          type: string
+          format: date
+        g_scale:
+          $ref: "#/components/schemas/Term"
+          description: NOAA storm level of the day's maximum.
+        intervals:
+          type: integer
+          format: int32
+          description: "3-hour intervals seen that day, at most 8."
+        kp_max:
+          type: number
+          format: double
+        kp_mean:
+          type: number
+          format: double
+        records_url:
+          type: string
+      required:
+      - day
+      - g_scale
+      - intervals
+      - kp_max
+      - kp_mean
+      - records_url
+    KpReading:
+      type: object
+      description: Kp for the 3-hour interval starting at observed_at.
+      properties:
+        g_scale:
+          $ref: "#/components/schemas/Term"
+          description: "NOAA geomagnetic storm level, g0 to g5."
+        kp:
+          type: number
+          format: double
+          description: "Planetary Kp from 0 to 9 in thirds, e.g. 4.67 for 5-."
+        observed_at:
+          type: string
+          format: date-time
+      required:
+      - g_scale
+      - kp
+      - observed_at
+    LaunchBooster:
+      type: object
+      properties:
+        fastest_turnaround_days:
+          type: number
+          format: double
+          description: "The shortest time between two flights of this stage, in days."
+        first_flight_at:
+          type: string
+          format: date-time
+        flights:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int32
+          description: Launch Library 2 launcher id.
+        landing_attempts:
+          type: integer
+          format: int64
+        landings:
+          type: integer
+          format: int64
+        last_flight_at:
+          type: string
+          format: date-time
+        rank:
+          type: integer
+          format: int64
+          description: Rank by flights; stages with the same number of flights share
+            a rank.
+        serial_number:
+          type: string
+          description: The serial painted on the stage.
+          example: B1067
+        status:
+          $ref: "#/components/schemas/Term"
+          description: "active, retired, expended, lost, destroyed, scrapped or converted."
+        vehicle:
+          $ref: "#/components/schemas/LaunchVehicle"
+      required:
+      - flights
+      - id
+      - rank
+      - serial_number
+    LaunchBoosters:
+      type: object
+      description: "Identified first stages ranked by flights, most flown first."
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchBooster"
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+      required:
+      - items
+      - source
+    LaunchCadence:
+      type: object
+      description: "Launches per UTC year for each group, busiest groups first."
+      properties:
+        group_by:
+          type: string
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchCadenceSeries"
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+      required:
+      - group_by
+      - groups
+      - source
+    LaunchCadenceSeries:
+      type: object
+      description: One group's launches by year.
+      properties:
+        group:
+          $ref: "#/components/schemas/LaunchGroup"
+        records_url:
+          type: string
+          description: The launches behind these numbers.
+        total_attempts:
+          type: integer
+          format: int64
+          description: Attempts across the years returned.
+        years:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchCadenceYear"
+      required:
+      - group
+      - records_url
+      - total_attempts
+      - years
+    LaunchCadenceYear:
+      type: object
+      properties:
+        attempts:
+          type: integer
+          format: int64
+          description: "Launches that left the pad, including those in flight."
+        failures:
+          type: integer
+          format: int64
+        partial_failures:
+          type: integer
+          format: int64
+        records_url:
+          type: string
+        scheduled:
+          type: integer
+          format: int64
+          description: Launches planned for the year and not yet flown.
+        successes:
+          type: integer
+          format: int64
+        year:
+          type: integer
+          format: int32
+      required:
+      - attempts
+      - failures
+      - partial_failures
+      - records_url
+      - scheduled
+      - successes
+      - year
+    LaunchDetail:
+      type: object
+      description: "A launch with its window, programs, partners, catalogued objects\
+        \ and source lineage."
+      properties:
+        failure_reason:
+          type: string
+          description: "Why the launch failed, as Launch Library 2 states it, in English."
+        failure_reason_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        id:
+          type: string
+          format: uuid
+        launch_designator:
+          type: string
+        lineage:
+          type: array
+          description: "The source responses behind this record, newest first."
+          items:
+            $ref: "#/components/schemas/LineageEntry"
+        mission:
+          $ref: "#/components/schemas/LaunchMission"
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        net:
+          type: string
+          format: date-time
+        net_precision:
+          $ref: "#/components/schemas/Term"
+        objects:
+          type: array
+          description: "Catalogued objects from this launch (CelesTrak SATCAT), payloads\
+            \ first, at most 100."
+          items:
+            $ref: "#/components/schemas/LaunchObject"
+        objects_total:
+          type: integer
+          format: int64
+          description: How many catalogued objects this launch produced in total.
+        pad:
+          $ref: "#/components/schemas/LaunchPad"
+        partners:
+          type: array
+          description: Customers and partner agencies of the mission.
+          items:
+            $ref: "#/components/schemas/OrganizationRef"
+        programs:
+          type: array
+          description: National programs the provider belongs to.
+          items:
+            $ref: "#/components/schemas/ProgramRef"
+        provider:
+          $ref: "#/components/schemas/OrganizationRef"
+        status:
+          $ref: "#/components/schemas/Term"
+        vehicle:
+          $ref: "#/components/schemas/LaunchVehicle"
+        window_end:
+          type: string
+          format: date-time
+        window_start:
+          type: string
+          format: date-time
+      required:
+      - id
+      - lineage
+      - name
+      - name_lang
+      - objects
+      - objects_total
+      - partners
+      - programs
+      - status
+    LaunchGroup:
+      type: object
+      description: "A launch grouping: all launches, a national program, a provider,\
+        \ a vehicle family or a launch-site country."
+      properties:
+        key:
+          type: string
+          description: "Program slug, provider key, vehicle family or ISO country\
+            \ code."
+          example: japan
+        kind:
+          type: string
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+      required:
+      - key
+      - kind
+      - name
+      - name_lang
+    LaunchMission:
+      type: object
+      description: "The primary mission, its type and target orbit."
+      properties:
+        description:
+          type: string
+          description: "Launch Library 2 description, only in the detail view and\
+            \ only in English."
+        description_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        orbit:
+          $ref: "#/components/schemas/Term"
+        type:
+          $ref: "#/components/schemas/Term"
+      required:
+      - id
+      - name
+      - name_lang
+    LaunchObject:
+      type: object
+      description: A catalogued object from a launch.
+      properties:
+        decay_date:
+          type: string
+          format: date
+        name:
+          type: string
+          description: "SATCAT name, in English."
+        norad_id:
+          type: integer
+          format: int32
+        object_id:
+          type: string
+          description: COSPAR id of the object.
+          example: 2017-062A
+        object_type:
+          $ref: "#/components/schemas/Term"
+          description: "payload, rocket_body, debris or unknown."
+        orbit_state:
+          $ref: "#/components/schemas/Term"
+          description: "earth_orbit, beyond_earth or decayed."
+        owner_code:
+          type: string
+          description: "SATCAT owner code, a country or organization."
+      required:
+      - name
+      - norad_id
+      - object_type
+      - orbit_state
+    LaunchPad:
+      type: object
+      description: "The pad, its site and the country it is in."
+      properties:
+        country:
+          $ref: "#/components/schemas/CountryRef"
+        id:
+          type: integer
+          format: int32
+        latitude:
+          type: number
+          format: double
+        location:
+          type: string
+          description: "The launch site, e.g. Tanegashima Space Center."
+        longitude:
+          type: number
+          format: double
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+      required:
+      - id
+      - name
+      - name_lang
+    LaunchPadActivity:
+      type: object
+      properties:
+        attempts:
+          type: integer
+          format: int64
+        busiest_year:
+          type: integer
+          format: int32
+        busiest_year_attempts:
+          type: integer
+          format: int64
+        failures:
+          type: integer
+          format: int64
+          description: Failures and partial failures.
+        first_launch_at:
+          type: string
+          format: date-time
+        last_launch_at:
+          type: string
+          format: date-time
+        pad:
+          $ref: "#/components/schemas/LaunchPad"
+        records_url:
+          type: string
+        scheduled:
+          type: integer
+          format: int64
+        successes:
+          type: integer
+          format: int64
+      required:
+      - attempts
+      - failures
+      - pad
+      - records_url
+      - scheduled
+      - successes
+    LaunchPads:
+      type: object
+      description: The busiest launch pads by launch attempts.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchPadActivity"
+        source:
+          type: string
+      required:
+      - items
+      - source
+    LaunchReusability:
+      type: object
+      description: "First-stage reuse and landings per UTC year for each group, most\
+        \ stage flights first. Only launches with a recorded first stage that have\
+        \ flown count."
+      properties:
+        group_by:
+          type: string
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchReusabilitySeries"
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+      required:
+      - group_by
+      - groups
+      - source
+    LaunchReusabilitySeries:
+      type: object
+      description: One group's stage reuse and landings by year.
+      properties:
+        group:
+          $ref: "#/components/schemas/LaunchGroup"
+        records_url:
+          type: string
+          description: The launches behind these numbers.
+        total_stage_flights:
+          type: integer
+          format: int64
+          description: Stage flights across the years returned.
+        years:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchReusabilityYear"
+      required:
+      - group
+      - records_url
+      - total_stage_flights
+      - years
+    LaunchReusabilityYear:
+      type: object
+      properties:
+        landing_attempts:
+          type: integer
+          format: int64
+          description: Landing attempts with a known outcome.
+        landing_success_rate:
+          type: number
+          format: double
+          description: landings / landing_attempts.
+        landings:
+          type: integer
+          format: int64
+          description: Successful landings.
+        launches:
+          type: integer
+          format: int64
+          description: Launches with at least one recorded first stage.
+        launches_reflown:
+          type: integer
+          format: int64
+          description: "Of those, launches flying at least one stage that had flown\
+            \ before."
+        records_url:
+          type: string
+        reflown_share:
+          type: number
+          format: double
+          description: launches_reflown / launches.
+        stage_flights:
+          type: integer
+          format: int64
+          description: "First stages flown, counting each Falcon Heavy side booster."
+        stage_reflights:
+          type: integer
+          format: int64
+          description: Stage flights on a stage that had flown before.
+        year:
+          type: integer
+          format: int32
+      required:
+      - landing_attempts
+      - landings
+      - launches
+      - launches_reflown
+      - records_url
+      - stage_flights
+      - stage_reflights
+      - year
+    LaunchStats:
+      type: object
+      description: Launches an organization provided as launch service provider.
+      properties:
+        attempts:
+          type: integer
+          format: int64
+          description: "Launches that left the pad, including those still in flight."
+        failures:
+          type: integer
+          format: int64
+        first_launch_at:
+          type: string
+          format: date-time
+        last_launch_at:
+          type: string
+          format: date-time
+        partial_failures:
+          type: integer
+          format: int64
+        scheduled:
+          type: integer
+          format: int64
+          description: Launches announced but not yet flown.
+        success_rate:
+          type: number
+          format: double
+          description: "Successes over completed attempts, from 0 to 1. Partial failures\
+            \ count as failures."
+        successes:
+          type: integer
+          format: int64
+      required:
+      - attempts
+      - failures
+      - partial_failures
+      - scheduled
+      - successes
+    LaunchSuccess:
+      type: object
+      description: Success rates per group over its whole history and its latest 20
+        completed attempts.
+      properties:
+        group_by:
+          type: string
+          enum:
+          - all
+          - program
+          - provider
+          - vehicle_family
+          - site_country
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchSuccessGroup"
+        source:
+          type: string
+      required:
+      - group_by
+      - groups
+      - source
+    LaunchSuccessGroup:
+      type: object
+      description: One group's record. Partial failures count as failures.
+      properties:
+        attempts:
+          type: integer
+          format: int64
+          description: Completed attempts with a known outcome.
+        current_streak:
+          type: integer
+          format: int32
+          description: Consecutive successes since the latest failure.
+        group:
+          $ref: "#/components/schemas/LaunchGroup"
+        longest_streak:
+          type: integer
+          format: int32
+        recent_attempts:
+          type: integer
+          format: int32
+          description: Completed attempts in the latest window of up to 20.
+        recent_success_rate:
+          type: number
+          format: double
+        recent_successes:
+          type: integer
+          format: int32
+        records_url:
+          type: string
+        success_rate:
+          type: number
+          format: double
+        successes:
+          type: integer
+          format: int64
+        years:
+          type: array
+          description: The record as it stood at the end of each year with a completed
+            attempt.
+          items:
+            $ref: "#/components/schemas/LaunchSuccessYear"
+      required:
+      - attempts
+      - current_streak
+      - group
+      - longest_streak
+      - recent_attempts
+      - recent_successes
+      - records_url
+      - successes
+      - years
+    LaunchSuccessYear:
+      type: object
+      properties:
+        attempts_to_date:
+          type: integer
+          format: int64
+        recent_success_rate:
+          type: number
+          format: double
+          description: Success rate over the 20 attempts ending with that year's last.
+        success_rate_to_date:
+          type: number
+          format: double
+        successes_to_date:
+          type: integer
+          format: int64
+        year:
+          type: integer
+          format: int32
+      required:
+      - attempts_to_date
+      - successes_to_date
+      - year
+    LaunchSummary:
+      type: object
+      description: "A launch with its provider, vehicle, pad and mission."
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Launch Library 2 launch id.
+        launch_designator:
+          type: string
+          description: COSPAR international designator of the launch (YYYY-NNN).
+          example: 2017-062
+        mission:
+          $ref: "#/components/schemas/LaunchMission"
+        name:
+          type: string
+          description: "Launch Library 2 name, usually vehicle | mission."
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        net:
+          type: string
+          format: date-time
+          description: "No earlier than: the launch time, or the planned one for upcoming\
+            \ launches."
+        net_precision:
+          $ref: "#/components/schemas/Term"
+          description: "How precise net is, from to the second to a decade."
+        pad:
+          $ref: "#/components/schemas/LaunchPad"
+        provider:
+          $ref: "#/components/schemas/OrganizationRef"
+          description: "The launch service provider, which is not necessarily the\
+            \ customer or agency."
+        status:
+          $ref: "#/components/schemas/Term"
+          description: "success, failure, partial_failure, in_flight, upcoming or\
+            \ unknown."
+        vehicle:
+          $ref: "#/components/schemas/LaunchVehicle"
+      required:
+      - id
+      - name
+      - name_lang
+      - status
+    LaunchVehicle:
+      type: object
+      description: "The launcher configuration, e.g. H-IIA 202."
+      properties:
+        family:
+          type: string
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        variant:
+          type: string
+      required:
+      - id
+      - name
+      - name_lang
+    LineageEntry:
+      type: object
+      description: One source response that produced or changed this record.
+      properties:
+        content_hash:
+          type: string
+          description: SHA-256 of the canonical JSON body as landed.
+        fetched_at:
+          type: string
+          format: date-time
+        source:
+          type: string
+          description: "Source slug, as in /api/v1/meta/sources."
+        url:
+          type: string
+          description: "The request URL, or the reference file name for curated data."
+      required:
+      - content_hash
+      - fetched_at
+      - source
+      - url
+    ObjectCounts:
+      type: object
+      properties:
+        debris:
+          type: integer
+          format: int64
+        payloads:
+          type: integer
+          format: int64
+        rocket_bodies:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+        unknown:
+          type: integer
+          format: int64
+      required:
+      - debris
+      - payloads
+      - rocket_bodies
+      - total
+      - unknown
+    ObjectsByCountry:
+      type: object
+      properties:
+        country:
+          $ref: "#/components/schemas/CountryRef"
+        counts:
+          $ref: "#/components/schemas/ObjectCounts"
+        shared:
+          type: integer
+          format: int64
+          description: Objects of joint owners counted here and for other countries
+            too.
+      required:
+      - country
+      - counts
+      - shared
+    ObjectsByOrganization:
+      type: object
+      properties:
+        counts:
+          $ref: "#/components/schemas/ObjectCounts"
+        label:
+          type: string
+          description: "CelesTrak's label for the owner code, in English."
+        label_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        organization:
+          $ref: "#/components/schemas/OrganizationRef"
+        owner_code:
+          type: string
+          description: SATCAT owner code.
+          example: ESA
+      required:
+      - counts
+      - label
+      - label_lang
+      - owner_code
+    ObjectsInOrbit:
+      type: object
+      description: "Catalogued objects by owner country and by owning organization,\
+        \ from the CelesTrak SATCAT."
+      properties:
+        countries:
+          type: array
+          description: Objects per owner country. A jointly owned object counts for
+            each member country.
+          items:
+            $ref: "#/components/schemas/ObjectsByCountry"
+        orbit_state:
+          $ref: "#/components/schemas/Term"
+          description: "earth_orbit, beyond_earth or decayed."
+        organizations:
+          type: array
+          description: "Objects owned by an organization code such as ESA, which has\
+            \ no single country."
+          items:
+            $ref: "#/components/schemas/ObjectsByOrganization"
+        source:
+          type: string
+        totals:
+          $ref: "#/components/schemas/ObjectCounts"
+          description: "Every object in this state, each counted once."
+      required:
+      - countries
+      - orbit_state
+      - organizations
+      - source
+      - totals
+    OrganizationRef:
+      type: object
+      description: "An organization: an agency, company, armed force, university or\
+        \ international body."
+      properties:
+        key:
+          type: string
+          description: "Curated slug, or ll2-<Launch Library 2 agency id>; use it\
+            \ with /api/v1/agencies/{key}."
+          example: jaxa
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+        type:
+          $ref: "#/components/schemas/Term"
+          description: "agency, company, military, academic or international."
+      required:
+      - key
+      - name
+      - name_lang
+    Overview:
+      type: object
+      description: "The home ticker: the next launch, this year's launches, current\
+        \ Kp, this week's closest approach and objects in Earth orbit."
+      properties:
+        as_of:
+          type: string
+          format: date-time
+          description: Start of the current UTC hour; everything is computed as of
+            this instant.
+        closest_approach_this_week:
+          $ref: "#/components/schemas/CloseApproach"
+          description: The closest approach in the seven days from as_of.
+        kp:
+          $ref: "#/components/schemas/KpReading"
+        launches_this_year:
+          $ref: "#/components/schemas/OverviewLaunchYear"
+        next_launch:
+          $ref: "#/components/schemas/LaunchSummary"
+        objects_in_earth_orbit:
+          $ref: "#/components/schemas/OverviewOrbitCount"
+        sources:
+          type: array
+          description: Source slugs behind these numbers.
+          items:
+            type: string
+      required:
+      - as_of
+      - launches_this_year
+      - objects_in_earth_orbit
+      - sources
+    OverviewLaunchYear:
+      type: object
+      description: Launch attempts so far this UTC year against the same span of last
+        year.
+      properties:
+        attempts:
+          type: integer
+          format: int64
+        records_url:
+          type: string
+        same_period_last_year:
+          type: integer
+          format: int64
+        year:
+          type: integer
+          format: int32
+      required:
+      - attempts
+      - records_url
+      - same_period_last_year
+      - year
+    OverviewOrbitCount:
+      type: object
+      properties:
+        payloads:
+          type: integer
+          format: int64
+        records_url:
+          type: string
+        total:
+          type: integer
+          format: int64
+      required:
+      - payloads
+      - records_url
+      - total
+    PageAgencySummary:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AgencySummary"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageCloseApproach:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CloseApproach"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageExoplanet:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Exoplanet"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageFlare:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flare"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageImpactRisk:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImpactRisk"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageLaunchSummary:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/LaunchSummary"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    PageSourceView:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SourceView"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        total_items:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int32
+      required:
+      - items
+      - page
+      - size
+      - total_items
+      - total_pages
+    Problem:
+      type: object
+      description: RFC 9457 Problem Details. title and detail are localized by Accept-Language.
+      properties:
+        code:
+          type: string
+          enum:
+          - invalid_parameter
+          - not_found
+          - method_not_allowed
+          - not_acceptable
+          - internal_error
+        detail:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Why the value was rejected, localized."
+              parameter:
+                type: string
+                description: The query or path parameter name.
+            required:
+            - message
+            - parameter
+        instance:
+          type: string
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          description: Omitted when about:blank.
+      required:
+      - code
+      - status
+      - title
+    ProgramRef:
+      type: object
+      description: "A national space program grouping its agencies, companies and\
+        \ armed forces."
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+          example: japan
+      required:
+      - name
+      - slug
+    SmallBodySize:
+      type: object
+      description: "Measured diameter where known, otherwise a range estimated from\
+        \ H for an assumed geometric albedo between 0.05 (dark) and 0.25 (bright)."
+      properties:
+        assumed_albedo_max:
+          type: number
+          format: double
+        assumed_albedo_min:
+          type: number
+          format: double
+        estimated_max_km:
+          type: number
+          format: double
+          description: Diameter if the surface is dark (albedo 0.05).
+        estimated_min_km:
+          type: number
+          format: double
+          description: Diameter if the surface is bright (albedo 0.25).
+        measured_km:
+          type: number
+          format: double
+        measured_sigma_km:
+          type: number
+          format: double
+      required:
+      - assumed_albedo_max
+      - assumed_albedo_min
+    SolarWind:
+      type: object
+      description: "Real-time solar wind at the Sun–Earth L1 point, by minute or averaged\
+        \ by hour."
+      properties:
+        from:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SolarWindPoint"
+        resolution:
+          type: string
+          enum:
+          - minute
+          - hour
+        to:
+          type: string
+          format: date-time
+      required:
+      - from
+      - items
+      - resolution
+      - to
+    SolarWindPoint:
+      type: object
+      description: "One minute, or the mean over one UTC hour."
+      properties:
+        bt_nt:
+          type: number
+          format: double
+          description: Total magnetic field strength.
+        bz_gsm_nt:
+          type: number
+          format: double
+          description: North-south field component (GSM); sustained negative values
+            drive storms.
+        bz_gsm_nt_min:
+          type: number
+          format: double
+          description: "Hourly only: the most southward minute."
+        density_cm3:
+          type: number
+          format: double
+          description: Proton density.
+        observed_at:
+          type: string
+          format: date-time
+        samples:
+          type: integer
+          format: int32
+          description: "Hourly only: minutes averaged."
+        speed_kms:
+          type: number
+          format: double
+          description: Bulk speed.
+        speed_kms_max:
+          type: number
+          format: double
+          description: "Hourly only: the fastest minute."
+        temperature_k:
+          type: number
+          format: double
+      required:
+      - observed_at
+    SourceQuality:
+      type: object
+      description: Open data-quality problems attributed to this source.
+      properties:
+        blocking:
+          type: integer
+          format: int64
+          description: Problems that fail the strict data-quality check.
+        level:
+          $ref: "#/components/schemas/Term"
+          description: "ok, warning or blocking."
+        warnings:
+          type: integer
+          format: int64
+          description: Gaps such as names without a Japanese translation.
+      required:
+      - blocking
+      - level
+      - warnings
+    SourceStatus:
+      type: object
+      description: The latest ingestion run and fetch for this source.
+      properties:
+        freshness:
+          $ref: "#/components/schemas/Term"
+          description: "fresh, stale (no fetch within twice the interval), unknown\
+            \ or on_demand."
+        last_fetched_at:
+          type: string
+          format: date-time
+          description: "The most recent request to the source, including 304 Not Modified."
+        last_run:
+          $ref: "#/components/schemas/Term"
+          description: Status of the most recent ingestion run.
+        last_run_finished_at:
+          type: string
+          format: date-time
+        last_run_started_at:
+          type: string
+          format: date-time
+        last_succeeded_at:
+          type: string
+          format: date-time
+      required:
+      - freshness
+    SourceView:
+      type: object
+      description: "A data source with its credit, license, update cadence, freshness\
+        \ and data-quality status."
+      properties:
+        cadence:
+          type: string
+          description: How often Hoshizora refreshes the source.
+        credit:
+          type: string
+          description: Credit text to show wherever this source's data appears.
+        description:
+          type: string
+          description: What the source provides.
+        homepage_url:
+          type: string
+        license:
+          type: string
+          description: "The source's license or usage terms, summarized."
+        license_url:
+          type: string
+        name:
+          type: string
+        quality:
+          $ref: "#/components/schemas/SourceQuality"
+        slug:
+          type: string
+          description: Stable source identifier.
+          example: swpc
+        status:
+          $ref: "#/components/schemas/SourceStatus"
+        update_interval_seconds:
+          type: integer
+          format: int64
+          description: Planned refresh interval; null when the source changes only
+            on demand.
+      required:
+      - cadence
+      - credit
+      - description
+      - homepage_url
+      - license
+      - name
+      - quality
+      - slug
+      - status
+    SpaceWeatherNow:
+      type: object
+      description: "Current space weather: the latest Kp, solar wind and the strongest\
+        \ flare of the past day."
+      properties:
+        as_of:
+          type: string
+          format: date-time
+          description: Conditions are taken at or before this hour boundary.
+        flares_last_day:
+          type: integer
+          format: int64
+          description: Flares in the 24 hours before as_of.
+        kp:
+          $ref: "#/components/schemas/KpReading"
+        solar_wind:
+          $ref: "#/components/schemas/SolarWindPoint"
+        strongest_flare_last_day:
+          $ref: "#/components/schemas/Flare"
+          description: The strongest classified flare in the 24 hours before as_of.
+      required:
+      - as_of
+      - flares_last_day
+    Term:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        name_lang:
+          type: string
+          enum:
+          - en
+          - ja
+      required:
+      - code
+      - name
+      - name_lang
+    TimeUncertainty:
+      type: object
+      description: 3-sigma uncertainty in the approach time.
+      properties:
+        less_than:
+          type: boolean
+          description: "True when JPL states only an upper bound, e.g. under one minute."
+        minutes:
+          type: number
+          format: double
+      required:
+      - less_than
+      - minutes

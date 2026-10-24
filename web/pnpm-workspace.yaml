@@ -1,0 +1,5 @@
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+peerDependencyRules:
+  allowedVersions:
+    openapi-typescript>typescript: '6'

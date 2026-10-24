@@ -1,0 +1,233 @@
+- key: near-earth.closest_this_week
+  module: near-earth
+  min_score: 0.3
+  valid_for: P7D
+  scoring: {base: 0.5, half_life_days: 14}
+  query: |
+    WITH week AS (
+        SELECT e.designation, e.body, e.approach_tdb, e.approach_utc, e.dist_km,
+               CASE WHEN e.designation ~ '^[0-9]+$' THEN trim(e.fullname) ELSE e.designation END AS display_name
+        FROM mart.close_approach_enriched e
+        WHERE e.body = 'Earth'
+          AND e.approach_utc >= %(as_of)s::timestamptz
+          AND e.approach_utc < %(as_of)s::timestamptz + interval '7 days'
+          AND e.designation !~ '/'
+          AND e.designation !~ '^[0-9]+[PCDXI]$'
+        ORDER BY e.dist_km, e.approach_utc
+        LIMIT 1
+    )
+    SELECT 'small_body' AS entity_type, w.designation AS entity_key, w.display_name, w.dist_km,
+           w.approach_utc, w.approach_utc AS event_at, w.approach_utc AS valid_until,
+           (
+               SELECT avg((h.dist_km > w.dist_km)::int)
+               FROM mart.close_approach_enriched h
+               WHERE h.body = 'Earth'
+           ) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.close_approach',
+               'key', concat_ws('|', w.designation, w.body, w.approach_tdb)
+           )) AS source_refs
+    FROM week w
+  params:
+    designation: {type: text, from: display_name}
+    distance: {type: number, from: dist_km, humanize: earth_moon_distances, significant: 2}
+    date: {type: date, from: approach_utc}
+  text:
+    en: "This week's closest asteroid flyby: {designation} passes Earth at {distance}× the Earth–Moon distance on {date, date}."
+    ja: "今週地球にもっとも近づく小惑星は{designation}で、{date, date}に地球と月の距離の{distance}倍まで接近します。"
+  examples:
+    - params: {designation: "2026 TS", distance: 0.3, date: "2026-10-20"}
+      en: "This week's closest asteroid flyby: 2026 TS passes Earth at 0.3× the Earth–Moon distance on October 20, 2026."
+      ja: "今週地球にもっとも近づく小惑星は2026 TSで、2026年10月20日に地球と月の距離の0.3倍まで接近します。"
+
+- key: near-earth.inside_moon_orbit_year
+  module: near-earth
+  min_score: 0.4
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH cut AS (
+        SELECT %(as_of)s::timestamptz - date_trunc('year', %(as_of)s::timestamptz) AS elapsed
+    ),
+    ytd AS (
+        SELECT extract(year FROM e.approach_utc) AS year, count(*) AS flybys,
+               (array_agg(
+                   concat_ws('|', e.designation, e.body, e.approach_tdb) ORDER BY e.dist_km
+               ))[1] AS closest
+        FROM mart.close_approach_enriched e, cut
+        WHERE e.body = 'Earth'
+          AND e.dist_ld < 1
+          AND e.approach_utc < %(as_of)s::timestamptz
+          AND e.approach_utc - date_trunc('year', e.approach_utc) < cut.elapsed
+          AND e.designation !~ '/'
+          AND e.designation !~ '^[0-9]+[PCDXI]$'
+        GROUP BY 1
+    ),
+    ranked AS (
+        SELECT year, flybys, closest, percent_rank() OVER (ORDER BY flybys) AS percentile
+        FROM ytd
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, year, flybys, percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.close_approach', 'key', closest)
+           ) AS source_refs
+    FROM ranked
+    WHERE year = extract(year FROM %(as_of)s::timestamptz) AND flybys >= 2
+  params:
+    flybys: {type: integer, from: flybys}
+    year: {type: year, from: year}
+  text:
+    en: "{flybys, number, integer} asteroids have passed closer than the Moon so far in {year}."
+    ja: "{year}年はこれまでに、{flybys, number, integer}個の小惑星が月より近くを通過しました。"
+  examples:
+    - params: {flybys: 130, year: "2026"}
+      en: "130 asteroids have passed closer than the Moon so far in 2026."
+      ja: "2026年はこれまでに、130個の小惑星が月より近くを通過しました。"
+
+- key: near-earth.largest_next_year
+  module: near-earth
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    WITH upcoming AS (
+        SELECT e.designation, e.body, e.approach_tdb, e.approach_utc, e.h_mag,
+               e.diameter_min_km, e.diameter_max_km, CASE WHEN e.designation ~ '^[0-9]+$' THEN trim(e.fullname) ELSE e.designation END AS display_name
+        FROM mart.close_approach_enriched e
+        WHERE e.body = 'Earth'
+          AND e.approach_utc >= %(as_of)s::timestamptz
+          AND e.approach_utc < %(as_of)s::timestamptz + interval '1 year'
+          AND e.h_mag IS NOT NULL
+          AND e.diameter_min_km IS NOT NULL
+          AND e.designation !~ '/'
+          AND e.designation !~ '^[0-9]+[PCDXI]$'
+        ORDER BY e.h_mag, e.approach_utc
+        LIMIT 1
+    )
+    SELECT 'small_body' AS entity_type, u.designation AS entity_key, u.display_name,
+           u.approach_utc, u.diameter_min_km * 1000 AS size_min_m,
+           u.diameter_max_km * 1000 AS size_max_m, u.diameter_max_km,
+           (
+               SELECT avg((h.h_mag > u.h_mag)::int)
+               FROM mart.close_approach_enriched h
+               WHERE h.body = 'Earth' AND h.h_mag IS NOT NULL
+           ) AS percentile,
+           jsonb_build_array(
+               jsonb_build_object(
+                   'entity', 'core.close_approach',
+                   'key', concat_ws('|', u.designation, u.body, u.approach_tdb)
+               ),
+               jsonb_build_object('entity', 'core.small_body', 'key', u.designation)
+           ) AS source_refs
+    FROM upcoming u
+  params:
+    designation: {type: text, from: display_name}
+    date: {type: date, from: approach_utc}
+    size_min: {type: number, from: size_min_m, significant: 2}
+    size_max: {type: number, from: size_max_m, significant: 2}
+    skytree: {type: number, from: diameter_max_km, humanize: skytree_heights, decimals: 1}
+  text:
+    en: "The largest asteroid passing Earth in the next 12 months is {designation} on {date, date}, an estimated {size_min}–{size_max} m wide from its brightness: up to {skytree}× the height of Tokyo Skytree."
+    ja: "今後1年間に地球へ接近する最大の小惑星は{date, date}に通過する{designation}です。明るさから推定した直径は{size_min}〜{size_max}mで、最大で東京スカイツリーの高さの{skytree}倍です。"
+  examples:
+    - params: {designation: "2026 TX", date: "2027-04-02", size_min: 670, size_max: 1500, skytree: 2.4}
+      en: "The largest asteroid passing Earth in the next 12 months is 2026 TX on April 2, 2027, an estimated 670–1,500 m wide from its brightness: up to 2.4× the height of Tokyo Skytree."
+      ja: "今後1年間に地球へ接近する最大の小惑星は2027年4月2日に通過する2026 TXです。明るさから推定した直径は670〜1,500mで、最大で東京スカイツリーの高さの2.4倍です。"
+
+- key: near-earth.fastest_next_year
+  module: near-earth
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    WITH upcoming AS (
+        SELECT e.designation, e.body, e.approach_tdb, e.approach_utc, e.v_rel_kms,
+               CASE WHEN e.designation ~ '^[0-9]+$' THEN trim(e.fullname) ELSE e.designation END AS display_name
+        FROM mart.close_approach_enriched e
+        WHERE e.body = 'Earth'
+          AND e.approach_utc >= %(as_of)s::timestamptz
+          AND e.approach_utc < %(as_of)s::timestamptz + interval '1 year'
+          AND e.v_rel_kms IS NOT NULL
+          AND e.designation !~ '/'
+          AND e.designation !~ '^[0-9]+[PCDXI]$'
+        ORDER BY e.v_rel_kms DESC, e.approach_utc
+        LIMIT 1
+    )
+    SELECT 'small_body' AS entity_type, u.designation AS entity_key, u.display_name,
+           u.approach_utc, u.v_rel_kms,
+           (
+               SELECT avg((h.v_rel_kms < u.v_rel_kms)::int)
+               FROM mart.close_approach_enriched h
+               WHERE h.body = 'Earth' AND h.v_rel_kms IS NOT NULL
+           ) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.close_approach',
+               'key', concat_ws('|', u.designation, u.body, u.approach_tdb)
+           )) AS source_refs
+    FROM upcoming u
+  params:
+    designation: {type: text, from: display_name}
+    date: {type: date, from: approach_utc}
+    speed: {type: number, from: v_rel_kms, decimals: 1}
+    times: {type: integer, from: v_rel_kms, humanize: shinkansen_speeds}
+  text:
+    en: "{designation} will pass Earth on {date, date} at {speed} km/s, about {times, number, integer}× the top speed of an E5 Shinkansen."
+    ja: "{date, date}に地球へ接近する{designation}の速さは秒速{speed}kmで、新幹線E5系の最高速度の約{times, number, integer}倍です。"
+  examples:
+    - params: {designation: "2026 UF", date: "2027-01-15", speed: 30.5, times: 343}
+      en: "2026 UF will pass Earth on January 15, 2027 at 30.5 km/s, about 343× the top speed of an E5 Shinkansen."
+      ja: "2027年1月15日に地球へ接近する2026 UFの速さは秒速30.5kmで、新幹線E5系の最高速度の約343倍です。"
+
+- key: near-earth.closest_this_century
+  module: near-earth
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'small_body' AS entity_type, e.designation AS entity_key,
+           CASE WHEN e.designation ~ '^[0-9]+$' THEN trim(e.fullname) ELSE e.designation END AS display_name, e.dist_km, e.approach_utc, true AS is_record,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.close_approach',
+               'key', concat_ws('|', e.designation, e.body, e.approach_tdb)
+           )) AS source_refs
+    FROM mart.close_approach_enriched e
+    WHERE e.body = 'Earth'
+      AND e.approach_utc >= '2001-01-01T00:00:00Z'
+      AND e.approach_utc < %(as_of)s::timestamptz
+      AND coalesce(e.dist_min_km, e.dist_km) > 6471
+      AND e.designation !~ '/'
+      AND e.designation !~ '^[0-9]+[PCDXI]$'
+    ORDER BY e.dist_km
+    LIMIT 1
+  params:
+    designation: {type: text, from: display_name}
+    distance: {type: integer, from: dist_km}
+    date: {type: date, from: approach_utc}
+    diameters: {type: number, from: dist_km, humanize: earth_diameters, decimals: 2}
+  text:
+    en: "The closest known asteroid flyby this century: {designation} passed {distance, number, integer} km from Earth's center on {date, date}, just {diameters}× Earth's diameter."
+    ja: "今世紀に記録された小惑星の最接近は{date, date}の{designation}で、地球の中心からわずか{distance, number, integer}km、地球の直径の{diameters}倍の距離でした。"
+  examples:
+    - params: {designation: "2020 QG", distance: 9299, date: "2020-08-16", diameters: 0.73}
+      en: "The closest known asteroid flyby this century: 2020 QG passed 9,299 km from Earth's center on August 16, 2020, just 0.73× Earth's diameter."
+      ja: "今世紀に記録された小惑星の最接近は2020年8月16日の2020 QGで、地球の中心からわずか9,299km、地球の直径の0.73倍の距離でした。"
+
+- key: near-earth.sentry_watchlist
+  module: near-earth
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS objects,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.impact_risk',
+               'key', (array_agg(r.designation ORDER BY r.palermo_cumulative DESC NULLS LAST))[1]
+           )) AS source_refs
+    FROM core.impact_risk r
+    WHERE r.removed_at IS NULL
+    HAVING count(*) >= 2
+  params:
+    objects: {type: integer, from: objects}
+  text:
+    en: "NASA's Sentry system is tracking {objects, number, integer} asteroids with a small but nonzero chance of hitting Earth within the next 100 years."
+    ja: "NASAのSentryシステムは、今後100年以内に地球へ衝突する可能性がわずかでもある小惑星を{objects, number, integer}個監視しています。"
+  examples:
+    - params: {objects: 2221}
+      en: "NASA's Sentry system is tracking 2,221 asteroids with a small but nonzero chance of hitting Earth within the next 100 years."
+      ja: "NASAのSentryシステムは、今後100年以内に地球へ衝突する可能性がわずかでもある小惑星を2,221個監視しています。"

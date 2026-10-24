@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:hoshizora}
+    username: hoshizora_api
+    password: ${HOSHIZORA_API_DB_PASSWORD:hoshizora_api_dev}
+
+management:
+  endpoint:
+    health:
+      show-details: always

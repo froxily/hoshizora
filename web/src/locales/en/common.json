@@ -1,0 +1,406 @@
+{
+  "brand": "Hoshizora",
+  "meta": {
+    "title": "Hoshizora · Space data analytics",
+    "pageTitle": "{{page}} · Hoshizora",
+    "description": "Launches, near-Earth asteroids and space weather from agencies worldwide, gathered into one clean dataset where every number traces back to its source."
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "mainNav": "Main",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "language": {
+    "switchTo": "Read this page in {{language}}",
+    "name": {
+      "en": "English",
+      "ja": "Japanese"
+    },
+    "endonym": {
+      "en": "English",
+      "ja": "日本語"
+    }
+  },
+  "motion": {
+    "reduce": "Reduce motion"
+  },
+  "nav": {
+    "home": "Home",
+    "launches": "Launches",
+    "nearEarth": "Near-Earth",
+    "sun": "Sun",
+    "exoplanets": "Exoplanets",
+    "agencies": "Agencies",
+    "sources": "Sources"
+  },
+  "dataLink": {
+    "live": "Data link live",
+    "connecting": "Connecting to the data link",
+    "waking": "Waking up the data link",
+    "wakingDetail": "The data service rests when nobody is visiting. It usually wakes within a minute.",
+    "offline": "Data link offline",
+    "offlineDetail": "Still retrying every 30 seconds. Everything else on the page keeps working.",
+    "elapsed": "{{time}} elapsed",
+    "waiting": "Waiting for data",
+    "retry": "Try again now",
+    "failed": "This data could not be loaded.",
+    "failedDetail": "The data service answered with an error. Try again, or come back in a few minutes."
+  },
+  "source": {
+    "label": "Source",
+    "asOf": "As of",
+    "show": "Where this number comes from",
+    "names": {
+      "launch-library": "Launch Library 2 (The Space Devs)",
+      "celestrak": "CelesTrak",
+      "jpl": "NASA/JPL CNEOS",
+      "swpc": "NOAA SWPC",
+      "exoplanet-archive": "NASA Exoplanet Archive"
+    }
+  },
+  "footer": {
+    "data": "Data from Launch Library 2 (The Space Devs), CelesTrak, NASA/JPL CNEOS, NOAA SWPC and the NASA Exoplanet Archive.",
+    "trace": "Every number links back to the records behind it.",
+    "credits": "Sources and credits"
+  },
+  "home": {
+    "eyebrow": "Space data analytics",
+    "title": "Every number has a source.",
+    "lede": "Hoshizora gathers launch, orbit, asteroid and space-weather data from agencies around the world and turns it into facts you can trace back to the original records.",
+    "ticker": {
+      "title": "Right now",
+      "nextLaunch": "Next launch",
+      "noLaunch": "No upcoming launch on record",
+      "kp": "Geomagnetic activity",
+      "noKp": "No recent reading",
+      "closest": "Closest asteroid this week",
+      "noClosest": "No close approach this week",
+      "launchesYear": "Launches in {{year}}",
+      "lastYear": "{{count}} by this date last year",
+      "sizeRange": "About {{min}}–{{max}} m across"
+    },
+    "facts": {
+      "title": "Top facts",
+      "lede": "The most unusual numbers in the data right now, each one computed from source records."
+    }
+  },
+  "countdown": {
+    "before": "T−",
+    "after": "T+",
+    "days": "{{days}}d"
+  },
+  "units": {
+    "ld": "LD",
+    "ldLong": "Earth–Moon distances",
+    "kp": "Kp",
+    "km": "km",
+    "kms": "km/s",
+    "m": "m",
+    "days": "days",
+    "ly": "ly"
+  },
+  "fact": {
+    "howWeKnow": "How we know this",
+    "module": {
+      "launches": "Launches",
+      "near-earth": "Near-Earth",
+      "space-weather": "Sun",
+      "orbits": "Orbits",
+      "agencies": "Agencies",
+      "sources": "Sources",
+      "exoplanets": "Exoplanets"
+    }
+  },
+  "pages": {
+    "launches": {
+      "title": "Launches",
+      "lede": "Every orbital launch attempt on record: who flies, how often, and how often it works."
+    },
+    "nearEarth": {
+      "title": "Near-Earth objects",
+      "lede": "Asteroids and comets passing close to Earth, how big they might be, and the few with a tiny chance of impact."
+    },
+    "sun": {
+      "title": "The Sun and space weather",
+      "lede": "Solar flares, the solar wind and the geomagnetic storms that light up the aurora."
+    },
+    "exoplanets": {
+      "title": "Exoplanets",
+      "lede": "Planets around other stars: how they were found, how big they are, and how close the nearest ones lie."
+    },
+    "agencies": {
+      "title": "Agencies",
+      "lede": "The space agencies, companies and armed forces behind the world's launches."
+    },
+    "sources": {
+      "title": "Sources and credits",
+      "lede": "Where every number comes from, under which license, and how fresh it is."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "Nothing is orbiting at this address.",
+    "home": "Back to home"
+  },
+  "crash": {
+    "title": "Something went wrong on this page.",
+    "body": "The rest of Hoshizora is fine. Reload the page, or head back home.",
+    "reload": "Reload the page",
+    "home": "Back to home"
+  },
+  "menu": {
+    "open": "Menu",
+    "close": "Close"
+  },
+  "clock": {
+    "label": "Mission clock",
+    "utc": "UTC",
+    "jst": "JST"
+  },
+  "scale": {
+    "earth": "Earth",
+    "moon": "Moon",
+    "skytree": "Tokyo Skytree",
+    "shinkansen": "E5 Shinkansen",
+    "fuji": "Mt. Fuji",
+    "surface": "Earth's surface",
+    "center": "Earth's center",
+    "storm": "Storm (G1)",
+    "today": "Today"
+  },
+  "chart": {
+    "viewAs": "Show as",
+    "chart": "Chart",
+    "table": "Table"
+  },
+  "common": {
+    "year": "Year",
+    "month": "Month",
+    "date": "Date",
+    "name": "Name",
+    "attempts": "Launch attempts",
+    "successes": "Successes",
+    "failures": "Failures",
+    "successRate": "Success rate",
+    "recentRate": "Last 20 launches",
+    "world": "World",
+    "other": "Other",
+    "none": "No records yet.",
+    "status": "Status",
+    "provider": "Provider",
+    "location": "Launch site",
+    "country": "Country",
+    "founded": "Founded",
+    "type": "Type",
+    "all": "All",
+    "since": "Since {{year}}",
+    "lessThanOne": "<1%",
+    "seeRecords": "Open the records"
+  },
+  "launches": {
+    "cadence": {
+      "title": "Launches per year by national program",
+      "lede": "Every orbital launch attempt since 1957, grouped by the national program behind it.",
+      "description": "Launch attempts per year for the six busiest programs, with the world total as a gray line. Complete years only."
+    },
+    "success": {
+      "title": "How often launches succeed",
+      "lede": "Share of completed launches that reached orbit, over all time and over each program's last 20 launches.",
+      "description": "Bars show the all-time success rate; the marker shows the rate over the last 20 launches."
+    },
+    "pads": {
+      "title": "Busiest launch pads",
+      "lede": "Pads ranked by the launch attempts on record.",
+      "description": "Launch attempts from the ten busiest pads."
+    },
+    "upcoming": "Next launches",
+    "recent": "Recent launches",
+    "facts": "Launch facts",
+    "mission": "Mission",
+    "net": "Launch time (no earlier than)",
+    "schedule": "Launch schedule",
+    "reusability": {
+      "title": "Flying the same booster again",
+      "lede": "Launches whose first stage had flown before, and how often boosters landed, year by year.",
+      "description": "Launches with a recorded first stage per year, split by whether the booster was new or had flown before. The line shows the share of landing attempts that succeeded. Complete years only.",
+      "reflown": "Booster flown before",
+      "fresh": "New booster",
+      "landingRate": "Landing success rate",
+      "launches": "Launches",
+      "landings": "Landings"
+    },
+    "boosters": {
+      "title": "Most flown boosters",
+      "lede": "Individual first stages ranked by how many times they have flown.",
+      "description": "Flights of the ten most flown first stages. Stages whose serial was never published are left out.",
+      "serial": "Booster",
+      "vehicle": "Rocket",
+      "flights": "Flights",
+      "landings": "Landings",
+      "firstFlight": "First flight"
+    }
+  },
+  "nearEarth": {
+    "monthly": {
+      "title": "Close approaches per month",
+      "lede": "Asteroids and comets passing within 0.05 au (about 19.5 Earth–Moon distances) of Earth, from a year ago to a year ahead.",
+      "description": "Approaches per month; the amber part of each bar came closer than the Moon. Future months, drawn fainter, are predictions."
+    },
+    "sizeDistance": {
+      "title": "Size and distance, next 60 days",
+      "lede": "Each dot is one predicted flyby. Sizes come from brightness and an assumed reflectivity, so each is a range.",
+      "description": "Miss distance in Earth–Moon distances (left is closer) against the estimated diameter in meters, both on log scales. The line marks the Moon's distance."
+    },
+    "sentry": {
+      "title": "Impact risk watch list",
+      "lede": "NASA's Sentry system lists objects whose orbits cannot yet rule out an impact within about 100 years. Almost all are removed as new observations arrive.",
+      "palermoNote": "Palermo scale: below −2 means no concern; 0 means as risky as the background chance of an unknown impact."
+    },
+    "facts": "Near-Earth facts",
+    "object": "Object",
+    "approaches": "Approaches",
+    "closerThanMoon": "Closer than the Moon",
+    "closest": "Closest",
+    "distance": "Distance",
+    "diameter": "Estimated diameter",
+    "speed": "Relative speed",
+    "moonLine": "Moon",
+    "years": "Possible years",
+    "probability": "Impact probability",
+    "oneIn": "1 in {{count}}",
+    "palermo": "Palermo",
+    "torino": "Torino",
+    "predicted": "Predicted"
+  },
+  "sun": {
+    "now": "Conditions now",
+    "kpNow": "Geomagnetic activity",
+    "windSpeed": "Solar wind speed",
+    "bz": "Magnetic field Bz",
+    "flare24h": "Strongest flare, 24 h",
+    "flareCount": "{{count}} flares in 24 h",
+    "noFlare": "No flare in 24 h",
+    "kp": {
+      "title": "Geomagnetic activity, past 7 days",
+      "lede": "Planetary Kp every three hours. Kp 5 or more is a geomagnetic storm (NOAA G1 and above).",
+      "description": "Kp per three-hour interval; amber bars reached storm level."
+    },
+    "flares": {
+      "title": "Solar flares, past 7 days",
+      "lede": "X-ray flares seen by the GOES satellites. Each class is ten times stronger than the one before: A, B, C, M, X.",
+      "description": "Peak X-ray flux of each flare over time, on a log scale."
+    },
+    "wind": {
+      "title": "Solar wind, past 7 days",
+      "lede": "Measured about 1.5 million km upstream of Earth. Fast wind and a southward field (negative Bz) feed geomagnetic storms.",
+      "speed": "Speed (km/s), hourly mean",
+      "bz": "Bz (nT), hourly mean",
+      "speedDescription": "Hourly mean solar wind speed.",
+      "bzDescription": "Hourly mean north–south magnetic field; negative values point south."
+    },
+    "aurora": {
+      "title": "Where the aurora may be visible",
+      "lede": "NOAA's OVATION model forecasts the chance of seeing aurora about 30 to 90 minutes ahead. Each dot is one 1° cell; brighter means likelier.",
+      "north": "Northern hemisphere",
+      "south": "Southern hemisphere",
+      "peak": "Highest chance",
+      "boundary": "Reaches 10% down to",
+      "boundaryNone": "Below 10% everywhere",
+      "places": "Chance at these places now",
+      "place": "Place",
+      "chance": "Chance",
+      "forecastFor": "Forecast for {{time}}",
+      "history": "Highest chance per forecast, past 48 hours",
+      "historyDescription": "Each hemisphere's highest probability of visible aurora in each hourly forecast.",
+      "mapLabel": "Polar map of aurora probability, {{hemisphere}}, centered on the pole with rings every 10° of latitude."
+    },
+    "facts": "Space weather facts"
+  },
+  "places": {
+    "tromso": "Tromsø, Norway",
+    "fairbanks": "Fairbanks, Alaska",
+    "yellowknife": "Yellowknife, Canada",
+    "rikubetsu": "Rikubetsu, Hokkaido",
+    "tokyo": "Tokyo",
+    "hobart": "Hobart, Tasmania",
+    "ushuaia": "Ushuaia, Argentina"
+  },
+  "agencies": {
+    "filter": "Organization type",
+    "types": {
+      "agency": "Space agencies",
+      "company": "Companies",
+      "military": "Armed forces",
+      "international": "International bodies"
+    },
+    "launches": "{{value}} launches",
+    "rate": "{{rate}} succeeded",
+    "profile": {
+      "back": "All agencies",
+      "stats": "Launch record",
+      "streak": "Current success streak",
+      "longest": "Longest streak",
+      "cadence": "Launches per year",
+      "cadenceDescription": "Launch attempts per year as the launch provider.",
+      "vehicles": "Most-flown vehicles",
+      "next": "Next launch",
+      "recent": "Recent launches",
+      "objects": "Catalogued objects",
+      "inOrbit": "In Earth orbit",
+      "payloads": "Payloads in Earth orbit",
+      "decayed": "Re-entered",
+      "beyond": "Beyond Earth orbit",
+      "facts": "Facts about this organization",
+      "members": "Part of this program",
+      "japaneseName": "Japanese name source"
+    },
+    "notFound": "No organization with this key."
+  },
+  "sources": {
+    "status": "Status",
+    "lastFetched": "Last fetched",
+    "cadence": "Update cadence",
+    "license": "License",
+    "credit": "Credit",
+    "quality": "Data quality",
+    "freshness": "Freshness",
+    "fonts": "Fonts",
+    "fontsLede": "Both typefaces are used under the SIL Open Font License.",
+    "gaps": "What is not covered",
+    "gapsBody": "Roscosmos and CNSA offer no general-purpose public launch or mission APIs, and the community SpaceX API is no longer updated. Their launches and objects come from Launch Library 2 and CelesTrak.",
+    "visit": "Visit the source",
+    "data": "Data sources"
+  },
+  "exoplanets": {
+    "facts": "Exoplanet facts",
+    "planets": "Planets",
+    "planet": "Planet",
+    "distanceLy": "Distance (ly)",
+    "radius": "Radius (Earth = 1)",
+    "period": "Orbit (days)",
+    "method": "Found by",
+    "discovered": "Discovered",
+    "discoveries": {
+      "title": "Discoveries per year",
+      "lede": "Every confirmed exoplanet by the year it was announced and the method that found it.",
+      "description": "Confirmed planets per discovery year, split by the four most productive methods. Complete years only."
+    },
+    "sizeOrbit": {
+      "title": "Sizes and orbits",
+      "lede": "Transiting planets on a grid of orbital period and radius. Larger circles hold more planets.",
+      "description": "Both axes are logarithmic. Only transiting planets are shown, because a transit measures a planet's radius directly; other methods mostly estimate it. Earth and Jupiter are marked for scale.",
+      "period": "Orbital period (days)",
+      "radius": "Radius (Earth = 1)",
+      "reference": "Solar System",
+      "earth": "Earth",
+      "jupiter": "Jupiter"
+    },
+    "nearest": {
+      "title": "The nearest known exoplanets",
+      "lede": "The ten nearest known exoplanets, nearest first.",
+      "note": "Radii of planets that were not seen transiting are estimated from their mass. Planets whose confirmation has been questioned are left out."
+    },
+    "acknowledgment": "This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program."
+  }
+}

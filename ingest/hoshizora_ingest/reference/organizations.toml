@@ -1,0 +1,822 @@
+[meta]
+source = "Hoshizora curation"
+name_ja_policy = "Japanese Wikipedia article titles (or the organization's own Japanese site), recorded per name. Disambiguation suffixes are dropped from the stored name."
+retrieved = "2026-10-16"
+
+[[program]]
+slug = "japan"
+name_en = "Japan"
+name_ja = "日本"
+
+[[program]]
+slug = "china"
+name_en = "China"
+name_ja = "中国"
+
+[[program]]
+slug = "russia"
+name_en = "Russia and the Soviet Union"
+name_ja = "ロシア・ソ連"
+
+[[program]]
+slug = "usa"
+name_en = "United States"
+name_ja = "アメリカ"
+
+[[program]]
+slug = "europe"
+name_en = "Europe"
+name_ja = "欧州"
+
+[[program]]
+slug = "india"
+name_en = "India"
+name_ja = "インド"
+
+[[program]]
+slug = "south-korea"
+name_en = "South Korea"
+name_ja = "韓国"
+
+[[program]]
+slug = "israel"
+name_en = "Israel"
+name_ja = "イスラエル"
+
+[[program]]
+slug = "iran"
+name_en = "Iran"
+name_ja = "イラン"
+
+[[program]]
+slug = "north-korea"
+name_en = "North Korea"
+name_ja = "北朝鮮"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Government"
+label = "Government"
+kind = "category"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Commercial"
+label = "Commercial"
+kind = "category"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Private"
+label = "Private"
+kind = "category"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Multinational"
+label = "Multinational"
+kind = "category"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Educational"
+label = "Educational"
+kind = "category"
+
+[[code]]
+namespace = "ll2.agency_type"
+code = "Unknown"
+label = "Unknown"
+kind = "unknown"
+
+[[code]]
+namespace = "ll2.country"
+code = "??"
+label = "Unknown"
+kind = "unknown"
+
+[[organization]]
+ll2 = 44
+slug = "nasa"
+name_ja = "アメリカ航空宇宙局"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ航空宇宙局"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 27
+slug = "esa"
+name_ja = "欧州宇宙機関"
+name_ja_source = "https://ja.wikipedia.org/wiki/欧州宇宙機関"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 37
+slug = "jaxa"
+name_ja = "宇宙航空研究開発機構"
+name_ja_source = "https://ja.wikipedia.org/wiki/宇宙航空研究開発機構"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 17
+slug = "cnsa"
+name_ja = "中国国家航天局"
+name_ja_source = "https://ja.wikipedia.org/wiki/中国国家航天局"
+programs = ["china"]
+
+[[organization]]
+ll2 = 63
+slug = "roscosmos"
+name_en = "Roscosmos"
+name_ja = "ロスコスモス"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロスコスモス"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 31
+slug = "isro"
+name_en = "Indian Space Research Organisation"
+name_ja = "インド宇宙研究機関"
+name_ja_source = "https://ja.wikipedia.org/wiki/インド宇宙研究機関"
+programs = ["india"]
+
+[[organization]]
+ll2 = 121
+slug = "spacex"
+name_ja = "スペースX"
+name_ja_source = "https://ja.wikipedia.org/wiki/スペースX"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 88
+slug = "casc"
+type = "company"
+name_ja = "中国航天科技集団"
+name_ja_source = "https://ja.wikipedia.org/wiki/中国航天科技集団"
+programs = ["china"]
+
+[[organization]]
+ll2 = 184
+slug = "casic"
+type = "company"
+name_ja = "中国航天科工集団"
+name_ja_source = "https://ja.wikipedia.org/wiki/中国航天科工集団"
+programs = ["china"]
+
+[[organization]]
+ll2 = 189
+type = "company"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1034
+programs = ["china"]
+
+[[organization]]
+ll2 = 1035
+programs = ["china"]
+
+[[organization]]
+ll2 = 1036
+programs = ["china"]
+
+[[organization]]
+ll2 = 1037
+programs = ["china"]
+
+[[organization]]
+ll2 = 177
+slug = "cgwic"
+programs = ["china"]
+
+[[organization]]
+ll2 = 194
+slug = "expace"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1021
+slug = "galactic-energy"
+programs = ["china"]
+
+[[organization]]
+ll2 = 259
+slug = "landspace"
+name_ja = "ランドスペース"
+name_ja_source = "https://ja.wikipedia.org/wiki/ランドスペース"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1040
+slug = "cas-space"
+programs = ["china"]
+
+[[organization]]
+ll2 = 274
+slug = "i-space"
+name_ja = "星際栄耀"
+name_ja_source = "https://ja.wikipedia.org/wiki/星際栄耀"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1049
+slug = "space-pioneer"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1080
+slug = "orienspace"
+programs = ["china"]
+
+[[organization]]
+ll2 = 1102
+slug = "deep-blue-aerospace"
+programs = ["china"]
+
+[[organization]]
+ll2 = 162
+slug = "pla"
+type = "military"
+name_ja = "中国人民解放軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/中国人民解放軍"
+programs = ["china"]
+
+[[organization]]
+ll2 = 98
+slug = "mhi"
+name_ja = "三菱重工業"
+name_ja_source = "https://ja.wikipedia.org/wiki/三菱重工業"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 94
+slug = "ihi"
+name_ja = "IHI"
+name_ja_source = "https://ja.wikipedia.org/wiki/IHI"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 1002
+slug = "interstellar-technologies"
+name_ja = "インターステラテクノロジズ"
+name_ja_source = "https://ja.wikipedia.org/wiki/インターステラテクノロジズ"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 1083
+slug = "space-one"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 1009
+slug = "isas"
+name_ja = "宇宙科学研究所"
+name_ja_source = "https://ja.wikipedia.org/wiki/宇宙科学研究所"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 228
+slug = "nasda"
+name_ja = "宇宙開発事業団"
+name_ja_source = "https://ja.wikipedia.org/wiki/宇宙開発事業団"
+programs = ["japan"]
+
+[[organization]]
+ll2 = 1085
+slug = "mitsubishi-electric"
+name_ja = "三菱電機"
+name_ja_source = "https://ja.wikipedia.org/wiki/三菱電機"
+
+[[organization]]
+ll2 = 66
+slug = "soviet-space-program"
+name_ja = "ソビエト連邦の宇宙開発"
+name_ja_source = "https://ja.wikipedia.org/wiki/ソビエト連邦の宇宙開発"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 193
+slug = "russian-space-forces"
+type = "military"
+name_ja = "ロシア宇宙軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロシア宇宙軍"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 163
+slug = "russian-aerospace-defence-forces"
+type = "military"
+name_ja = "ロシア航空宇宙防衛軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロシア航空宇宙防衛軍"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 175
+slug = "russian-ministry-of-defence"
+type = "military"
+name_ja = "ロシア国防省"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロシア国防省"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 270
+slug = "strategic-rocket-forces"
+type = "military"
+name_ja = "ロシア戦略ロケット軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロシア戦略ロケット軍"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 96
+slug = "khrunichev"
+type = "company"
+name_ja = "クルニチェフ国家研究生産宇宙センター"
+name_ja_source = "https://ja.wikipedia.org/wiki/クルニチェフ国家研究生産宇宙センター"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 111
+slug = "progress-rocket-space-centre"
+name_ja = "プログレス国家研究生産ロケット宇宙センター"
+name_ja_source = "https://ja.wikipedia.org/wiki/プログレス国家研究生産ロケット宇宙センター"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 103
+slug = "energia"
+name_ja = "S.P.コロリョフ ロケット&スペース コーポレーション エネルギア"
+name_ja_source = "https://ja.wikipedia.org/wiki/S.P.コロリョフ_ロケット&スペース_コーポレーション_エネルギア"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 1000
+programs = ["russia"]
+
+[[organization]]
+ll2 = 97
+slug = "lavochkin"
+name_ja = "S・A・ラヴォーチキン記念科学製造合同"
+name_ja_source = "https://ja.wikipedia.org/wiki/S・A・ラヴォーチキン記念科学製造合同"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 119
+slug = "kosmotras"
+name_ja = "ISCコスモトラス"
+name_ja_source = "https://ja.wikipedia.org/wiki/ISCコスモトラス"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 117
+slug = "eurockot"
+name_ja = "ユーロコット"
+name_ja_source = "https://ja.wikipedia.org/wiki/ユーロコット"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 118
+slug = "ils"
+name_ja = "インターナショナル・ローンチ・サービス"
+name_ja_source = "https://ja.wikipedia.org/wiki/インターナショナル・ローンチ・サービス"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 123
+slug = "starsem"
+name_ja = "スターセム"
+name_ja_source = "https://ja.wikipedia.org/wiki/スターセム"
+programs = ["russia"]
+
+[[organization]]
+ll2 = 187
+programs = ["russia"]
+
+[[organization]]
+ll2 = 124
+slug = "ula"
+name_ja = "ユナイテッド・ローンチ・アライアンス"
+name_ja_source = "https://ja.wikipedia.org/wiki/ユナイテッド・ローンチ・アライアンス"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 257
+slug = "northrop-grumman"
+name_ja = "ノースロップ・グラマン"
+name_ja_source = "https://ja.wikipedia.org/wiki/ノースロップ・グラマン"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 147
+slug = "rocket-lab"
+name_ja = "ロケット・ラボ"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロケット・ラボ"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 141
+slug = "blue-origin"
+name_ja = "ブルーオリジン"
+name_ja_source = "https://ja.wikipedia.org/wiki/ブルーオリジン"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 265
+slug = "firefly-aerospace"
+name_ja = "ファイアフライ・エアロスペース"
+name_ja_source = "https://ja.wikipedia.org/wiki/ファイアフライ・エアロスペース"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 179
+slug = "orbital-atk"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 100
+slug = "orbital-sciences"
+name_ja = "オービタル・サイエンシズ"
+name_ja_source = "https://ja.wikipedia.org/wiki/オービタル・サイエンシズ"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 80
+slug = "boeing"
+name_ja = "ボーイング"
+name_ja_source = "https://ja.wikipedia.org/wiki/ボーイング"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 82
+slug = "lockheed-martin"
+name_ja = "ロッキード・マーティン"
+name_ja_source = "https://ja.wikipedia.org/wiki/ロッキード・マーティン"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 153
+slug = "mcdonnell-douglas"
+name_ja = "マクドネル・ダグラス"
+name_ja_source = "https://ja.wikipedia.org/wiki/マクドネル・ダグラス"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 1014
+slug = "martin-marietta"
+name_ja = "マーティン・マリエッタ"
+name_ja_source = "https://ja.wikipedia.org/wiki/マーティン・マリエッタ"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 106
+programs = ["usa"]
+
+[[organization]]
+ll2 = 161
+slug = "usaf"
+type = "military"
+name_ja = "アメリカ空軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ空軍"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 1041
+slug = "ussf"
+type = "military"
+name_ja = "アメリカ宇宙軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ宇宙軍"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 165
+slug = "us-army"
+type = "military"
+name_ja = "アメリカ陸軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ陸軍"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 166
+slug = "us-navy"
+type = "military"
+name_ja = "アメリカ海軍"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ海軍"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 181
+slug = "nro"
+type = "military"
+name_ja = "アメリカ国家偵察局"
+name_ja_source = "https://ja.wikipedia.org/wiki/アメリカ国家偵察局"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 271
+type = "military"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 1025
+type = "military"
+
+[[organization]]
+ll2 = 213
+type = "military"
+
+[[organization]]
+ll2 = 1056
+type = "military"
+
+[[organization]]
+ll2 = 199
+slug = "virgin-orbit"
+name_ja = "ヴァージン・オービット"
+name_ja_source = "https://ja.wikipedia.org/wiki/ヴァージン・オービット"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 285
+slug = "astra"
+name_ja = "アストラ"
+name_ja_source = "https://ja.wikipedia.org/wiki/アストラ_(航空宇宙企業)"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 266
+slug = "relativity-space"
+name_ja = "レラティビティ・スペース"
+name_ja_source = "https://ja.wikipedia.org/wiki/レラティビティ・スペース"
+programs = ["usa"]
+
+[[organization]]
+ll2 = 115
+slug = "arianespace"
+name_ja = "アリアンスペース"
+name_ja_source = "https://ja.wikipedia.org/wiki/アリアンスペース"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 1044
+slug = "arianegroup"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 159
+slug = "avio"
+name_ja = "アヴィオ"
+name_ja_source = "https://ja.wikipedia.org/wiki/アヴィオ"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 46
+slug = "cnes"
+name_ja = "フランス国立宇宙研究センター"
+name_ja_source = "https://ja.wikipedia.org/wiki/フランス国立宇宙研究センター"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 29
+slug = "dlr"
+name_ja = "ドイツ航空宇宙センター"
+name_ja_source = "https://ja.wikipedia.org/wiki/ドイツ航空宇宙センター"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 36
+slug = "asi"
+name_ja = "イタリア宇宙機関"
+name_ja_source = "https://ja.wikipedia.org/wiki/イタリア宇宙機関"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 1046
+slug = "isar-aerospace"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 1045
+slug = "rocket-factory-augsburg"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 1015
+slug = "eldo"
+name_ja = "欧州ロケット開発機構"
+name_ja_source = "https://ja.wikipedia.org/wiki/欧州ロケット開発機構"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 1019
+slug = "esro"
+name_ja = "欧州宇宙研究機構"
+name_ja_source = "https://ja.wikipedia.org/wiki/欧州宇宙研究機構"
+programs = ["europe"]
+
+[[organization]]
+ll2 = 190
+slug = "antrix"
+programs = ["india"]
+
+[[organization]]
+ll2 = 1099
+slug = "skyroot-aerospace"
+programs = ["india"]
+
+[[organization]]
+ll2 = 41
+slug = "kari"
+name_ja = "韓国航空宇宙研究院"
+name_ja_source = "https://ja.wikipedia.org/wiki/韓国航空宇宙研究院"
+programs = ["south-korea"]
+
+[[organization]]
+ll2 = 1089
+slug = "kasa"
+name_ja = "韓国航空宇宙庁"
+name_ja_source = "https://ja.wikipedia.org/wiki/韓国航空宇宙庁"
+programs = ["south-korea"]
+
+[[organization]]
+ll2 = 1079
+slug = "add"
+type = "military"
+name_ja = "国防科学研究所"
+name_ja_source = "https://ja.wikipedia.org/wiki/国防科学研究所_(大韓民国)"
+programs = ["south-korea"]
+
+[[organization]]
+ll2 = 35
+slug = "israel-space-agency"
+name_ja = "イスラエル宇宙局"
+name_ja_source = "https://ja.wikipedia.org/wiki/イスラエル宇宙局"
+programs = ["israel"]
+
+[[organization]]
+ll2 = 95
+slug = "iai"
+name_ja = "イスラエル・エアロスペース・インダストリーズ"
+name_ja_source = "https://ja.wikipedia.org/wiki/イスラエル・エアロスペース・インダストリーズ"
+programs = ["israel"]
+
+[[organization]]
+ll2 = 34
+slug = "iranian-space-agency"
+name_ja = "イラン宇宙機関"
+name_ja_source = "https://ja.wikipedia.org/wiki/イラン宇宙機関"
+programs = ["iran"]
+
+[[organization]]
+ll2 = 1032
+slug = "irgc-aerospace-force"
+type = "military"
+programs = ["iran"]
+
+[[organization]]
+ll2 = 40
+slug = "kcst"
+name_ja = "朝鮮宇宙空間技術委員会"
+name_ja_source = "https://ja.wikipedia.org/wiki/朝鮮宇宙空間技術委員会"
+programs = ["north-korea"]
+
+[[organization]]
+ll2 = 1074
+slug = "nada"
+programs = ["north-korea"]
+
+[[organization]]
+ll2 = 16
+slug = "csa"
+name_ja = "カナダ宇宙庁"
+name_ja_source = "https://ja.wikipedia.org/wiki/カナダ宇宙庁"
+
+[[organization]]
+ll2 = 13
+slug = "uksa"
+name_ja = "イギリス宇宙局"
+name_ja_source = "https://ja.wikipedia.org/wiki/イギリス宇宙局"
+
+[[organization]]
+ll2 = 160
+type = "military"
+
+[[organization]]
+ll2 = 227
+type = "military"
+
+[[organization]]
+ll2 = 253
+type = "military"
+
+[[organization]]
+ll2 = 233
+type = "military"
+
+[[organization]]
+ll2 = 1050
+type = "military"
+
+[[organization]]
+ll2 = 1053
+type = "military"
+
+[[organization]]
+ll2 = 1055
+type = "military"
+
+[[organization]]
+ll2 = 232
+slug = "eumetsat"
+name_ja = "欧州気象衛星開発機構"
+name_ja_source = "https://ja.wikipedia.org/wiki/欧州気象衛星開発機構"
+
+[[organization]]
+ll2 = 229
+slug = "eutelsat"
+name_ja = "ユーテルサット"
+name_ja_source = "https://ja.wikipedia.org/wiki/ユーテルサット"
+
+[[organization]]
+ll2 = 204
+slug = "globalstar"
+name_ja = "グローバルスター"
+name_ja_source = "https://ja.wikipedia.org/wiki/グローバルスター"
+
+[[organization]]
+ll2 = 205
+slug = "inmarsat"
+name_ja = "インマルサット"
+name_ja_source = "https://ja.wikipedia.org/wiki/インマルサット"
+
+[[organization]]
+ll2 = 202
+slug = "iridium"
+name_ja = "イリジウムコミュニケーションズ"
+name_ja_source = "https://ja.wikipedia.org/wiki/イリジウムコミュニケーションズ"
+
+[[organization]]
+ll2 = 206
+slug = "intelsat"
+name_ja = "インテルサット"
+name_ja_source = "https://ja.wikipedia.org/wiki/インテルサット"
+
+[[organization]]
+ll2 = 207
+slug = "arabsat"
+
+[[organization]]
+ll2 = 245
+slug = "rascom"
+
+[[organization]]
+ll2 = 122
+slug = "sea-launch"
+name_ja = "シーローンチ"
+name_ja_source = "https://ja.wikipedia.org/wiki/シーローンチ"
+
+[[organization]]
+ll2 = 203
+slug = "ses"
+name_ja = "SES"
+name_ja_source = "https://ja.wikipedia.org/wiki/SES_(企業)"
+
+[[organization]]
+slug = "abs"
+name_en = "Asia Broadcast Satellite"
+type = "company"
+
+[[organization]]
+slug = "asiasat"
+name_en = "Asia Satellite Telecommunications Company (AsiaSat)"
+type = "company"
+countries = ["HK"]
+name_ja = "アジアサット"
+name_ja_source = "https://ja.wikipedia.org/wiki/アジアサット"
+
+[[organization]]
+slug = "iss"
+name_en = "International Space Station partnership"
+type = "international"
+name_ja = "国際宇宙ステーション"
+name_ja_source = "https://ja.wikipedia.org/wiki/国際宇宙ステーション"
+
+[[organization]]
+slug = "nato"
+name_en = "North Atlantic Treaty Organization"
+type = "international"
+name_ja = "北大西洋条約機構"
+name_ja_source = "https://ja.wikipedia.org/wiki/北大西洋条約機構"
+
+[[organization]]
+slug = "new-ico"
+name_en = "New ICO"
+type = "company"
+
+[[organization]]
+slug = "o3b"
+name_en = "O3b Networks"
+type = "company"
+
+[[organization]]
+slug = "orbcomm"
+name_en = "ORBCOMM"
+type = "company"
+countries = ["US"]

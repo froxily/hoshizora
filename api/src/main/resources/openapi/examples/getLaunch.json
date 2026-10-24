@@ -1,0 +1,116 @@
+{
+  "id": "2dd0f8af-5182-4a97-b8b4-4846983ddf59",
+  "name": "H-IIA 202 | Michibiki 4 (QZS-4)",
+  "name_lang": "en",
+  "net": "2017-10-09T22:01:37Z",
+  "status": {
+    "code": "success",
+    "name": "Success",
+    "name_lang": "en"
+  },
+  "launch_designator": "2017-062",
+  "provider": {
+    "key": "mhi",
+    "name": "Mitsubishi Heavy Industries",
+    "name_lang": "en",
+    "type": {
+      "code": "company",
+      "name": "Company",
+      "name_lang": "en"
+    }
+  },
+  "vehicle": {
+    "id": 32,
+    "name": "H-IIA 202",
+    "name_lang": "en",
+    "family": "H-II",
+    "variant": "202"
+  },
+  "pad": {
+    "id": 41,
+    "name": "Yoshinobu Launch Complex LP-1",
+    "name_lang": "en",
+    "location": "Tanegashima Space Center, Japan",
+    "country": {
+      "code": "JP",
+      "name": "Japan"
+    },
+    "latitude": 30.400813,
+    "longitude": 130.977748
+  },
+  "mission": {
+    "id": 680,
+    "name": "Michibiki 4 (QZS-4)",
+    "name_lang": "en",
+    "type": {
+      "code": "navigation",
+      "name": "Navigation",
+      "name_lang": "en"
+    },
+    "orbit": {
+      "code": "gsto",
+      "name": "Geosynchronous Transfer Orbit",
+      "name_lang": "en"
+    },
+    "description": "The Quasi-Zenith Satellite System (QZSS) is a three-satellite regional time transfer system and the satellite-based augmentation system for the GPS that would be receivable within Japan. The primary purpose of QZSS is to increase the availability of GPS in Japan's numerous urban canyons, where only satellites at very high elevation can be seen. A secondary function is performance enhancement, increasing the accuracy and reliability of GPS derived navigation solutions. A single satellite weighs about 4000 kg, has an expected lifetime of 15 years and is put in a elliptical, highly inclined geosynchronous orbit.",
+    "description_lang": "en"
+  },
+  "window_start": "2017-10-09T22:01:37Z",
+  "window_end": "2017-10-09T22:01:37Z",
+  "programs": [
+    {
+      "slug": "japan",
+      "name": "Japan"
+    }
+  ],
+  "partners": [],
+  "objects": [
+    {
+      "norad_id": 42965,
+      "object_id": "2017-062A",
+      "name": "QZS-4 (MICHIBIKI-4)",
+      "object_type": {
+        "code": "payload",
+        "name": "Payload",
+        "name_lang": "en"
+      },
+      "orbit_state": {
+        "code": "earth_orbit",
+        "name": "In Earth orbit",
+        "name_lang": "en"
+      },
+      "owner_code": "JPN"
+    },
+    {
+      "norad_id": 42966,
+      "object_id": "2017-062B",
+      "name": "H-2A R/B",
+      "object_type": {
+        "code": "rocket_body",
+        "name": "Rocket body",
+        "name_lang": "en"
+      },
+      "orbit_state": {
+        "code": "earth_orbit",
+        "name": "In Earth orbit",
+        "name_lang": "en"
+      },
+      "owner_code": "JPN"
+    }
+  ],
+  "objects_total": 2,
+  "lineage": [
+    {
+      "source": "launch-library",
+      "url": "https://ll.thespacedevs.com/2.3.0/launches/?limit=100&mode=normal&offset=100&ordering=last_updated",
+      "fetched_at": "2026-10-16T07:15:40Z",
+      "content_hash": "0a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a5b6c7d8e9f"
+    },
+    {
+      "source": "launch-library",
+      "url": "https://ll.thespacedevs.com/2.3.0/launches/?limit=100&mode=normal&offset=0&ordering=last_updated",
+      "fetched_at": "2026-10-16T06:50:30Z",
+      "content_hash": "6d1f0c9a2b7e4f31a8c5d2e9b0f7a6c3d4e5f60718293a4b5c6d7e8f90a1b2c3"
+    }
+  ]
+}

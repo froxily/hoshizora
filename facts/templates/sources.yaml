@@ -1,0 +1,78 @@
+- key: sources.launch_records
+  module: sources
+  requires: [launch-library]
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS launches, min(l.net) AS earliest,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.launch',
+               'key', (array_agg(l.launch_id::text ORDER BY l.net, l.launch_id))[1]
+           )) AS source_refs
+    FROM mart.launch_classified l
+    WHERE l.attempted
+    HAVING count(*) > 0
+  params:
+    launches: {type: integer, from: launches}
+    date: {type: date, from: earliest}
+  text:
+    en: "Launch Library 2 records {launches, number, integer} launch attempts, the earliest on {date, date}."
+    ja: "Launch Library 2には{launches, number, integer}回の打ち上げが記録されており、もっとも古いものは{date, date}です。"
+  examples:
+    - params: {launches: 7650, date: "1957-10-04"}
+      en: "Launch Library 2 records 7,650 launch attempts, the earliest on October 4, 1957."
+      ja: "Launch Library 2には7,650回の打ち上げが記録されており、もっとも古いものは1957年10月4日です。"
+
+- key: sources.catalog_size
+  module: sources
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS objects,
+           min(s.launch_date) AS first_launch,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.space_object',
+               'key', (array_agg(s.norad_id::text ORDER BY s.launch_date, s.norad_id)
+                   FILTER (WHERE s.launch_date IS NOT NULL))[1]
+           )) AS source_refs
+    FROM core.space_object s
+    HAVING count(*) FILTER (WHERE s.launch_date IS NOT NULL) > 0
+  params:
+    objects: {type: integer, from: objects}
+    date: {type: date, from: first_launch}
+  text:
+    en: "CelesTrak's satellite catalog lists {objects, number, integer} objects, the first launched on {date, date}."
+    ja: "CelesTrakの衛星カタログには約{objects, number, compact}個の物体が登録されており、最初のものは{date, date}に打ち上げられました。"
+  examples:
+    - params: {objects: 71073, date: "1957-10-04"}
+      en: "CelesTrak's satellite catalog lists 71,073 objects, the first launched on October 4, 1957."
+      ja: "CelesTrakの衛星カタログには約7.1万個の物体が登録されており、最初のものは1957年10月4日に打ち上げられました。"
+
+- key: sources.close_approach_span
+  module: sources
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS approaches,
+           min(extract(year FROM e.approach_tdb)) AS first_year,
+           max(extract(year FROM e.approach_tdb)) AS last_year,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'core.close_approach',
+               'key', (array_agg(
+                   concat_ws('|', e.designation, e.body, e.approach_tdb) ORDER BY e.approach_tdb
+               ))[1]
+           )) AS source_refs
+    FROM mart.close_approach_enriched e
+    WHERE e.body = 'Earth'
+    HAVING count(*) > 0
+  params:
+    approaches: {type: integer, from: approaches}
+    first: {type: year, from: first_year}
+    last: {type: year, from: last_year}
+  text:
+    en: "NASA/JPL's close-approach data covers {approaches, number, integer} flybys of Earth from {first} to {last}."
+    ja: "NASA/JPLの接近データには、{first}年から{last}年までの地球への接近が約{approaches, number, compact}件含まれています。"
+  examples:
+    - params: {approaches: 51960, first: "1900", last: "2200"}
+      en: "NASA/JPL's close-approach data covers 51,960 flybys of Earth from 1900 to 2200."
+      ja: "NASA/JPLの接近データには、1900年から2200年までの地球への接近が約5.2万件含まれています。"

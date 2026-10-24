@@ -1,0 +1,21 @@
+{
+  "source": "swpc",
+  "from": "2025-11-01",
+  "to": "2026-11-01",
+  "items": [
+    {
+      "month": "2026-10-01",
+      "total": 8,
+      "by_class": {
+        "a": 0,
+        "b": 2,
+        "c": 3,
+        "m": 3,
+        "x": 0
+      },
+      "max_peak_flux_wm2": 6.485381163656712e-05,
+      "strongest_class": "M6.4",
+      "records_url": "/api/v1/space-weather/flares?min_class=A&from=2026-10-01T00:00:00Z&to=2026-11-01T00:00:00Z"
+    }
+  ]
+}

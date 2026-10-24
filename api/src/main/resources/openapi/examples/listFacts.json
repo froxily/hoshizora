@@ -1,0 +1,54 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "key": "near-earth.closest_this_week",
+      "module": "near-earth",
+      "text": "This week's closest asteroid, 2026 TS, passes at 2.4× the Earth–Moon distance.",
+      "text_lang": "en",
+      "params": {
+        "designation": "2026 TS",
+        "distance_ld": 2.4
+      },
+      "score": 0.9,
+      "kind": {
+        "code": "computed",
+        "name": "Computed from data",
+        "name_lang": "en"
+      },
+      "entity": {
+        "type": "small_body",
+        "key": "2026 TS"
+      },
+      "sources": [
+        {
+          "entity": "core.close_approach",
+          "key": "2026 TS|Earth|2026-10-18 06:16:00",
+          "records_url": "/api/v1/close-approaches?designation=2026%20TS"
+        }
+      ],
+      "generated_at": "2026-10-16T07:30:00Z",
+      "valid_until": "2026-10-23T00:00:00Z"
+    },
+    {
+      "id": 4,
+      "key": "sun.strongest_flare_month",
+      "module": "sun",
+      "text": "This month's strongest flare, class M6.4, peaked on October 10, 2026.",
+      "text_lang": "en",
+      "params": {
+        "date": "2026-10-10",
+        "class": "M6.4"
+      },
+      "score": 0.8,
+      "kind": {
+        "code": "computed",
+        "name": "Computed from data",
+        "name_lang": "en"
+      },
+      "sources": [],
+      "generated_at": "2026-10-16T07:30:00Z",
+      "valid_until": "2026-11-01T00:00:00Z"
+    }
+  ]
+}

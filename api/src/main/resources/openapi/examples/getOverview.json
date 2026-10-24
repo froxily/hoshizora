@@ -1,0 +1,99 @@
+{
+  "as_of": "2026-10-16T08:00:00Z",
+  "next_launch": {
+    "id": "0c84ad4e-3a67-43fb-ab85-77f66127d732",
+    "name": "SLS Block 1B | Artemis VI",
+    "name_lang": "en",
+    "net": "2030-09-30T00:00:00Z",
+    "status": {
+      "code": "upcoming",
+      "name": "Upcoming",
+      "name_lang": "en"
+    },
+    "provider": {
+      "key": "nasa",
+      "name": "National Aeronautics and Space Administration",
+      "name_lang": "en",
+      "type": {
+        "code": "agency",
+        "name": "Space agency",
+        "name_lang": "en"
+      }
+    },
+    "vehicle": {
+      "id": 205,
+      "name": "Space Launch System Block 1B",
+      "name_lang": "en",
+      "family": "Space Launch System",
+      "variant": "Block 1B"
+    },
+    "pad": {
+      "id": 4,
+      "name": "Launch Complex 39B",
+      "name_lang": "en",
+      "location": "Kennedy Space Center, FL, USA",
+      "country": {
+        "code": "US",
+        "name": "United States"
+      },
+      "latitude": 28.62711233,
+      "longitude": -80.62101503
+    }
+  },
+  "launches_this_year": {
+    "year": 2026,
+    "attempts": 0,
+    "same_period_last_year": 0,
+    "records_url": "/api/v1/launches?from=2026-01-01T00:00:00Z&to=2026-10-16T08:00:00Z"
+  },
+  "kp": {
+    "observed_at": "2026-10-16T03:00:00Z",
+    "kp": 2.0,
+    "g_scale": {
+      "code": "g0",
+      "name": "No geomagnetic storm",
+      "name_lang": "en"
+    }
+  },
+  "closest_approach_this_week": {
+    "designation": "2026 TS",
+    "fullname": "(2026 TS)",
+    "body": {
+      "code": "earth",
+      "name": "Earth",
+      "name_lang": "en"
+    },
+    "approach_tdb": "2026-10-18T06:16:00",
+    "approach_utc": "2026-10-18T06:14:50.816Z",
+    "time_uncertainty": {
+      "minutes": 1.0,
+      "less_than": true
+    },
+    "dist_au": 0.00606186873313466,
+    "dist_km": 906842.6549398516,
+    "dist_ld": 2.3591120055667316,
+    "dist_min_km": 905943.4081038706,
+    "dist_max_km": 907741.8877418292,
+    "v_rel_kms": 10.331155635023,
+    "v_inf_kms": 10.2885218435398,
+    "h_mag": 24.047,
+    "size": {
+      "estimated_min_km": 0.04122446010296545,
+      "estimated_max_km": 0.09218069512595874,
+      "assumed_albedo_min": 0.05,
+      "assumed_albedo_max": 0.25
+    },
+    "sentry": false
+  },
+  "objects_in_earth_orbit": {
+    "total": 87,
+    "payloads": 42,
+    "records_url": "/api/v1/stats/orbits/countries"
+  },
+  "sources": [
+    "launch-library",
+    "swpc",
+    "jpl",
+    "celestrak"
+  ]
+}

@@ -1,0 +1,168 @@
+- key: orbits.objects_in_orbit
+  module: orbits
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, sum(o.objects) AS objects,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.objects_in_orbit_by_owner', 'key', 'earth_orbit')
+           ) AS source_refs
+    FROM mart.objects_in_orbit_by_owner o
+    WHERE o.orbit_state = 'earth_orbit'
+    HAVING sum(o.objects) > 0
+  params:
+    objects: {type: integer, from: objects}
+  text:
+    en: "{objects, number, integer} catalogued objects are orbiting Earth right now."
+    ja: "現在、カタログに登録された約{objects, number, compact}個の物体が地球を回っています。"
+  examples:
+    - params: {objects: 34186}
+      en: "34,186 catalogued objects are orbiting Earth right now."
+      ja: "現在、カタログに登録された約3.4万個の物体が地球を回っています。"
+
+- key: orbits.debris_share
+  module: orbits
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key,
+           (sum(o.objects) FILTER (WHERE o.object_type IN ('debris', 'rocket_body')))::float8
+               / sum(o.objects) AS share,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.objects_in_orbit_by_owner', 'key', 'earth_orbit')
+           ) AS source_refs
+    FROM mart.objects_in_orbit_by_owner o
+    WHERE o.orbit_state = 'earth_orbit'
+    HAVING sum(o.objects) > 0
+  params:
+    share: {type: percent, from: share, decimals: 0}
+  text:
+    en: "{share, number, percent} of the catalogued objects orbiting Earth are debris or spent rocket bodies rather than spacecraft."
+    ja: "地球を回るカタログ登録物体の{share, number, percent}は、宇宙機ではなく破片や使用済みのロケット本体です。"
+  examples:
+    - params: {share: 0.43}
+      en: "43% of the catalogued objects orbiting Earth are debris or spent rocket bodies rather than spacecraft."
+      ja: "地球を回るカタログ登録物体の43%は、宇宙機ではなく破片や使用済みのロケット本体です。"
+
+- key: orbits.country_payloads
+  module: orbits
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH total AS (
+        SELECT sum(o.objects) AS payloads
+        FROM mart.objects_in_orbit_by_owner o
+        WHERE o.object_type = 'payload' AND o.orbit_state = 'earth_orbit'
+    )
+    SELECT 'country' AS entity_type, c.country_code AS entity_key,
+           k.name_en AS country_en, k.name_ja AS country_ja, c.objects AS payloads,
+           c.objects::float8 / t.payloads AS share,
+           percent_rank() OVER (ORDER BY c.objects) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'mart.objects_in_orbit_by_country',
+               'key', concat_ws('|', c.country_code, c.object_type, c.orbit_state)
+           )) AS source_refs
+    FROM mart.objects_in_orbit_by_country c
+    CROSS JOIN total t
+    JOIN core.country k ON k.code = c.country_code
+    WHERE c.object_type = 'payload' AND c.orbit_state = 'earth_orbit' AND c.objects >= 10
+  params:
+    country: {type: name, from: country}
+    payloads: {type: integer, from: payloads}
+    share: {type: percent, from: share, decimals: 1}
+  text:
+    en: "{country}-owned payloads in Earth orbit number {payloads, number, integer}, {share, number, percent} of all payloads."
+    ja: "地球を回る{country}の衛星などのペイロードは{payloads, number, integer}機で、全体の{share, number, percent}です。"
+  examples:
+    - params: {country: {en: Japan, ja: 日本}, payloads: 213, share: 0.011}
+      en: "Japan-owned payloads in Earth orbit number 213, 1.1% of all payloads."
+      ja: "地球を回る日本の衛星などのペイロードは213機で、全体の1.1%です。"
+
+- key: orbits.oldest_in_orbit
+  module: orbits
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'space_object' AS entity_type, s.norad_id::text AS entity_key, s.name, s.launch_date,
+           true AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.space_object', 'key', s.norad_id::text)
+           ) AS source_refs
+    FROM core.space_object s
+    JOIN mart.space_object_classified c ON c.norad_id = s.norad_id
+    WHERE c.orbit_state = 'earth_orbit' AND s.launch_date IS NOT NULL
+    ORDER BY s.launch_date, s.norad_id
+    LIMIT 1
+  params:
+    name: {type: text, from: name}
+    date: {type: date, from: launch_date}
+  text:
+    en: "The oldest human-made object still orbiting Earth is {name}, launched on {date, date}."
+    ja: "地球を回り続けている最古の人工物体は、{date, date}に打ち上げられた{name}です。"
+  examples:
+    - params: {name: VANGUARD 1, date: "1958-03-17"}
+      en: "The oldest human-made object still orbiting Earth is VANGUARD 1, launched on March 17, 1958."
+      ja: "地球を回り続けている最古の人工物体は、1958年3月17日に打ち上げられたVANGUARD 1です。"
+
+- key: orbits.reentries_year
+  module: orbits
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH ytd AS (
+        SELECT extract(year FROM s.decay_date) AS year, count(*) AS objects,
+               (array_agg(s.norad_id ORDER BY s.decay_date DESC, s.norad_id))[1] AS latest
+        FROM core.space_object s
+        WHERE s.decay_date IS NOT NULL
+          AND extract(doy FROM s.decay_date) < extract(doy FROM %(as_of)s::timestamptz)
+          AND s.decay_date < %(as_of)s::timestamptz::date
+        GROUP BY 1
+    ),
+    ranked AS (
+        SELECT year, objects, latest, percent_rank() OVER (ORDER BY objects) AS percentile
+        FROM ytd
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, year, objects, percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.space_object', 'key', latest::text)
+           ) AS source_refs
+    FROM ranked
+    WHERE year = extract(year FROM %(as_of)s::timestamptz) AND objects >= 2
+  params:
+    objects: {type: integer, from: objects}
+    year: {type: year, from: year}
+  text:
+    en: "{objects, number, integer} catalogued objects have fallen back into Earth's atmosphere so far in {year}."
+    ja: "{year}年はこれまでに、カタログに登録された{objects, number, integer}個の物体が大気圏に再突入しました。"
+  examples:
+    - params: {objects: 1108, year: "2026"}
+      en: "1,108 catalogued objects have fallen back into Earth's atmosphere so far in 2026."
+      ja: "2026年はこれまでに、カタログに登録された1,108個の物体が大気圏に再突入しました。"
+
+- key: orbits.iss_altitude
+  module: orbits
+  min_score: 0.4
+  valid_for: P1D
+  query: |
+    SELECT 'space_object' AS entity_type, s.norad_id::text AS entity_key,
+           (s.apogee_km + s.perigee_km) / 2.0 AS altitude,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.space_object', 'key', s.norad_id::text)
+           ) AS source_refs
+    FROM core.space_object s
+    WHERE s.norad_id = 25544
+      AND s.decay_date IS NULL
+      AND s.apogee_km IS NOT NULL
+      AND s.perigee_km IS NOT NULL
+  params:
+    altitude: {type: integer, from: altitude}
+    fujis: {type: integer, from: altitude, humanize: fuji_heights}
+  text:
+    en: "The International Space Station orbits about {altitude, number, integer} km up, roughly {fujis, number, integer} times the height of Mt. Fuji."
+    ja: "国際宇宙ステーションは高度約{altitude, number, integer}kmを回っています。富士山の約{fujis, number, integer}倍の高さです。"
+  examples:
+    - params: {altitude: 420, fujis: 111}
+      en: "The International Space Station orbits about 420 km up, roughly 111 times the height of Mt. Fuji."
+      ja: "国際宇宙ステーションは高度約420kmを回っています。富士山の約111倍の高さです。"

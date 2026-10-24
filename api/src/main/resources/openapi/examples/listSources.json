@@ -1,0 +1,78 @@
+{
+  "items": [
+    {
+      "slug": "celestrak",
+      "name": "CelesTrak SATCAT and GP",
+      "description": "Every catalogued object, with its owner, launch and decay dates, and current orbital elements.",
+      "credit": "Orbital data: CelesTrak (celestrak.org)",
+      "license": "No attribution requirement is stated. The data is freely available.",
+      "homepage_url": "https://celestrak.org",
+      "cadence": "SATCAT at most every 12 hours, active orbital elements at most every 2 hours.",
+      "update_interval_seconds": 7200,
+      "status": {
+        "last_run": {
+          "code": "succeeded",
+          "name": "Succeeded",
+          "name_lang": "en"
+        },
+        "last_run_started_at": "2026-10-15T20:00:00Z",
+        "last_run_finished_at": "2026-10-15T20:01:30Z",
+        "last_succeeded_at": "2026-10-15T20:01:30Z",
+        "last_fetched_at": "2026-10-15T20:01:00Z",
+        "freshness": {
+          "code": "stale",
+          "name": "Behind schedule",
+          "name_lang": "en"
+        }
+      },
+      "quality": {
+        "blocking": 0,
+        "warnings": 0,
+        "level": {
+          "code": "ok",
+          "name": "No issues",
+          "name_lang": "en"
+        }
+      }
+    },
+    {
+      "slug": "jpl",
+      "name": "NASA/JPL Solar System Dynamics",
+      "description": "Close approaches of asteroids and comets to Earth, and the Sentry impact-monitoring list.",
+      "credit": "Small-body data: NASA/JPL Solar System Dynamics (SBDB Close Approach and Sentry APIs)",
+      "license": "No license or attribution requirement is stated.",
+      "homepage_url": "https://ssd.jpl.nasa.gov",
+      "cadence": "A rolling close-approach window and Sentry, every 12 hours.",
+      "update_interval_seconds": 43200,
+      "status": {
+        "last_run": {
+          "code": "succeeded",
+          "name": "Succeeded",
+          "name_lang": "en"
+        },
+        "last_run_started_at": "2026-10-16T06:00:00Z",
+        "last_run_finished_at": "2026-10-16T06:03:00Z",
+        "last_succeeded_at": "2026-10-16T06:03:00Z",
+        "last_fetched_at": "2026-10-16T06:01:00Z",
+        "freshness": {
+          "code": "fresh",
+          "name": "Up to date",
+          "name_lang": "en"
+        }
+      },
+      "quality": {
+        "blocking": 0,
+        "warnings": 0,
+        "level": {
+          "code": "ok",
+          "name": "No issues",
+          "name_lang": "en"
+        }
+      }
+    }
+  ],
+  "page": 1,
+  "size": 2,
+  "total_items": 5,
+  "total_pages": 3
+}

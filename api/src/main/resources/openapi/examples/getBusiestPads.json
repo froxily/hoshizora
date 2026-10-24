@@ -1,0 +1,51 @@
+{
+  "source": "launch-library",
+  "items": [
+    {
+      "pad": {
+        "id": 41,
+        "name": "Yoshinobu Launch Complex LP-1",
+        "name_lang": "en",
+        "location": "Tanegashima Space Center, Japan",
+        "country": {
+          "code": "JP",
+          "name": "Japan"
+        },
+        "latitude": 30.400813,
+        "longitude": 130.977748
+      },
+      "attempts": 10,
+      "successes": 10,
+      "failures": 0,
+      "scheduled": 0,
+      "first_launch_at": "2016-11-02T06:20:00Z",
+      "last_launch_at": "2021-12-22T15:32:00Z",
+      "busiest_year": 2017,
+      "busiest_year_attempts": 5,
+      "records_url": "/api/v1/launches?pad=41"
+    },
+    {
+      "pad": {
+        "id": 77,
+        "name": "Ariane Launch Area 3",
+        "name_lang": "en",
+        "location": "Guiana Space Centre, French Guiana",
+        "country": {
+          "code": "GF",
+          "name": "French Guiana"
+        },
+        "latitude": 5.239,
+        "longitude": -52.768
+      },
+      "attempts": 3,
+      "successes": 2,
+      "failures": 1,
+      "scheduled": 0,
+      "first_launch_at": "2018-01-25T22:20:00Z",
+      "last_launch_at": "2021-10-24T02:10:00Z",
+      "busiest_year": 2021,
+      "busiest_year_attempts": 2,
+      "records_url": "/api/v1/launches?pad=77"
+    }
+  ]
+}

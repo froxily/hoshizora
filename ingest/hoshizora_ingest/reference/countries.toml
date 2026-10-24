@@ -1,0 +1,1289 @@
+[meta]
+source = "Unicode CLDR"
+version = "48.2.3"
+url = "https://raw.githubusercontent.com/unicode-org/cldr-json/48.2.3/cldr-json"
+
+[countries.AC]
+alpha3 = "ASC"
+en = "Ascension Island"
+ja = "アセンション島"
+
+[countries.AD]
+alpha3 = "AND"
+en = "Andorra"
+ja = "アンドラ"
+
+[countries.AE]
+alpha3 = "ARE"
+en = "United Arab Emirates"
+ja = "アラブ首長国連邦"
+
+[countries.AF]
+alpha3 = "AFG"
+en = "Afghanistan"
+ja = "アフガニスタン"
+
+[countries.AG]
+alpha3 = "ATG"
+en = "Antigua & Barbuda"
+ja = "アンティグア・バーブーダ"
+
+[countries.AI]
+alpha3 = "AIA"
+en = "Anguilla"
+ja = "アンギラ"
+
+[countries.AL]
+alpha3 = "ALB"
+en = "Albania"
+ja = "アルバニア"
+
+[countries.AM]
+alpha3 = "ARM"
+en = "Armenia"
+ja = "アルメニア"
+
+[countries.AO]
+alpha3 = "AGO"
+en = "Angola"
+ja = "アンゴラ"
+
+[countries.AQ]
+alpha3 = "ATA"
+en = "Antarctica"
+ja = "南極"
+
+[countries.AR]
+alpha3 = "ARG"
+en = "Argentina"
+ja = "アルゼンチン"
+
+[countries.AS]
+alpha3 = "ASM"
+en = "American Samoa"
+ja = "米領サモア"
+
+[countries.AT]
+alpha3 = "AUT"
+en = "Austria"
+ja = "オーストリア"
+
+[countries.AU]
+alpha3 = "AUS"
+en = "Australia"
+ja = "オーストラリア"
+
+[countries.AW]
+alpha3 = "ABW"
+en = "Aruba"
+ja = "アルバ"
+
+[countries.AX]
+alpha3 = "ALA"
+en = "Åland Islands"
+ja = "オーランド諸島"
+
+[countries.AZ]
+alpha3 = "AZE"
+en = "Azerbaijan"
+ja = "アゼルバイジャン"
+
+[countries.BA]
+alpha3 = "BIH"
+en = "Bosnia & Herzegovina"
+ja = "ボスニア・ヘルツェゴビナ"
+
+[countries.BB]
+alpha3 = "BRB"
+en = "Barbados"
+ja = "バルバドス"
+
+[countries.BD]
+alpha3 = "BGD"
+en = "Bangladesh"
+ja = "バングラデシュ"
+
+[countries.BE]
+alpha3 = "BEL"
+en = "Belgium"
+ja = "ベルギー"
+
+[countries.BF]
+alpha3 = "BFA"
+en = "Burkina Faso"
+ja = "ブルキナファソ"
+
+[countries.BG]
+alpha3 = "BGR"
+en = "Bulgaria"
+ja = "ブルガリア"
+
+[countries.BH]
+alpha3 = "BHR"
+en = "Bahrain"
+ja = "バーレーン"
+
+[countries.BI]
+alpha3 = "BDI"
+en = "Burundi"
+ja = "ブルンジ"
+
+[countries.BJ]
+alpha3 = "BEN"
+en = "Benin"
+ja = "ベナン"
+
+[countries.BL]
+alpha3 = "BLM"
+en = "St. Barthélemy"
+ja = "サン・バルテルミー"
+
+[countries.BM]
+alpha3 = "BMU"
+en = "Bermuda"
+ja = "バミューダ"
+
+[countries.BN]
+alpha3 = "BRN"
+en = "Brunei"
+ja = "ブルネイ"
+
+[countries.BO]
+alpha3 = "BOL"
+en = "Bolivia"
+ja = "ボリビア"
+
+[countries.BQ]
+alpha3 = "BES"
+en = "Caribbean Netherlands"
+ja = "オランダ領カリブ"
+
+[countries.BR]
+alpha3 = "BRA"
+en = "Brazil"
+ja = "ブラジル"
+
+[countries.BS]
+alpha3 = "BHS"
+en = "Bahamas"
+ja = "バハマ"
+
+[countries.BT]
+alpha3 = "BTN"
+en = "Bhutan"
+ja = "ブータン"
+
+[countries.BV]
+alpha3 = "BVT"
+en = "Bouvet Island"
+ja = "ブーベ島"
+
+[countries.BW]
+alpha3 = "BWA"
+en = "Botswana"
+ja = "ボツワナ"
+
+[countries.BY]
+alpha3 = "BLR"
+en = "Belarus"
+ja = "ベラルーシ"
+
+[countries.BZ]
+alpha3 = "BLZ"
+en = "Belize"
+ja = "ベリーズ"
+
+[countries.CA]
+alpha3 = "CAN"
+en = "Canada"
+ja = "カナダ"
+
+[countries.CC]
+alpha3 = "CCK"
+en = "Cocos (Keeling) Islands"
+ja = "ココス(キーリング)諸島"
+
+[countries.CD]
+alpha3 = "COD"
+en = "Congo - Kinshasa"
+ja = "コンゴ民主共和国(キンシャサ)"
+
+[countries.CF]
+alpha3 = "CAF"
+en = "Central African Republic"
+ja = "中央アフリカ共和国"
+
+[countries.CG]
+alpha3 = "COG"
+en = "Congo - Brazzaville"
+ja = "コンゴ共和国(ブラザビル)"
+
+[countries.CH]
+alpha3 = "CHE"
+en = "Switzerland"
+ja = "スイス"
+
+[countries.CI]
+alpha3 = "CIV"
+en = "Côte d’Ivoire"
+ja = "コートジボワール"
+
+[countries.CK]
+alpha3 = "COK"
+en = "Cook Islands"
+ja = "クック諸島"
+
+[countries.CL]
+alpha3 = "CHL"
+en = "Chile"
+ja = "チリ"
+
+[countries.CM]
+alpha3 = "CMR"
+en = "Cameroon"
+ja = "カメルーン"
+
+[countries.CN]
+alpha3 = "CHN"
+en = "China"
+ja = "中国"
+
+[countries.CO]
+alpha3 = "COL"
+en = "Colombia"
+ja = "コロンビア"
+
+[countries.CP]
+alpha3 = "CPT"
+en = "Clipperton Island"
+ja = "クリッパートン島"
+
+[countries.CR]
+alpha3 = "CRI"
+en = "Costa Rica"
+ja = "コスタリカ"
+
+[countries.CU]
+alpha3 = "CUB"
+en = "Cuba"
+ja = "キューバ"
+
+[countries.CV]
+alpha3 = "CPV"
+en = "Cape Verde"
+ja = "カーボベルデ"
+
+[countries.CW]
+alpha3 = "CUW"
+en = "Curaçao"
+ja = "キュラソー"
+
+[countries.CX]
+alpha3 = "CXR"
+en = "Christmas Island"
+ja = "クリスマス島"
+
+[countries.CY]
+alpha3 = "CYP"
+en = "Cyprus"
+ja = "キプロス"
+
+[countries.CZ]
+alpha3 = "CZE"
+en = "Czechia"
+ja = "チェコ"
+
+[countries.DE]
+alpha3 = "DEU"
+en = "Germany"
+ja = "ドイツ"
+
+[countries.DG]
+alpha3 = "DGA"
+en = "Diego Garcia"
+ja = "ディエゴガルシア島"
+
+[countries.DJ]
+alpha3 = "DJI"
+en = "Djibouti"
+ja = "ジブチ"
+
+[countries.DK]
+alpha3 = "DNK"
+en = "Denmark"
+ja = "デンマーク"
+
+[countries.DM]
+alpha3 = "DMA"
+en = "Dominica"
+ja = "ドミニカ国"
+
+[countries.DO]
+alpha3 = "DOM"
+en = "Dominican Republic"
+ja = "ドミニカ共和国"
+
+[countries.DZ]
+alpha3 = "DZA"
+en = "Algeria"
+ja = "アルジェリア"
+
+[countries.EC]
+alpha3 = "ECU"
+en = "Ecuador"
+ja = "エクアドル"
+
+[countries.EE]
+alpha3 = "EST"
+en = "Estonia"
+ja = "エストニア"
+
+[countries.EG]
+alpha3 = "EGY"
+en = "Egypt"
+ja = "エジプト"
+
+[countries.EH]
+alpha3 = "ESH"
+en = "Western Sahara"
+ja = "西サハラ"
+
+[countries.ER]
+alpha3 = "ERI"
+en = "Eritrea"
+ja = "エリトリア"
+
+[countries.ES]
+alpha3 = "ESP"
+en = "Spain"
+ja = "スペイン"
+
+[countries.ET]
+alpha3 = "ETH"
+en = "Ethiopia"
+ja = "エチオピア"
+
+[countries.FI]
+alpha3 = "FIN"
+en = "Finland"
+ja = "フィンランド"
+
+[countries.FJ]
+alpha3 = "FJI"
+en = "Fiji"
+ja = "フィジー"
+
+[countries.FK]
+alpha3 = "FLK"
+en = "Falkland Islands"
+ja = "フォークランド諸島"
+
+[countries.FM]
+alpha3 = "FSM"
+en = "Micronesia"
+ja = "ミクロネシア連邦"
+
+[countries.FO]
+alpha3 = "FRO"
+en = "Faroe Islands"
+ja = "フェロー諸島"
+
+[countries.FR]
+alpha3 = "FRA"
+en = "France"
+ja = "フランス"
+
+[countries.GA]
+alpha3 = "GAB"
+en = "Gabon"
+ja = "ガボン"
+
+[countries.GB]
+alpha3 = "GBR"
+en = "United Kingdom"
+ja = "イギリス"
+
+[countries.GD]
+alpha3 = "GRD"
+en = "Grenada"
+ja = "グレナダ"
+
+[countries.GE]
+alpha3 = "GEO"
+en = "Georgia"
+ja = "ジョージア"
+
+[countries.GF]
+alpha3 = "GUF"
+en = "French Guiana"
+ja = "仏領ギアナ"
+
+[countries.GG]
+alpha3 = "GGY"
+en = "Guernsey"
+ja = "ガーンジー"
+
+[countries.GH]
+alpha3 = "GHA"
+en = "Ghana"
+ja = "ガーナ"
+
+[countries.GI]
+alpha3 = "GIB"
+en = "Gibraltar"
+ja = "ジブラルタル"
+
+[countries.GL]
+alpha3 = "GRL"
+en = "Greenland"
+ja = "グリーンランド"
+
+[countries.GM]
+alpha3 = "GMB"
+en = "Gambia"
+ja = "ガンビア"
+
+[countries.GN]
+alpha3 = "GIN"
+en = "Guinea"
+ja = "ギニア"
+
+[countries.GP]
+alpha3 = "GLP"
+en = "Guadeloupe"
+ja = "グアドループ"
+
+[countries.GQ]
+alpha3 = "GNQ"
+en = "Equatorial Guinea"
+ja = "赤道ギニア"
+
+[countries.GR]
+alpha3 = "GRC"
+en = "Greece"
+ja = "ギリシャ"
+
+[countries.GS]
+alpha3 = "SGS"
+en = "South Georgia & South Sandwich Islands"
+ja = "サウスジョージア・サウスサンドウィッチ諸島"
+
+[countries.GT]
+alpha3 = "GTM"
+en = "Guatemala"
+ja = "グアテマラ"
+
+[countries.GU]
+alpha3 = "GUM"
+en = "Guam"
+ja = "グアム"
+
+[countries.GW]
+alpha3 = "GNB"
+en = "Guinea-Bissau"
+ja = "ギニアビサウ"
+
+[countries.GY]
+alpha3 = "GUY"
+en = "Guyana"
+ja = "ガイアナ"
+
+[countries.HK]
+alpha3 = "HKG"
+en = "Hong Kong SAR China"
+ja = "中華人民共和国香港特別行政区"
+
+[countries.HM]
+alpha3 = "HMD"
+en = "Heard & McDonald Islands"
+ja = "ハード島・マクドナルド諸島"
+
+[countries.HN]
+alpha3 = "HND"
+en = "Honduras"
+ja = "ホンジュラス"
+
+[countries.HR]
+alpha3 = "HRV"
+en = "Croatia"
+ja = "クロアチア"
+
+[countries.HT]
+alpha3 = "HTI"
+en = "Haiti"
+ja = "ハイチ"
+
+[countries.HU]
+alpha3 = "HUN"
+en = "Hungary"
+ja = "ハンガリー"
+
+[countries.ID]
+alpha3 = "IDN"
+en = "Indonesia"
+ja = "インドネシア"
+
+[countries.IE]
+alpha3 = "IRL"
+en = "Ireland"
+ja = "アイルランド"
+
+[countries.IL]
+alpha3 = "ISR"
+en = "Israel"
+ja = "イスラエル"
+
+[countries.IM]
+alpha3 = "IMN"
+en = "Isle of Man"
+ja = "マン島"
+
+[countries.IN]
+alpha3 = "IND"
+en = "India"
+ja = "インド"
+
+[countries.IO]
+alpha3 = "IOT"
+en = "British Indian Ocean Territory"
+ja = "英領インド洋地域"
+
+[countries.IQ]
+alpha3 = "IRQ"
+en = "Iraq"
+ja = "イラク"
+
+[countries.IR]
+alpha3 = "IRN"
+en = "Iran"
+ja = "イラン"
+
+[countries.IS]
+alpha3 = "ISL"
+en = "Iceland"
+ja = "アイスランド"
+
+[countries.IT]
+alpha3 = "ITA"
+en = "Italy"
+ja = "イタリア"
+
+[countries.JE]
+alpha3 = "JEY"
+en = "Jersey"
+ja = "ジャージー"
+
+[countries.JM]
+alpha3 = "JAM"
+en = "Jamaica"
+ja = "ジャマイカ"
+
+[countries.JO]
+alpha3 = "JOR"
+en = "Jordan"
+ja = "ヨルダン"
+
+[countries.JP]
+alpha3 = "JPN"
+en = "Japan"
+ja = "日本"
+
+[countries.KE]
+alpha3 = "KEN"
+en = "Kenya"
+ja = "ケニア"
+
+[countries.KG]
+alpha3 = "KGZ"
+en = "Kyrgyzstan"
+ja = "キルギス"
+
+[countries.KH]
+alpha3 = "KHM"
+en = "Cambodia"
+ja = "カンボジア"
+
+[countries.KI]
+alpha3 = "KIR"
+en = "Kiribati"
+ja = "キリバス"
+
+[countries.KM]
+alpha3 = "COM"
+en = "Comoros"
+ja = "コモロ"
+
+[countries.KN]
+alpha3 = "KNA"
+en = "St. Kitts & Nevis"
+ja = "セントクリストファー・ネーヴィス"
+
+[countries.KP]
+alpha3 = "PRK"
+en = "North Korea"
+ja = "北朝鮮"
+
+[countries.KR]
+alpha3 = "KOR"
+en = "South Korea"
+ja = "韓国"
+
+[countries.KW]
+alpha3 = "KWT"
+en = "Kuwait"
+ja = "クウェート"
+
+[countries.KY]
+alpha3 = "CYM"
+en = "Cayman Islands"
+ja = "ケイマン諸島"
+
+[countries.KZ]
+alpha3 = "KAZ"
+en = "Kazakhstan"
+ja = "カザフスタン"
+
+[countries.LA]
+alpha3 = "LAO"
+en = "Laos"
+ja = "ラオス"
+
+[countries.LB]
+alpha3 = "LBN"
+en = "Lebanon"
+ja = "レバノン"
+
+[countries.LC]
+alpha3 = "LCA"
+en = "St. Lucia"
+ja = "セントルシア"
+
+[countries.LI]
+alpha3 = "LIE"
+en = "Liechtenstein"
+ja = "リヒテンシュタイン"
+
+[countries.LK]
+alpha3 = "LKA"
+en = "Sri Lanka"
+ja = "スリランカ"
+
+[countries.LR]
+alpha3 = "LBR"
+en = "Liberia"
+ja = "リベリア"
+
+[countries.LS]
+alpha3 = "LSO"
+en = "Lesotho"
+ja = "レソト"
+
+[countries.LT]
+alpha3 = "LTU"
+en = "Lithuania"
+ja = "リトアニア"
+
+[countries.LU]
+alpha3 = "LUX"
+en = "Luxembourg"
+ja = "ルクセンブルク"
+
+[countries.LV]
+alpha3 = "LVA"
+en = "Latvia"
+ja = "ラトビア"
+
+[countries.LY]
+alpha3 = "LBY"
+en = "Libya"
+ja = "リビア"
+
+[countries.MA]
+alpha3 = "MAR"
+en = "Morocco"
+ja = "モロッコ"
+
+[countries.MC]
+alpha3 = "MCO"
+en = "Monaco"
+ja = "モナコ"
+
+[countries.MD]
+alpha3 = "MDA"
+en = "Moldova"
+ja = "モルドバ"
+
+[countries.ME]
+alpha3 = "MNE"
+en = "Montenegro"
+ja = "モンテネグロ"
+
+[countries.MF]
+alpha3 = "MAF"
+en = "St. Martin"
+ja = "サン・マルタン"
+
+[countries.MG]
+alpha3 = "MDG"
+en = "Madagascar"
+ja = "マダガスカル"
+
+[countries.MH]
+alpha3 = "MHL"
+en = "Marshall Islands"
+ja = "マーシャル諸島"
+
+[countries.MK]
+alpha3 = "MKD"
+en = "North Macedonia"
+ja = "北マケドニア"
+
+[countries.ML]
+alpha3 = "MLI"
+en = "Mali"
+ja = "マリ"
+
+[countries.MM]
+alpha3 = "MMR"
+en = "Myanmar (Burma)"
+ja = "ミャンマー (ビルマ)"
+
+[countries.MN]
+alpha3 = "MNG"
+en = "Mongolia"
+ja = "モンゴル"
+
+[countries.MO]
+alpha3 = "MAC"
+en = "Macao SAR China"
+ja = "中華人民共和国マカオ特別行政区"
+
+[countries.MP]
+alpha3 = "MNP"
+en = "Northern Mariana Islands"
+ja = "北マリアナ諸島"
+
+[countries.MQ]
+alpha3 = "MTQ"
+en = "Martinique"
+ja = "マルティニーク"
+
+[countries.MR]
+alpha3 = "MRT"
+en = "Mauritania"
+ja = "モーリタニア"
+
+[countries.MS]
+alpha3 = "MSR"
+en = "Montserrat"
+ja = "モントセラト"
+
+[countries.MT]
+alpha3 = "MLT"
+en = "Malta"
+ja = "マルタ"
+
+[countries.MU]
+alpha3 = "MUS"
+en = "Mauritius"
+ja = "モーリシャス"
+
+[countries.MV]
+alpha3 = "MDV"
+en = "Maldives"
+ja = "モルディブ"
+
+[countries.MW]
+alpha3 = "MWI"
+en = "Malawi"
+ja = "マラウイ"
+
+[countries.MX]
+alpha3 = "MEX"
+en = "Mexico"
+ja = "メキシコ"
+
+[countries.MY]
+alpha3 = "MYS"
+en = "Malaysia"
+ja = "マレーシア"
+
+[countries.MZ]
+alpha3 = "MOZ"
+en = "Mozambique"
+ja = "モザンビーク"
+
+[countries.NA]
+alpha3 = "NAM"
+en = "Namibia"
+ja = "ナミビア"
+
+[countries.NC]
+alpha3 = "NCL"
+en = "New Caledonia"
+ja = "ニューカレドニア"
+
+[countries.NE]
+alpha3 = "NER"
+en = "Niger"
+ja = "ニジェール"
+
+[countries.NF]
+alpha3 = "NFK"
+en = "Norfolk Island"
+ja = "ノーフォーク島"
+
+[countries.NG]
+alpha3 = "NGA"
+en = "Nigeria"
+ja = "ナイジェリア"
+
+[countries.NI]
+alpha3 = "NIC"
+en = "Nicaragua"
+ja = "ニカラグア"
+
+[countries.NL]
+alpha3 = "NLD"
+en = "Netherlands"
+ja = "オランダ"
+
+[countries.NO]
+alpha3 = "NOR"
+en = "Norway"
+ja = "ノルウェー"
+
+[countries.NP]
+alpha3 = "NPL"
+en = "Nepal"
+ja = "ネパール"
+
+[countries.NR]
+alpha3 = "NRU"
+en = "Nauru"
+ja = "ナウル"
+
+[countries.NU]
+alpha3 = "NIU"
+en = "Niue"
+ja = "ニウエ"
+
+[countries.NZ]
+alpha3 = "NZL"
+en = "New Zealand"
+ja = "ニュージーランド"
+
+[countries.OM]
+alpha3 = "OMN"
+en = "Oman"
+ja = "オマーン"
+
+[countries.PA]
+alpha3 = "PAN"
+en = "Panama"
+ja = "パナマ"
+
+[countries.PE]
+alpha3 = "PER"
+en = "Peru"
+ja = "ペルー"
+
+[countries.PF]
+alpha3 = "PYF"
+en = "French Polynesia"
+ja = "仏領ポリネシア"
+
+[countries.PG]
+alpha3 = "PNG"
+en = "Papua New Guinea"
+ja = "パプアニューギニア"
+
+[countries.PH]
+alpha3 = "PHL"
+en = "Philippines"
+ja = "フィリピン"
+
+[countries.PK]
+alpha3 = "PAK"
+en = "Pakistan"
+ja = "パキスタン"
+
+[countries.PL]
+alpha3 = "POL"
+en = "Poland"
+ja = "ポーランド"
+
+[countries.PM]
+alpha3 = "SPM"
+en = "St. Pierre & Miquelon"
+ja = "サンピエール島・ミクロン島"
+
+[countries.PN]
+alpha3 = "PCN"
+en = "Pitcairn Islands"
+ja = "ピトケアン諸島"
+
+[countries.PR]
+alpha3 = "PRI"
+en = "Puerto Rico"
+ja = "プエルトリコ"
+
+[countries.PS]
+alpha3 = "PSE"
+en = "Palestinian Territories"
+ja = "パレスチナ自治区"
+
+[countries.PT]
+alpha3 = "PRT"
+en = "Portugal"
+ja = "ポルトガル"
+
+[countries.PW]
+alpha3 = "PLW"
+en = "Palau"
+ja = "パラオ"
+
+[countries.PY]
+alpha3 = "PRY"
+en = "Paraguay"
+ja = "パラグアイ"
+
+[countries.QA]
+alpha3 = "QAT"
+en = "Qatar"
+ja = "カタール"
+
+[countries.RE]
+alpha3 = "REU"
+en = "Réunion"
+ja = "レユニオン"
+
+[countries.RO]
+alpha3 = "ROU"
+en = "Romania"
+ja = "ルーマニア"
+
+[countries.RS]
+alpha3 = "SRB"
+en = "Serbia"
+ja = "セルビア"
+
+[countries.RU]
+alpha3 = "RUS"
+en = "Russia"
+ja = "ロシア"
+
+[countries.RW]
+alpha3 = "RWA"
+en = "Rwanda"
+ja = "ルワンダ"
+
+[countries.SA]
+alpha3 = "SAU"
+en = "Saudi Arabia"
+ja = "サウジアラビア"
+
+[countries.SB]
+alpha3 = "SLB"
+en = "Solomon Islands"
+ja = "ソロモン諸島"
+
+[countries.SC]
+alpha3 = "SYC"
+en = "Seychelles"
+ja = "セーシェル"
+
+[countries.SD]
+alpha3 = "SDN"
+en = "Sudan"
+ja = "スーダン"
+
+[countries.SE]
+alpha3 = "SWE"
+en = "Sweden"
+ja = "スウェーデン"
+
+[countries.SG]
+alpha3 = "SGP"
+en = "Singapore"
+ja = "シンガポール"
+
+[countries.SH]
+alpha3 = "SHN"
+en = "St. Helena"
+ja = "セントヘレナ"
+
+[countries.SI]
+alpha3 = "SVN"
+en = "Slovenia"
+ja = "スロベニア"
+
+[countries.SJ]
+alpha3 = "SJM"
+en = "Svalbard & Jan Mayen"
+ja = "スバールバル諸島・ヤンマイエン島"
+
+[countries.SK]
+alpha3 = "SVK"
+en = "Slovakia"
+ja = "スロバキア"
+
+[countries.SL]
+alpha3 = "SLE"
+en = "Sierra Leone"
+ja = "シエラレオネ"
+
+[countries.SM]
+alpha3 = "SMR"
+en = "San Marino"
+ja = "サンマリノ"
+
+[countries.SN]
+alpha3 = "SEN"
+en = "Senegal"
+ja = "セネガル"
+
+[countries.SO]
+alpha3 = "SOM"
+en = "Somalia"
+ja = "ソマリア"
+
+[countries.SR]
+alpha3 = "SUR"
+en = "Suriname"
+ja = "スリナム"
+
+[countries.SS]
+alpha3 = "SSD"
+en = "South Sudan"
+ja = "南スーダン"
+
+[countries.ST]
+alpha3 = "STP"
+en = "São Tomé & Príncipe"
+ja = "サントメ・プリンシペ"
+
+[countries.SV]
+alpha3 = "SLV"
+en = "El Salvador"
+ja = "エルサルバドル"
+
+[countries.SX]
+alpha3 = "SXM"
+en = "Sint Maarten"
+ja = "シント・マールテン"
+
+[countries.SY]
+alpha3 = "SYR"
+en = "Syria"
+ja = "シリア"
+
+[countries.SZ]
+alpha3 = "SWZ"
+en = "Eswatini"
+ja = "エスワティニ"
+
+[countries.TA]
+alpha3 = "TAA"
+en = "Tristan da Cunha"
+ja = "トリスタン・ダ・クーニャ"
+
+[countries.TC]
+alpha3 = "TCA"
+en = "Turks & Caicos Islands"
+ja = "タークス・カイコス諸島"
+
+[countries.TD]
+alpha3 = "TCD"
+en = "Chad"
+ja = "チャド"
+
+[countries.TF]
+alpha3 = "ATF"
+en = "French Southern Territories"
+ja = "仏領極南諸島"
+
+[countries.TG]
+alpha3 = "TGO"
+en = "Togo"
+ja = "トーゴ"
+
+[countries.TH]
+alpha3 = "THA"
+en = "Thailand"
+ja = "タイ"
+
+[countries.TJ]
+alpha3 = "TJK"
+en = "Tajikistan"
+ja = "タジキスタン"
+
+[countries.TK]
+alpha3 = "TKL"
+en = "Tokelau"
+ja = "トケラウ"
+
+[countries.TL]
+alpha3 = "TLS"
+en = "Timor-Leste"
+ja = "東ティモール"
+
+[countries.TM]
+alpha3 = "TKM"
+en = "Turkmenistan"
+ja = "トルクメニスタン"
+
+[countries.TN]
+alpha3 = "TUN"
+en = "Tunisia"
+ja = "チュニジア"
+
+[countries.TO]
+alpha3 = "TON"
+en = "Tonga"
+ja = "トンガ"
+
+[countries.TR]
+alpha3 = "TUR"
+en = "Türkiye"
+ja = "トルコ"
+
+[countries.TT]
+alpha3 = "TTO"
+en = "Trinidad & Tobago"
+ja = "トリニダード・トバゴ"
+
+[countries.TV]
+alpha3 = "TUV"
+en = "Tuvalu"
+ja = "ツバル"
+
+[countries.TW]
+alpha3 = "TWN"
+en = "Taiwan"
+ja = "台湾"
+
+[countries.TZ]
+alpha3 = "TZA"
+en = "Tanzania"
+ja = "タンザニア"
+
+[countries.UA]
+alpha3 = "UKR"
+en = "Ukraine"
+ja = "ウクライナ"
+
+[countries.UG]
+alpha3 = "UGA"
+en = "Uganda"
+ja = "ウガンダ"
+
+[countries.UM]
+alpha3 = "UMI"
+en = "U.S. Outlying Islands"
+ja = "合衆国領有小離島"
+
+[countries.US]
+alpha3 = "USA"
+en = "United States"
+ja = "アメリカ合衆国"
+
+[countries.UY]
+alpha3 = "URY"
+en = "Uruguay"
+ja = "ウルグアイ"
+
+[countries.UZ]
+alpha3 = "UZB"
+en = "Uzbekistan"
+ja = "ウズベキスタン"
+
+[countries.VA]
+alpha3 = "VAT"
+en = "Vatican City"
+ja = "バチカン市国"
+
+[countries.VC]
+alpha3 = "VCT"
+en = "St. Vincent & Grenadines"
+ja = "セントビンセント及びグレナディーン諸島"
+
+[countries.VE]
+alpha3 = "VEN"
+en = "Venezuela"
+ja = "ベネズエラ"
+
+[countries.VG]
+alpha3 = "VGB"
+en = "British Virgin Islands"
+ja = "英領ヴァージン諸島"
+
+[countries.VI]
+alpha3 = "VIR"
+en = "U.S. Virgin Islands"
+ja = "米領ヴァージン諸島"
+
+[countries.VN]
+alpha3 = "VNM"
+en = "Vietnam"
+ja = "ベトナム"
+
+[countries.VU]
+alpha3 = "VUT"
+en = "Vanuatu"
+ja = "バヌアツ"
+
+[countries.WF]
+alpha3 = "WLF"
+en = "Wallis & Futuna"
+ja = "ウォリス・フツナ"
+
+[countries.WS]
+alpha3 = "WSM"
+en = "Samoa"
+ja = "サモア"
+
+[countries.XA]
+alpha3 = "XAA"
+en = "Pseudo-Accents"
+ja = "疑似アクセント"
+
+[countries.XB]
+alpha3 = "XBB"
+en = "Pseudo-Bidi"
+ja = "疑似 BIDI"
+
+[countries.XK]
+alpha3 = "XKK"
+en = "Kosovo"
+ja = "コソボ"
+
+[countries.YE]
+alpha3 = "YEM"
+en = "Yemen"
+ja = "イエメン"
+
+[countries.YT]
+alpha3 = "MYT"
+en = "Mayotte"
+ja = "マヨット"
+
+[countries.ZA]
+alpha3 = "ZAF"
+en = "South Africa"
+ja = "南アフリカ"
+
+[countries.ZM]
+alpha3 = "ZMB"
+en = "Zambia"
+ja = "ザンビア"
+
+[countries.ZW]
+alpha3 = "ZWE"
+en = "Zimbabwe"
+ja = "ジンバブエ"
+
+[countries.ZZ]
+alpha3 = "ZZZ"
+en = "Unknown Region"
+ja = "不明な地域"

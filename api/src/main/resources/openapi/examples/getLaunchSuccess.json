@@ -1,0 +1,60 @@
+{
+  "source": "launch-library",
+  "group_by": "program",
+  "groups": [
+    {
+      "group": {
+        "kind": "program",
+        "key": "japan",
+        "name": "Japan",
+        "name_lang": "en"
+      },
+      "attempts": 12,
+      "successes": 11,
+      "success_rate": 0.9166666666666666,
+      "recent_attempts": 12,
+      "recent_successes": 11,
+      "recent_success_rate": 0.9166666666666666,
+      "current_streak": 10,
+      "longest_streak": 10,
+      "records_url": "/api/v1/launches?program=japan",
+      "years": [
+        {
+          "year": 2016,
+          "attempts_to_date": 1,
+          "successes_to_date": 1,
+          "success_rate_to_date": 1.0,
+          "recent_success_rate": 1.0
+        },
+        {
+          "year": 2017,
+          "attempts_to_date": 7,
+          "successes_to_date": 6,
+          "success_rate_to_date": 0.8571428571428571,
+          "recent_success_rate": 0.8571428571428571
+        },
+        {
+          "year": 2018,
+          "attempts_to_date": 9,
+          "successes_to_date": 8,
+          "success_rate_to_date": 0.8888888888888888,
+          "recent_success_rate": 0.8888888888888888
+        },
+        {
+          "year": 2020,
+          "attempts_to_date": 10,
+          "successes_to_date": 9,
+          "success_rate_to_date": 0.9,
+          "recent_success_rate": 0.9
+        },
+        {
+          "year": 2021,
+          "attempts_to_date": 12,
+          "successes_to_date": 11,
+          "success_rate_to_date": 0.9166666666666666,
+          "recent_success_rate": 0.9166666666666666
+        }
+      ]
+    }
+  ]
+}

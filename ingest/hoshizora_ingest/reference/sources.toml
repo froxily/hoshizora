@@ -1,0 +1,89 @@
+[meta]
+source = "Hoshizora curation"
+policy = "One entry per registered source. License and credit wording follows each source's published terms, recorded in docs/sources/. update_interval_hours is how often scheduled ingestion refreshes the source; omit it for data that changes only on demand."
+retrieved = "2026-10-16"
+
+[sources.launch-library]
+name_en = "Launch Library 2 (The Space Devs)"
+name_ja = "Launch Library 2（The Space Devs）"
+description_en = "Launches, launch vehicles, pads, missions, agencies, and first-stage boosters and landings worldwide."
+description_ja = "世界の打ち上げ、ロケット、射場、ミッション、宇宙機関、1段ブースターと着陸のデータです。"
+credit_en = "Launch data: The Space Devs, Launch Library 2 (thespacedevs.com)"
+credit_ja = "打ち上げデータ：The Space Devs「Launch Library 2」（thespacedevs.com）"
+license_en = "No license or attribution requirement is published. Credited as a courtesy."
+license_ja = "ライセンスや出典表示の条件は公開されていません。感謝を込めて出典を表示しています。"
+homepage_url = "https://thespacedevs.com/llapi"
+cadence_en = "Incremental by last change, at most 15 requests per hour."
+cadence_ja = "最終更新日時による差分取得（1時間あたり最大15リクエスト）"
+update_interval_hours = 1
+
+[sources.celestrak]
+name_en = "CelesTrak SATCAT and GP"
+name_ja = "CelesTrak（SATCATとGP軌道要素）"
+description_en = "Every catalogued object, with its owner, launch and decay dates, and current orbital elements."
+description_ja = "カタログに登録されたすべての物体の所有者、打ち上げ日、落下日と最新の軌道要素です。"
+credit_en = "Orbital data: CelesTrak (celestrak.org)"
+credit_ja = "軌道データ：CelesTrak（celestrak.org）"
+license_en = "No attribution requirement is stated. The data is freely available."
+license_ja = "出典表示の条件は示されていません。データは自由に利用できます。"
+homepage_url = "https://celestrak.org"
+cadence_en = "SATCAT at most every 12 hours, active orbital elements at most every 2 hours."
+cadence_ja = "SATCATは最短12時間ごと、運用中の軌道要素は最短2時間ごと"
+update_interval_hours = 2
+
+[sources.jpl]
+name_en = "NASA/JPL Solar System Dynamics"
+name_ja = "NASAジェット推進研究所（JPL）Solar System Dynamics"
+description_en = "Close approaches of asteroids and comets to Earth, and the Sentry impact-monitoring list."
+description_ja = "小惑星や彗星の地球への接近と、衝突監視システムSentryの監視対象です。"
+credit_en = "Small-body data: NASA/JPL Solar System Dynamics (SBDB Close Approach and Sentry APIs)"
+credit_ja = "小天体データ：NASAジェット推進研究所（JPL）Solar System Dynamics（SBDB Close Approach API、Sentry API）"
+license_en = "No license or attribution requirement is stated."
+license_ja = "ライセンスや出典表示の条件は示されていません。"
+homepage_url = "https://ssd.jpl.nasa.gov"
+cadence_en = "A rolling close-approach window and Sentry, every 12 hours."
+cadence_ja = "接近予測とSentryを12時間ごとに更新"
+update_interval_hours = 12
+
+[sources.swpc]
+name_en = "NOAA Space Weather Prediction Center"
+name_ja = "アメリカ海洋大気庁（NOAA）宇宙天気予報センター"
+description_en = "Planetary Kp index, GOES X-ray flares and real-time solar wind at L1."
+description_ja = "惑星Kp指数、GOES衛星が観測したX線フレア、L1点のリアルタイム太陽風です。"
+credit_en = "Space weather data: NOAA Space Weather Prediction Center (SWPC)"
+credit_ja = "宇宙天気データ：アメリカ海洋大気庁（NOAA）宇宙天気予報センター（SWPC）"
+license_en = "Open NOAA data. NOAA asks for attribution and does not endorse this site."
+license_ja = "NOAAのオープンデータです。NOAAは出典の表示を求めており、本サイトを推奨するものではありません。"
+homepage_url = "https://www.swpc.noaa.gov"
+cadence_en = "Kp and flares hourly, solar wind every 6 hours, with conditional requests."
+cadence_ja = "Kp指数とフレアは1時間ごと、太陽風は6時間ごと（条件付きリクエスト）"
+update_interval_hours = 1
+
+[sources.reference]
+name_en = "Curated reference data"
+name_ja = "整理済みの参照データ"
+description_en = "Country names from Unicode CLDR, CelesTrak owner codes and organization curation."
+description_ja = "Unicode CLDRの国名、CelesTrakの所有者コード、組織情報の整理データです。"
+credit_en = "Country names: Unicode CLDR. Owner codes: CelesTrak. Curation: Hoshizora."
+credit_ja = "国名：Unicode CLDR、所有者コード：CelesTrak、整理：Hoshizora"
+license_en = "Unicode CLDR data is licensed under the Unicode License v3."
+license_ja = "Unicode CLDRのデータはUnicode License v3で提供されています。"
+license_url = "https://www.unicode.org/license.txt"
+homepage_url = "https://cldr.unicode.org"
+cadence_en = "On change."
+cadence_ja = "変更時"
+
+[sources.exoplanet-archive]
+name_en = "NASA Exoplanet Archive"
+name_ja = "NASA系外惑星アーカイブ（NASA Exoplanet Archive）"
+description_en = "Every confirmed exoplanet, with the archive's best estimate of each planet's size, mass, orbit and distance."
+description_ja = "確認済みのすべての太陽系外惑星と、その大きさ、質量、軌道、距離の推定値です。"
+credit_en = "This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program."
+credit_ja = "本サイトはNASA Exoplanet Archiveのデータを使用しています。同アーカイブは、NASAの系外惑星探査プログラムのもと、カリフォルニア工科大学が運営しています。"
+license_en = "Public NASA data. The archive asks users to include its acknowledgment and to cite Christiansen et al. (2025), DOI 10.26133/NEA45."
+license_ja = "NASAの公開データです。アーカイブの謝辞を記載し、Christiansen et al. (2025)（DOI 10.26133/NEA45）を引用するよう求められています。"
+license_url = "https://exoplanetarchive.ipac.caltech.edu/docs/acknowledge.html"
+homepage_url = "https://exoplanetarchive.ipac.caltech.edu"
+cadence_en = "The composite planet table once a day; the archive updates it weekly."
+cadence_ja = "惑星の統合パラメータ表を1日1回取得（アーカイブ側は毎週更新）"
+update_interval_hours = 24

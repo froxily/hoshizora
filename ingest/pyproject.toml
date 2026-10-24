@@ -1,0 +1,71 @@
+[project]
+name = "hoshizora-ingest"
+version = "0.1.0"
+description = "Hoshizora ingestion: source adapters, normalization, analytics marts and the fact engine."
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.3.6",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.0",
+    "pyyaml>=6.0.3",
+    "structlog>=26.1.0",
+    "tenacity>=9.2.1",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+hoshizora = "hoshizora_ingest.cli:app"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.414",
+    "pytest>=9.1.1",
+    "respx>=0.23.1",
+    "ruff>=0.17.0",
+    "testcontainers[postgres]>=4.15.0",
+    "types-pyyaml>=6.0.12.20260906",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv]
+exclude-newer = "1 day"
+
+[tool.uv.build-backend]
+module-name = "hoshizora_ingest"
+module-root = ""
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "CPY", "D", "TC"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hoshizora_ingest"]
+known-local-folder = ["conftest", "fact_seed", "fakes"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["INP001", "PLR2004", "S101"]
+"hoshizora_ingest/cli.py" = ["BLE001"]
+"hoshizora_ingest/backfill/loop.py" = ["BLE001"]
+"hoshizora_ingest/sources/jpl/models.py" = ["DTZ001"]
+
+[tool.pyright]
+include = ["hoshizora_ingest", "tests"]
+extraPaths = ["tests"]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+filterwarnings = ["error"]

@@ -1,0 +1,72 @@
+[
+ {
+  "time_tag": "2026-10-16T01:04:00Z",
+  "begin_time": "2026-10-16T01:04:00Z",
+  "begin_class": "B7.7",
+  "max_time": "2026-10-16T01:17:00Z",
+  "max_class": "C3.0",
+  "max_xrlong": 3.0941971544962144e-06,
+  "max_ratio": 0.11289260929371969,
+  "max_ratio_time": "2026-10-16T01:16:41Z",
+  "current_int_xrlong": 0.0032789302058517933,
+  "end_time": "2026-10-16T01:31:00Z",
+  "end_class": "C1.9",
+  "satellite": 18
+ },
+ {
+  "time_tag": "2026-10-16T03:26:00Z",
+  "begin_time": "2026-10-16T03:26:00Z",
+  "begin_class": "B8.2",
+  "max_time": "2026-10-16T03:34:00Z",
+  "max_class": "C1.6",
+  "max_xrlong": 1.6167770127140102e-06,
+  "max_ratio": 0.09408819089404476,
+  "max_ratio_time": "2026-10-16T03:33:26Z",
+  "current_int_xrlong": 0.0008867040742188692,
+  "end_time": "2026-10-16T03:37:00Z",
+  "end_class": "C1.2",
+  "satellite": 18
+ },
+ {
+  "time_tag": "2026-10-16T04:20:00Z",
+  "begin_time": "2026-10-16T04:20:00Z",
+  "begin_class": "B8.4",
+  "max_time": "2026-10-16T04:31:00Z",
+  "max_class": "C1.7",
+  "max_xrlong": 1.7015463527059183e-06,
+  "max_ratio": 0.19863683610924424,
+  "max_ratio_time": "2026-10-16T04:28:14Z",
+  "current_int_xrlong": 0.002292029093950987,
+  "end_time": "2026-10-16T04:45:00Z",
+  "end_class": "C1.1",
+  "satellite": 18
+ },
+ {
+  "time_tag": "2026-10-16T06:14:00Z",
+  "begin_time": "2026-10-16T06:14:00Z",
+  "begin_class": "B7.5",
+  "max_time": "2026-10-16T06:22:00Z",
+  "max_class": "C1.3",
+  "max_xrlong": 1.3264732388051925e-06,
+  "max_ratio": 0.14543259506486444,
+  "max_ratio_time": "2026-10-16T06:18:56Z",
+  "current_int_xrlong": 0.0011847697896882892,
+  "end_time": "2026-10-16T06:30:00Z",
+  "end_class": "C1.0",
+  "satellite": 18
+ },
+ {
+  "time_tag": "2026-10-16T07:10:00Z",
+  "begin_time": "2026-10-16T07:10:00Z",
+  "begin_class": "B7.5",
+  "max_time": "2026-10-16T07:18:00Z",
+  "max_class": "C1.3",
+  "max_xrlong": 1.3264732388051925e-06,
+  "max_ratio": 0.14543259506486444,
+  "max_ratio_time": "2026-10-16T06:18:56Z",
+  "current_int_xrlong": 0.0011847697896882892,
+  "end_time": null,
+  "end_class": null,
+  "satellite": 18
+ }
+]

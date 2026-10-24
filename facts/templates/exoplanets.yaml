@@ -1,0 +1,136 @@
+- key: exoplanets.confirmed_total
+  module: exoplanets
+  requires: [exoplanet-archive]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.5}
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key,
+           (SELECT sum(planets) FROM mart.exoplanet_discoveries_yearly) AS total,
+           sum(d.planets) AS this_year, d.year,
+           jsonb_agg(jsonb_build_object(
+               'entity', 'mart.exoplanet_discoveries_yearly', 'key', concat_ws('|', d.year, d.method)
+           ) ORDER BY d.method) AS source_refs
+    FROM mart.exoplanet_discoveries_yearly d
+    WHERE d.year = extract(year FROM %(as_of)s::timestamptz)
+    GROUP BY d.year
+    HAVING sum(d.planets) >= 2
+  params:
+    total: {type: integer, from: total}
+    this_year: {type: integer, from: this_year}
+    year: {type: year, from: year}
+  text:
+    en: "{total, number, integer} exoplanets have been confirmed so far, {this_year, number, integer} of them discovered in {year}."
+    ja: "これまでに確認された太陽系外惑星は{total, number, integer}個で、そのうち{this_year, number, integer}個は{year}年に発見されました。"
+  examples:
+    - params: {total: 6451, this_year: 361, year: "2026"}
+      en: "6,451 exoplanets have been confirmed so far, 361 of them discovered in 2026."
+      ja: "これまでに確認された太陽系外惑星は6,451個で、そのうち361個は2026年に発見されました。"
+
+- key: exoplanets.record_year
+  module: exoplanets
+  requires: [exoplanet-archive]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    WITH yearly AS (
+        SELECT d.year, sum(d.planets) AS planets,
+               jsonb_agg(jsonb_build_object(
+                   'entity', 'mart.exoplanet_discoveries_yearly', 'key', concat_ws('|', d.year, d.method)
+               ) ORDER BY d.method) AS source_refs
+        FROM mart.exoplanet_discoveries_yearly d
+        GROUP BY d.year
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, y.year, y.planets, true AS is_record,
+           y.source_refs
+    FROM yearly y
+    WHERE y.year < extract(year FROM %(as_of)s::timestamptz)
+    ORDER BY y.planets DESC, y.year DESC
+    LIMIT 1
+  params:
+    year: {type: year, from: year}
+    planets: {type: integer, from: planets}
+  text:
+    en: "The record year for exoplanet discoveries is {year}, with {planets, number, integer} planets."
+    ja: "太陽系外惑星の発見数がもっとも多かったのは{year}年で、{planets, number, integer}個が見つかりました。"
+  examples:
+    - params: {year: "2016", planets: 1504}
+      en: "The record year for exoplanet discoveries is 2016, with 1,504 planets."
+      ja: "太陽系外惑星の発見数がもっとも多かったのは2016年で、1,504個が見つかりました。"
+
+- key: exoplanets.nearest
+  module: exoplanets
+  requires: [exoplanet-archive]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'exoplanet' AS entity_type, e.name AS entity_key, e.name AS planet,
+           e.distance_pc * 3.26156 AS light_years,
+           e.distance_pc * 3.0856775814913673e13 AS distance_km,
+           true AS is_record,
+           jsonb_build_array(jsonb_build_object('entity', 'core.exoplanet', 'key', e.name)) AS source_refs
+    FROM core.exoplanet e
+    WHERE e.distance_pc IS NOT NULL AND NOT e.controversial
+    ORDER BY e.distance_pc, e.name
+    LIMIT 1
+  params:
+    planet: {type: text, from: planet}
+    light_years: {type: number, from: light_years, decimals: 1}
+    years: {type: number, from: distance_km, humanize: shinkansen_years, significant: 2}
+  text:
+    en: "The nearest known exoplanet, {planet}, is {light_years, number} light-years away. At Shinkansen speed the trip would take {years, number} years."
+    ja: "もっとも近い太陽系外惑星は{planet}で、{light_years, number}光年離れています。新幹線の速さで向かうと約{years, number, compact}年かかります。"
+  examples:
+    - params: {planet: Proxima Cen b, light_years: 4.2, years: 14000000}
+      en: "The nearest known exoplanet, Proxima Cen b, is 4.2 light-years away. At Shinkansen speed the trip would take 14,000,000 years."
+      ja: "もっとも近い太陽系外惑星はProxima Cen bで、4.2光年離れています。新幹線の速さで向かうと約1400万年かかります。"
+
+- key: exoplanets.transit_share
+  module: exoplanets
+  requires: [exoplanet-archive]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.5}
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key,
+           sum(d.planets) FILTER (WHERE d.method = 'Transit')::float8 / sum(d.planets) AS share,
+           jsonb_agg(jsonb_build_object(
+               'entity', 'mart.exoplanet_discoveries_yearly', 'key', concat_ws('|', d.year, d.method)
+           ) ORDER BY d.year) FILTER (WHERE d.method = 'Transit') AS source_refs
+    FROM mart.exoplanet_discoveries_yearly d
+    HAVING sum(d.planets) >= 10
+  params:
+    share: {type: percent, from: share, decimals: 0}
+  text:
+    en: "{share, number, percent} of known exoplanets were found by the transit method: a planet crossing its star dims the starlight slightly."
+    ja: "確認された太陽系外惑星の{share, number, percent}は、惑星が恒星の前を横切るときのわずかな減光をとらえるトランジット法で見つかりました。"
+  examples:
+    - params: {share: 0.74}
+      en: "74% of known exoplanets were found by the transit method: a planet crossing its star dims the starlight slightly."
+      ja: "確認された太陽系外惑星の74%は、惑星が恒星の前を横切るときのわずかな減光をとらえるトランジット法で見つかりました。"
+
+- key: exoplanets.earth_sized_temperate
+  module: exoplanets
+  requires: [exoplanet-archive]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.6}
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, count(*) AS planets,
+           jsonb_agg(jsonb_build_object('entity', 'core.exoplanet', 'key', e.name) ORDER BY e.name)
+               AS source_refs
+    FROM core.exoplanet e
+    WHERE e.discovery_method = 'Transit'
+      AND e.radius_earth BETWEEN 0.8 AND 1.5
+      AND e.insolation_earth BETWEEN 0.36 AND 1.1
+      AND NOT e.controversial
+    HAVING count(*) >= 2
+  params:
+    planets: {type: integer, from: planets}
+  text:
+    en: "{planets, number, integer} transiting exoplanets are roughly Earth-sized (0.8–1.5 Earth radii) and receive between 0.36 and 1.1 times the starlight Earth gets from the Sun. Size and light alone do not make a planet habitable."
+    ja: "地球とほぼ同じ大きさ（半径が地球の0.8〜1.5倍）で、恒星から受ける光が地球の0.36〜1.1倍のトランジット惑星は{planets, number, integer}個あります。大きさと光の量だけで生命が住めるとは限りません。"
+  examples:
+    - params: {planets: 8}
+      en: "8 transiting exoplanets are roughly Earth-sized (0.8–1.5 Earth radii) and receive between 0.36 and 1.1 times the starlight Earth gets from the Sun. Size and light alone do not make a planet habitable."
+      ja: "地球とほぼ同じ大きさ（半径が地球の0.8〜1.5倍）で、恒星から受ける光が地球の0.36〜1.1倍のトランジット惑星は8個あります。大きさと光の量だけで生命が住めるとは限りません。"

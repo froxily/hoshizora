@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: hoshizora-api
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    hikari:
+      read-only: true
+  sql:
+    init:
+      mode: never
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    version: openapi_3_1
+  paths-to-match: /api/v1/**
+  writer-with-order-by-keys: true
+  override-with-generic-response: false
+  default-produces-media-type: application/json
+
+hoshizora:
+  cache:
+    maximum-size: 1000
+    ttl:
+      sources: 5m
+      launches: 1h
+      launch: 1h
+      agencies: 1h
+      agency: 1h
+      close-approaches: 12h
+      impact-risks: 12h
+      impact-risk: 12h
+      space-weather-now: 1h
+      kp: 1h
+      flares: 1h
+      solar-wind: 1h
+      aurora: 30m
+      launch-cadence: 1h
+      launch-success: 1h
+      launch-pads: 1h
+      launch-reusability: 1h
+      launch-boosters: 1h
+      exoplanets: 24h
+      exoplanet: 24h
+      exoplanet-discoveries: 24h
+      exoplanet-size-orbit: 24h
+      objects-in-orbit: 12h
+      close-approach-monthly: 12h
+      flares-monthly: 1h
+      kp-daily: 1h
+      overview: 1h
+      facts: 1h
+      fact: 1h
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/problem+json
+    min-response-size: 2KB

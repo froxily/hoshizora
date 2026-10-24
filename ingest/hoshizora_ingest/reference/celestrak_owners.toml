@@ -1,0 +1,554 @@
+[meta]
+source = "CelesTrak SATCAT owner codes"
+url = "https://celestrak.org/satcat/sources.php"
+retrieved = "2026-10-16"
+
+[owners.AB]
+label = "Arab Satellite Communications Organization"
+organization = "arabsat"
+
+[owners.ABS]
+label = "Asia Broadcast Satellite"
+organization = "abs"
+
+[owners.AC]
+label = "Asia Satellite Telecommunications Company (ASIASAT)"
+organization = "asiasat"
+
+[owners.ALG]
+label = "Algeria"
+countries = ["DZ"]
+
+[owners.ANG]
+label = "Angola"
+countries = ["AO"]
+
+[owners.ARGN]
+label = "Argentina"
+countries = ["AR"]
+
+[owners.ARM]
+label = "Republic of Armenia"
+countries = ["AM"]
+
+[owners.ASRA]
+label = "Austria"
+countries = ["AT"]
+
+[owners.AUS]
+label = "Australia"
+countries = ["AU"]
+
+[owners.AZER]
+label = "Azerbaijan"
+countries = ["AZ"]
+
+[owners.BEL]
+label = "Belgium"
+countries = ["BE"]
+
+[owners.BELA]
+label = "Belarus"
+countries = ["BY"]
+
+[owners.BERM]
+label = "Bermuda"
+countries = ["BM"]
+
+[owners.BGD]
+label = "Peoples Republic of Bangladesh"
+countries = ["BD"]
+
+[owners.BHR]
+label = "The Kingdom of Bahrain"
+countries = ["BH"]
+
+[owners.BHUT]
+label = "The Kingdom of Bhutan"
+countries = ["BT"]
+
+[owners.BOL]
+label = "Bolivia"
+countries = ["BO"]
+
+[owners.BRAZ]
+label = "Brazil"
+countries = ["BR"]
+
+[owners.BUL]
+label = "Bulgaria"
+countries = ["BG"]
+
+[owners.BWA]
+label = "Republic of Botswana"
+countries = ["BW"]
+
+[owners.CA]
+label = "Canada"
+countries = ["CA"]
+
+[owners.CHBZ]
+label = "China/Brazil"
+countries = ["CN", "BR"]
+
+[owners.CHTU]
+label = "China/Türkiye"
+countries = ["CN", "TR"]
+
+[owners.CHLE]
+label = "Chile"
+countries = ["CL"]
+
+[owners.CIS]
+label = "Commonwealth of Independent States (former USSR)"
+countries = ["RU"]
+note = "Attributed to Russia as the USSR's successor state; SATCAT uses CIS for Soviet and Russian objects."
+
+[owners.COL]
+label = "Colombia"
+countries = ["CO"]
+
+[owners.CRI]
+label = "Republic of Costa Rica"
+countries = ["CR"]
+
+[owners.CZCH]
+label = "Czech Republic (former Czechoslovakia)"
+countries = ["CZ"]
+
+[owners.DEN]
+label = "Denmark"
+countries = ["DK"]
+
+[owners.DJI]
+label = "Republic of Djibouti"
+countries = ["DJ"]
+
+[owners.ECU]
+label = "Ecuador"
+countries = ["EC"]
+
+[owners.EGYP]
+label = "Egypt"
+countries = ["EG"]
+
+[owners.ESA]
+label = "European Space Agency"
+organization = "esa"
+
+[owners.ESRO]
+label = "European Space Research Organization"
+organization = "esro"
+
+[owners.EST]
+label = "Estonia"
+countries = ["EE"]
+
+[owners.ETH]
+label = "Ethiopia"
+countries = ["ET"]
+
+[owners.EUME]
+label = "European Organization for the Exploitation of Meteorological Satellites (EUMETSAT)"
+organization = "eumetsat"
+
+[owners.EUTE]
+label = "European Telecommunications Satellite Organization (EUTELSAT)"
+organization = "eutelsat"
+
+[owners.FGER]
+label = "France/Germany"
+countries = ["FR", "DE"]
+
+[owners.FIN]
+label = "Finland"
+countries = ["FI"]
+
+[owners.FR]
+label = "France"
+countries = ["FR"]
+
+[owners.FRIT]
+label = "France/Italy"
+countries = ["FR", "IT"]
+
+[owners.GER]
+label = "Germany"
+countries = ["DE"]
+
+[owners.GHA]
+label = "Republic of Ghana"
+countries = ["GH"]
+
+[owners.GLOB]
+label = "Globalstar"
+organization = "globalstar"
+
+[owners.GREC]
+label = "Greece"
+countries = ["GR"]
+
+[owners.GRSA]
+label = "Greece/Saudi Arabia"
+countries = ["GR", "SA"]
+
+[owners.GUAT]
+label = "Guatemala"
+countries = ["GT"]
+
+[owners.HRV]
+label = "Republic of Croatia"
+countries = ["HR"]
+
+[owners.HUN]
+label = "Hungary"
+countries = ["HU"]
+
+[owners.IM]
+label = "International Mobile Satellite Organization (INMARSAT)"
+organization = "inmarsat"
+
+[owners.IND]
+label = "India"
+countries = ["IN"]
+
+[owners.INDO]
+label = "Indonesia"
+countries = ["ID"]
+
+[owners.IRAN]
+label = "Iran"
+countries = ["IR"]
+
+[owners.IRAQ]
+label = "Iraq"
+countries = ["IQ"]
+
+[owners.IRID]
+label = "Iridium"
+organization = "iridium"
+
+[owners.IRL]
+label = "Ireland"
+countries = ["IE"]
+
+[owners.ISRA]
+label = "Israel"
+countries = ["IL"]
+
+[owners.ISRO]
+label = "Indian Space Research Organisation"
+organization = "isro"
+
+[owners.ISS]
+label = "International Space Station"
+organization = "iss"
+
+[owners.IT]
+label = "Italy"
+countries = ["IT"]
+
+[owners.ITSO]
+label = "International Telecommunications Satellite Organization (INTELSAT)"
+organization = "intelsat"
+
+[owners.JPN]
+label = "Japan"
+countries = ["JP"]
+
+[owners.JOR]
+label = "Jordan"
+countries = ["JO"]
+note = "Not on the CelesTrak sources page on 2026-10-16; meaning inferred from its catalogued objects."
+
+[owners.KAZ]
+label = "Kazakhstan"
+countries = ["KZ"]
+
+[owners.KEN]
+label = "Republic of Kenya"
+countries = ["KE"]
+
+[owners.KWT]
+label = "Kuwait"
+countries = ["KW"]
+note = "Not on the CelesTrak sources page on 2026-10-16; meaning inferred from its catalogued objects."
+
+[owners.LAOS]
+label = "Laos"
+countries = ["LA"]
+
+[owners.LKA]
+label = "Democratic Socialist Republic of Sri Lanka"
+countries = ["LK"]
+
+[owners.LTU]
+label = "Lithuania"
+countries = ["LT"]
+
+[owners.LUXE]
+label = "Luxembourg"
+countries = ["LU"]
+
+[owners.MA]
+label = "Morroco"
+countries = ["MA"]
+
+[owners.MALA]
+label = "Malaysia"
+countries = ["MY"]
+
+[owners.MCO]
+label = "Principality of Monaco"
+countries = ["MC"]
+
+[owners.MDA]
+label = "Republic of Moldova"
+countries = ["MD"]
+
+[owners.MEX]
+label = "Mexico"
+countries = ["MX"]
+
+[owners.MMR]
+label = "Republic of the Union of Myanmar"
+countries = ["MM"]
+
+[owners.MNE]
+label = "Montenegro"
+countries = ["ME"]
+
+[owners.MNG]
+label = "Mongolia"
+countries = ["MN"]
+
+[owners.MUS]
+label = "Mauritius"
+countries = ["MU"]
+
+[owners.NATO]
+label = "North Atlantic Treaty Organization"
+organization = "nato"
+
+[owners.NETH]
+label = "Netherlands"
+countries = ["NL"]
+
+[owners.NICO]
+label = "New ICO"
+organization = "new-ico"
+
+[owners.NIG]
+label = "Nigeria"
+countries = ["NG"]
+
+[owners.NKOR]
+label = "Democratic People's Republic of Korea"
+countries = ["KP"]
+
+[owners.NOR]
+label = "Norway"
+countries = ["NO"]
+
+[owners.NPL]
+label = "Federal Democratic Republic of Nepal"
+countries = ["NP"]
+
+[owners.NZ]
+label = "New Zealand"
+countries = ["NZ"]
+
+[owners.O3B]
+label = "O3b Networks"
+organization = "o3b"
+
+[owners.ORB]
+label = "ORBCOMM"
+organization = "orbcomm"
+
+[owners.PAKI]
+label = "Pakistan"
+countries = ["PK"]
+
+[owners.PERU]
+label = "Peru"
+countries = ["PE"]
+
+[owners.POL]
+label = "Poland"
+countries = ["PL"]
+
+[owners.POR]
+label = "Portugal"
+countries = ["PT"]
+
+[owners.PRC]
+label = "People's Republic of China"
+countries = ["CN"]
+
+[owners.PRY]
+label = "Republic of Paraguay"
+countries = ["PY"]
+
+[owners.PRES]
+label = "People's Republic of China/European Space Agency"
+countries = ["CN"]
+organization = "esa"
+
+[owners.QAT]
+label = "State of Qatar"
+countries = ["QA"]
+
+[owners.RASC]
+label = "RascomStar-QAF"
+organization = "rascom"
+
+[owners.ROC]
+label = "Taiwan (Republic of China)"
+countries = ["TW"]
+
+[owners.ROM]
+label = "Romania"
+countries = ["RO"]
+
+[owners.RP]
+label = "Philippines (Republic of the Philippines)"
+countries = ["PH"]
+
+[owners.RWA]
+label = "Republic of Rwanda"
+countries = ["RW"]
+
+[owners.SAFR]
+label = "South Africa"
+countries = ["ZA"]
+
+[owners.SAUD]
+label = "Saudi Arabia"
+countries = ["SA"]
+
+[owners.SDN]
+label = "Republic of Sudan"
+countries = ["SD"]
+
+[owners.SEAL]
+label = "Sea Launch"
+organization = "sea-launch"
+
+[owners.SEN]
+label = "Republic of Senegal"
+countries = ["SN"]
+
+[owners.SES]
+label = "SES"
+organization = "ses"
+
+[owners.SGJP]
+label = "Singapore/Japan"
+countries = ["SG", "JP"]
+
+[owners.SING]
+label = "Singapore"
+countries = ["SG"]
+
+[owners.SKOR]
+label = "Republic of Korea"
+countries = ["KR"]
+
+[owners.SLB]
+label = "Solomon Islands"
+countries = ["SB"]
+
+[owners.SPN]
+label = "Spain"
+countries = ["ES"]
+
+[owners.STCT]
+label = "Singapore/Taiwan"
+countries = ["SG", "TW"]
+
+[owners.SVN]
+label = "Slovenia"
+countries = ["SI"]
+
+[owners.SVK]
+label = "Slovakia"
+countries = ["SK"]
+note = "Not on the CelesTrak sources page on 2026-10-16; meaning inferred from its catalogued objects."
+
+[owners.SWED]
+label = "Sweden"
+countries = ["SE"]
+
+[owners.SWTZ]
+label = "Switzerland"
+countries = ["CH"]
+
+[owners.TBD]
+label = "To Be Determined"
+unknown = true
+
+[owners.THAI]
+label = "Thailand"
+countries = ["TH"]
+
+[owners.TMMC]
+label = "Turkmenistan/Monaco"
+countries = ["TM", "MC"]
+
+[owners.TUN]
+label = "Republic of Tunisia"
+countries = ["TN"]
+
+[owners.TURK]
+label = "Türkiye"
+countries = ["TR"]
+
+[owners.UAE]
+label = "United Arab Emirates"
+countries = ["AE"]
+
+[owners.UGA]
+label = "Uganda"
+countries = ["UG"]
+note = "Not on the CelesTrak sources page on 2026-10-16; meaning inferred from its catalogued objects."
+
+[owners.UK]
+label = "United Kingdom"
+countries = ["GB"]
+
+[owners.UKR]
+label = "Ukraine"
+countries = ["UA"]
+
+[owners.UNK]
+label = "Unknown"
+unknown = true
+
+[owners.URY]
+label = "Uruguay"
+countries = ["UY"]
+
+[owners.US]
+label = "United States"
+countries = ["US"]
+
+[owners.USBZ]
+label = "United States/Brazil"
+countries = ["US", "BR"]
+
+[owners.VAT]
+label = "Vatican City State"
+countries = ["VA"]
+
+[owners.VENZ]
+label = "Venezuela"
+countries = ["VE"]
+
+[owners.VTNM]
+label = "Vietnam"
+countries = ["VN"]
+
+[owners.ZWE]
+label = "Republic of Zimbabwe"
+countries = ["ZW"]

@@ -1,0 +1,54 @@
+{
+  "source": "launch-library",
+  "group_by": "all",
+  "groups": [
+    {
+      "group": {
+        "kind": "all",
+        "key": "all",
+        "name": "All launches",
+        "name_lang": "en"
+      },
+      "total_stage_flights": 448,
+      "records_url": "/api/v1/launches",
+      "years": [
+        {
+          "year": 2023,
+          "launches": 108,
+          "launches_reflown": 93,
+          "reflown_share": 0.8611111111111112,
+          "stage_flights": 118,
+          "stage_reflights": 98,
+          "landing_attempts": 104,
+          "landings": 103,
+          "landing_success_rate": 0.9903846153846154,
+          "records_url": "/api/v1/launches?from=2023-01-01T00:00:00Z&to=2024-01-01T00:00:00Z"
+        },
+        {
+          "year": 2024,
+          "launches": 143,
+          "launches_reflown": 131,
+          "reflown_share": 0.916083916083916,
+          "stage_flights": 147,
+          "stage_reflights": 132,
+          "landing_attempts": 141,
+          "landings": 138,
+          "landing_success_rate": 0.9787234042553191,
+          "records_url": "/api/v1/launches?from=2024-01-01T00:00:00Z&to=2025-01-01T00:00:00Z"
+        },
+        {
+          "year": 2025,
+          "launches": 183,
+          "launches_reflown": 168,
+          "reflown_share": 0.9180327868852459,
+          "stage_flights": 183,
+          "stage_reflights": 168,
+          "landing_attempts": 181,
+          "landings": 177,
+          "landing_success_rate": 0.9779005524861878,
+          "records_url": "/api/v1/launches?from=2025-01-01T00:00:00Z&to=2026-01-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

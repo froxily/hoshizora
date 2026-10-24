@@ -1,0 +1,173 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@custom-variant motion-reduced (&:where([data-motion='reduced'], [data-motion='reduced'] *));
+
+@theme inline {
+  --color-canvas: var(--hz-canvas);
+  --color-surface: var(--hz-surface);
+  --color-surface-raised: var(--hz-surface-raised);
+  --color-veil: var(--hz-veil);
+  --color-veil-strong: var(--hz-veil-strong);
+  --color-ink: var(--hz-ink);
+  --color-ink-muted: var(--hz-ink-muted);
+  --color-ink-faint: var(--hz-ink-faint);
+  --color-amber: var(--hz-amber);
+  --color-amber-soft: var(--hz-amber-soft);
+  --color-amber-glow: var(--hz-amber-glow);
+  --color-cyan: var(--hz-cyan);
+  --color-cyan-soft: var(--hz-cyan-soft);
+  --color-cyan-glow: var(--hz-cyan-glow);
+  --color-mark-warm: var(--hz-mark-warm);
+  --color-mark-cool: var(--hz-mark-cool);
+  --color-positive: var(--hz-positive);
+  --color-negative: var(--hz-negative);
+  --color-hairline: var(--hz-hairline);
+  --color-hairline-strong: var(--hz-hairline-strong);
+
+  --font-sans: var(--hz-font-text);
+  --font-display: var(--hz-font-display);
+
+  --text-xs: var(--hz-text-xs);
+  --text-sm: var(--hz-text-sm);
+  --text-base: var(--hz-text-base);
+  --text-lg: var(--hz-text-lg);
+  --text-xl: var(--hz-text-xl);
+  --text-2xl: var(--hz-text-2xl);
+  --text-3xl: var(--hz-text-3xl);
+  --text-hero: var(--hz-text-hero);
+  --text-figure: var(--hz-text-figure);
+
+  --tracking-label: var(--hz-tracking-label);
+  --tracking-display: var(--hz-tracking-display);
+
+  --radius-sm: var(--hz-radius-sm);
+  --radius: var(--hz-radius);
+  --radius-pill: var(--hz-radius-pill);
+
+  --spacing-gutter: var(--hz-gutter);
+  --spacing-section: var(--hz-section-gap);
+
+  --ease-out: var(--hz-ease-out);
+  --ease-in-out: var(--hz-ease-in-out);
+}
+
+@layer base {
+  html {
+    background-color: var(--hz-canvas);
+    color: var(--hz-ink);
+    font-family: var(--hz-font-text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html:lang(ja) {
+    line-height: 1.8;
+    line-break: strict;
+    word-break: auto-phrase;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  body {
+    background-color: var(--hz-canvas);
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--hz-amber);
+    outline-offset: 4px;
+  }
+
+  ::selection {
+    background-color: var(--hz-amber-soft);
+    color: var(--hz-ink);
+  }
+}
+
+@layer components {
+  .hz-label {
+    font-size: var(--hz-text-xs);
+    letter-spacing: var(--hz-tracking-label);
+    text-transform: uppercase;
+    color: var(--hz-ink-muted);
+  }
+
+  :lang(ja) .hz-label {
+    letter-spacing: 0.12em;
+  }
+
+  .hz-reveal {
+    animation: hz-reveal var(--hz-duration-reveal) var(--hz-ease-out) both;
+  }
+
+  .hz-rise {
+    animation: hz-rise var(--hz-duration-slow) var(--hz-ease-out) both;
+  }
+
+  [data-motion='reduced'] .hz-rise {
+    animation: none;
+  }
+
+  .hz-fade {
+    animation: hz-fade var(--hz-duration-slow) var(--hz-ease-out) both;
+  }
+
+  [data-motion='reduced'] .hz-reveal {
+    animation-name: hz-fade;
+  }
+}
+
+@keyframes hz-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hz-rise {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hz-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hz-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes hz-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}

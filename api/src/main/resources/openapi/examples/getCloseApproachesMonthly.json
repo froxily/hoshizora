@@ -1,0 +1,29 @@
+{
+  "source": "jpl",
+  "from": "2016-01-01",
+  "to": "2029-01-01",
+  "items": [
+    {
+      "month": "2026-09-01",
+      "approaches": 3,
+      "within_lunar_distance": 3,
+      "closest_dist_ld": 0.054539868408845754,
+      "closest_designation": "2026 RT34",
+      "min_absolute_magnitude": 26.158,
+      "largest_designation": "2026 RG15",
+      "predicted": false,
+      "records_url": "/api/v1/close-approaches?from=2026-09-01&to=2026-10-01&sort=distance"
+    },
+    {
+      "month": "2026-10-01",
+      "approaches": 10,
+      "within_lunar_distance": 6,
+      "closest_dist_ld": 0.14418172481667388,
+      "closest_designation": "2026 TN77",
+      "min_absolute_magnitude": 24.047,
+      "largest_designation": "2026 TS",
+      "predicted": false,
+      "records_url": "/api/v1/close-approaches?from=2026-10-01&to=2026-11-01&sort=distance"
+    }
+  ]
+}

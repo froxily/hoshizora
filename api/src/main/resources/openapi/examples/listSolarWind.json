@@ -1,0 +1,40 @@
+{
+  "from": "2026-10-09T09:00:00Z",
+  "to": "2026-10-16T09:00:00Z",
+  "resolution": "hour",
+  "items": [
+    {
+      "observed_at": "2026-10-16T05:00:00Z",
+      "speed_kms": 446.7612903225806,
+      "density_cm3": 3.2645161290322577,
+      "temperature_k": 99035.96774193548,
+      "bt_nt": 4.222424242424243,
+      "bz_gsm_nt": -0.8342424242424243,
+      "speed_kms_max": 464.9,
+      "bz_gsm_nt_min": -2.4,
+      "samples": 33
+    },
+    {
+      "observed_at": "2026-10-16T06:00:00Z",
+      "speed_kms": 437.62280701754383,
+      "density_cm3": 3.313508771929824,
+      "temperature_k": 97503.43859649122,
+      "bt_nt": 4.592372881355933,
+      "bz_gsm_nt": 1.1099999999999999,
+      "speed_kms_max": 448.3,
+      "bz_gsm_nt_min": -2.3,
+      "samples": 59
+    },
+    {
+      "observed_at": "2026-10-16T07:00:00Z",
+      "speed_kms": 433.9923076923077,
+      "density_cm3": 2.9726923076923084,
+      "temperature_k": 83348.46153846153,
+      "bt_nt": 4.597857142857142,
+      "bz_gsm_nt": -0.6021428571428571,
+      "speed_kms_max": 446.6,
+      "bz_gsm_nt_min": -3.36,
+      "samples": 28
+    }
+  ]
+}

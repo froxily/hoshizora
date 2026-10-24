@@ -1,0 +1,77 @@
+[data-theme='deep-space'] {
+  color-scheme: dark;
+
+  --hz-canvas: #05070b;
+  --hz-surface: #0c1119;
+  --hz-surface-raised: #121925;
+  --hz-veil: rgb(5 7 11 / 0.72);
+  --hz-veil-strong: rgb(5 7 11 / 0.9);
+
+  --hz-ink: #e8ecf2;
+  --hz-ink-muted: #a3acba;
+  --hz-ink-faint: #8b95a7;
+
+  --hz-amber: #d9a45b;
+  --hz-amber-soft: rgb(217 164 91 / 0.14);
+  --hz-amber-glow: rgb(217 164 91 / 0.35);
+  --hz-cyan: #9fe3f0;
+  --hz-cyan-soft: rgb(159 227 240 / 0.12);
+  --hz-cyan-glow: rgb(159 227 240 / 0.3);
+
+  --hz-mark-warm: #c28836;
+  --hz-mark-cool: #00a5b9;
+
+  --hz-series-1: #c28836;
+  --hz-series-2: #00a5b9;
+  --hz-series-3: #d55181;
+  --hz-series-4: #9085e9;
+  --hz-series-5: #199e70;
+  --hz-series-6: #3987e5;
+  --hz-series-other: #6b7484;
+  --hz-ramp-low: #0b3a44;
+  --hz-ramp-high: #b8f0f7;
+
+  --hz-positive: #6fc3a8;
+  --hz-negative: #e08b7a;
+
+  --hz-hairline: rgb(232 236 242 / 0.14);
+  --hz-hairline-strong: rgb(232 236 242 / 0.28);
+
+  --hz-font-display:
+    'M PLUS 1 Variable', 'IBM Plex Sans JP', system-ui, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  --hz-font-text:
+    'IBM Plex Sans JP', system-ui, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI',
+    sans-serif;
+
+  --hz-text-xs: 0.8125rem;
+  --hz-text-sm: 0.9375rem;
+  --hz-text-base: 1rem;
+  --hz-text-lg: 1.125rem;
+  --hz-text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --hz-text-2xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --hz-text-3xl: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --hz-text-hero: clamp(2.5rem, 1.5rem + 5vw, 5.75rem);
+  --hz-text-figure: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem);
+
+  --hz-tracking-label: 0.24em;
+  --hz-tracking-display: -0.01em;
+
+  --hz-radius-sm: 2px;
+  --hz-radius: 4px;
+  --hz-radius-pill: 999px;
+
+  --hz-gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --hz-section-gap: clamp(4rem, 3rem + 5vw, 8rem);
+
+  --hz-duration-fast: 400ms;
+  --hz-duration-reveal: 700ms;
+  --hz-duration-slow: 900ms;
+  --hz-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --hz-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+[data-motion='reduced'] {
+  --hz-duration-fast: 0ms;
+  --hz-duration-reveal: 0ms;
+  --hz-duration-slow: 0ms;
+}

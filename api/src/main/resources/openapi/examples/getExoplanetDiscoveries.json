@@ -1,0 +1,171 @@
+{
+  "source": "exoplanet-archive",
+  "methods": [
+    {
+      "method": {
+        "code": "transit",
+        "name": "Transit",
+        "name_lang": "en"
+      },
+      "planets": 556
+    },
+    {
+      "method": {
+        "code": "radial_velocity",
+        "name": "Radial velocity",
+        "name_lang": "en"
+      },
+      "planets": 147
+    },
+    {
+      "method": {
+        "code": "microlensing",
+        "name": "Microlensing",
+        "name_lang": "en"
+      },
+      "planets": 81
+    },
+    {
+      "method": {
+        "code": "imaging",
+        "name": "Direct imaging",
+        "name_lang": "en"
+      },
+      "planets": 26
+    },
+    {
+      "method": {
+        "code": "transit_timing_variations",
+        "name": "Transit timing variations",
+        "name_lang": "en"
+      },
+      "planets": 13
+    },
+    {
+      "method": {
+        "code": "astrometry",
+        "name": "Astrometry",
+        "name_lang": "en"
+      },
+      "planets": 4
+    },
+    {
+      "method": {
+        "code": "eclipse_timing_variations",
+        "name": "Eclipse timing variations",
+        "name_lang": "en"
+      },
+      "planets": 1
+    },
+    {
+      "method": {
+        "code": "pulsar_timing",
+        "name": "Pulsar timing",
+        "name_lang": "en"
+      },
+      "planets": 1
+    }
+  ],
+  "years": [
+    {
+      "year": 2023,
+      "planets": 323,
+      "from_space": 221,
+      "methods": [
+        {
+          "code": "transit",
+          "planets": 225
+        },
+        {
+          "code": "radial_velocity",
+          "planets": 56
+        },
+        {
+          "code": "microlensing",
+          "planets": 30
+        },
+        {
+          "code": "imaging",
+          "planets": 7
+        },
+        {
+          "code": "transit_timing_variations",
+          "planets": 3
+        },
+        {
+          "code": "astrometry",
+          "planets": 1
+        },
+        {
+          "code": "eclipse_timing_variations",
+          "planets": 1
+        }
+      ],
+      "records_url": "/api/v1/exoplanets?from_year=2023&to_year=2023"
+    },
+    {
+      "year": 2024,
+      "planets": 260,
+      "from_space": 193,
+      "methods": [
+        {
+          "code": "transit",
+          "planets": 187
+        },
+        {
+          "code": "radial_velocity",
+          "planets": 29
+        },
+        {
+          "code": "microlensing",
+          "planets": 28
+        },
+        {
+          "code": "imaging",
+          "planets": 11
+        },
+        {
+          "code": "transit_timing_variations",
+          "planets": 4
+        },
+        {
+          "code": "pulsar_timing",
+          "planets": 1
+        }
+      ],
+      "records_url": "/api/v1/exoplanets?from_year=2024&to_year=2024"
+    },
+    {
+      "year": 2025,
+      "planets": 246,
+      "from_space": 141,
+      "methods": [
+        {
+          "code": "transit",
+          "planets": 144
+        },
+        {
+          "code": "radial_velocity",
+          "planets": 62
+        },
+        {
+          "code": "microlensing",
+          "planets": 23
+        },
+        {
+          "code": "imaging",
+          "planets": 8
+        },
+        {
+          "code": "transit_timing_variations",
+          "planets": 6
+        },
+        {
+          "code": "astrometry",
+          "planets": 3
+        }
+      ],
+      "records_url": "/api/v1/exoplanets?from_year=2025&to_year=2025"
+    }
+  ]
+}

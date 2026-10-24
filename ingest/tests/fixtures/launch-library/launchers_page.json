@@ -1,0 +1,197 @@
+{
+  "count": 5,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 193,
+      "url": "https://ll.thespacedevs.com/2.3.0/launchers/193/",
+      "image": null,
+      "status": {
+        "id": 3,
+        "name": "active"
+      },
+      "details": "Falcon 9 booster debuting on Starlink Group 11-11.",
+      "flights": 17,
+      "flight_proven": true,
+      "response_mode": "detailed",
+      "serial_number": "B1093",
+      "is_placeholder": false,
+      "launcher_config": {
+        "id": 164,
+        "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/164/",
+        "name": "Falcon 9",
+        "variant": "Block 5",
+        "families": [
+          {
+            "id": 1,
+            "name": "Falcon",
+            "response_mode": "list"
+          },
+          {
+            "id": 176,
+            "name": "Falcon 9",
+            "response_mode": "list"
+          }
+        ],
+        "full_name": "Falcon 9 Block 5",
+        "response_mode": "list"
+      },
+      "last_launch_date": "2026-09-20T01:47:00Z",
+      "first_launch_date": "2025-04-07T23:06:10Z",
+      "attempted_landings": 17,
+      "fastest_turnaround": "P21DT22H7M44S",
+      "successful_landings": 17
+    },
+    {
+      "id": 196,
+      "url": "https://ll.thespacedevs.com/2.3.0/launchers/196/",
+      "image": null,
+      "status": {
+        "id": 3,
+        "name": "active"
+      },
+      "details": "Falcon 9 booster debuting on Starlink Group 12-15.",
+      "flights": 7,
+      "flight_proven": true,
+      "response_mode": "detailed",
+      "serial_number": "B1095",
+      "is_placeholder": false,
+      "launcher_config": {
+        "id": 164,
+        "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/164/",
+        "name": "Falcon 9",
+        "variant": "Block 5",
+        "families": [
+          {
+            "id": 1,
+            "name": "Falcon",
+            "response_mode": "list"
+          },
+          {
+            "id": 176,
+            "name": "Falcon 9",
+            "response_mode": "list"
+          }
+        ],
+        "full_name": "Falcon 9 Block 5",
+        "response_mode": "list"
+      },
+      "last_launch_date": "2026-04-21T06:53:25Z",
+      "first_launch_date": "2025-05-21T03:19:10Z",
+      "attempted_landings": 7,
+      "fastest_turnaround": "P37DT18H16M15S",
+      "successful_landings": 7
+    },
+    {
+      "id": 260,
+      "url": "https://ll.thespacedevs.com/2.3.0/launchers/260/",
+      "image": null,
+      "status": {
+        "id": 4,
+        "name": "lost"
+      },
+      "details": "Third Block 3 Super Heavy booster to fly with various enhancements including Raptor 3 engines, integrated interstage and 3 grid fins instead of 4 used. To be used on the 14th Starship flight test, the first Starship flight to deploy satellites into stable Low Earth Orbit.\r\n\r\nLost to the ocean after a successful soft splashdown.",
+      "flights": 1,
+      "flight_proven": true,
+      "response_mode": "detailed",
+      "serial_number": "Booster 21",
+      "is_placeholder": false,
+      "launcher_config": {
+        "id": 522,
+        "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/522/",
+        "name": "Starship",
+        "variant": "V3",
+        "families": [
+          {
+            "id": 156,
+            "name": "Starship",
+            "response_mode": "list"
+          }
+        ],
+        "full_name": "Starship V3",
+        "response_mode": "list"
+      },
+      "last_launch_date": "2026-09-28T12:48:59Z",
+      "first_launch_date": "2026-09-28T12:48:59Z",
+      "attempted_landings": 1,
+      "fastest_turnaround": null,
+      "successful_landings": 1
+    },
+    {
+      "id": 261,
+      "url": "https://ll.thespacedevs.com/2.3.0/launchers/261/",
+      "image": null,
+      "status": {
+        "id": 2,
+        "name": "expended"
+      },
+      "details": "Falcon Heavy core booster expended during the launch of the NROL-97 mission.",
+      "flights": 1,
+      "flight_proven": false,
+      "response_mode": "detailed",
+      "serial_number": "B1106",
+      "is_placeholder": false,
+      "launcher_config": {
+        "id": 161,
+        "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/161/",
+        "name": "Falcon Heavy",
+        "variant": "Heavy",
+        "families": [
+          {
+            "id": 1,
+            "name": "Falcon",
+            "response_mode": "list"
+          }
+        ],
+        "full_name": "Falcon Heavy",
+        "response_mode": "list"
+      },
+      "last_launch_date": "2026-10-02T03:54:00Z",
+      "first_launch_date": "2026-10-02T03:54:00Z",
+      "attempted_landings": 0,
+      "fastest_turnaround": null,
+      "successful_landings": 0
+    },
+    {
+      "id": 106,
+      "url": "https://ll.thespacedevs.com/2.3.0/launchers/106/",
+      "image": null,
+      "status": {
+        "id": 8,
+        "name": "N/A"
+      },
+      "details": "Booster serial number unknown.",
+      "flights": null,
+      "flight_proven": false,
+      "response_mode": "detailed",
+      "serial_number": "Unknown F9",
+      "is_placeholder": true,
+      "launcher_config": {
+        "id": 164,
+        "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/164/",
+        "name": "Falcon 9",
+        "variant": "Block 5",
+        "families": [
+          {
+            "id": 1,
+            "name": "Falcon",
+            "response_mode": "list"
+          },
+          {
+            "id": 176,
+            "name": "Falcon 9",
+            "response_mode": "list"
+          }
+        ],
+        "full_name": "Falcon 9 Block 5",
+        "response_mode": "list"
+      },
+      "last_launch_date": null,
+      "first_launch_date": null,
+      "attempted_landings": null,
+      "fastest_turnaround": null,
+      "successful_landings": null
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+- key: agencies.launch_total
+  module: agencies
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'organization' AS entity_type, p.key AS entity_key,
+           p.name_en AS org_en, p.name_ja AS org_ja, p.attempts,
+           extract(year FROM p.first_launch_at) AS since,
+           percent_rank() OVER (ORDER BY p.attempts) AS percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.organization_launch_summary', 'key', p.key)
+           ) AS source_refs
+    FROM mart.organization_profile p
+    WHERE p.attempts >= 10
+  params:
+    org: {type: name, from: org}
+    attempts: {type: integer, from: attempts}
+    since: {type: year, from: since}
+  text:
+    en: "{org}: {attempts, number, integer} launch attempts in total, the first in {since}."
+    ja: "{org}は{since}年の初打ち上げから通算{attempts, number, integer}回の打ち上げを行いました。"
+  examples:
+    - params: {org: {en: Japan Aerospace Exploration Agency, ja: 宇宙航空研究開発機構}, attempts: 72, since: "2003"}
+      en: "Japan Aerospace Exploration Agency: 72 launch attempts in total, the first in 2003."
+      ja: "宇宙航空研究開発機構は2003年の初打ち上げから通算72回の打ち上げを行いました。"
+
+- key: agencies.success_rate
+  module: agencies
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    WITH completed AS (
+        SELECT p.key, p.name_en, p.name_ja,
+               p.successes + p.failures + p.partial_failures AS completed,
+               p.successes::float8 / nullif(p.successes + p.failures + p.partial_failures, 0) AS rate
+        FROM mart.organization_profile p
+    )
+    SELECT 'organization' AS entity_type, c.key AS entity_key,
+           c.name_en AS org_en, c.name_ja AS org_ja, c.completed, c.rate,
+           percent_rank() OVER (ORDER BY c.rate) AS percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.organization_launch_summary', 'key', c.key)
+           ) AS source_refs
+    FROM completed c
+    WHERE c.completed >= 20
+  params:
+    org: {type: name, from: org}
+    rate: {type: percent, from: rate, decimals: 1}
+    completed: {type: integer, from: completed}
+  text:
+    en: "{org}: {rate, number, percent} of {completed, number, integer} completed launches succeeded."
+    ja: "{org}がこれまでに行った{completed, number, integer}回の打ち上げのうち、{rate, number, percent}が成功しています。"
+  examples:
+    - params: {org: {en: SpaceX, ja: スペースX}, rate: 0.991, completed: 580}
+      en: "SpaceX: 99.1% of 580 completed launches succeeded."
+      ja: "スペースXがこれまでに行った580回の打ち上げのうち、99.1%が成功しています。"
+
+- key: agencies.first_launch
+  module: agencies
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'organization' AS entity_type, p.key AS entity_key,
+           p.name_en AS org_en, p.name_ja AS org_ja, p.first_launch_at AS first_launch,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.organization_launch_summary', 'key', p.key),
+               jsonb_build_object('entity', 'core.launch', 'key', (
+                   SELECT l.launch_id::text
+                   FROM mart.launch_classified l
+                   WHERE l.provider_org_id = p.id AND l.attempted
+                   ORDER BY l.net, l.launch_id
+                   LIMIT 1
+               ))
+           ) AS source_refs
+    FROM mart.organization_profile p
+    WHERE p.attempts >= 10
+  params:
+    org: {type: name, from: org}
+    date: {type: date, from: first_launch}
+  text:
+    en: "{org}: first launch on {date, date}."
+    ja: "{org}の最初の打ち上げは{date, date}でした。"
+  examples:
+    - params: {org: {en: SpaceX, ja: スペースX}, date: "2006-03-24"}
+      en: "SpaceX: first launch on March 24, 2006."
+      ja: "スペースXの最初の打ち上げは2006年3月24日でした。"
+
+- key: agencies.busiest_year
+  module: agencies
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    WITH ranked AS (
+        SELECT c.group_key, c.year, c.attempts,
+               row_number() OVER (PARTITION BY c.group_key ORDER BY c.attempts DESC, c.year DESC) AS place,
+               count(*) OVER (PARTITION BY c.group_key) AS years
+        FROM mart.launch_cadence_yearly c
+        WHERE c.group_kind = 'provider'
+          AND c.attempts > 0
+          AND c.year < extract(year FROM %(as_of)s::timestamptz)
+    )
+    SELECT 'organization' AS entity_type, r.group_key AS entity_key,
+           p.name_en AS org_en, p.name_ja AS org_ja, r.year, r.attempts,
+           percent_rank() OVER (ORDER BY r.attempts) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'mart.launch_cadence_yearly',
+               'key', concat_ws('|', 'provider', r.group_key, r.year)
+           )) AS source_refs
+    FROM ranked r
+    JOIN mart.organization_profile p ON p.key = r.group_key
+    WHERE r.place = 1 AND r.years >= 2 AND r.attempts >= 5
+  params:
+    org: {type: name, from: org}
+    year: {type: year, from: year}
+    attempts: {type: integer, from: attempts}
+  text:
+    en: "{org}: busiest year {year}, with {attempts, number, integer} launch attempts."
+    ja: "{org}の打ち上げがもっとも多かった年は{year}年で、{attempts, number, integer}回でした。"
+  examples:
+    - params: {org: {en: China Aerospace Science and Technology Corporation, ja: 中国航天科技集団}, year: "2024", attempts: 51}
+      en: "China Aerospace Science and Technology Corporation: busiest year 2024, with 51 launch attempts."
+      ja: "中国航天科技集団の打ち上げがもっとも多かった年は2024年で、51回でした。"
+
+- key: agencies.oldest
+  module: agencies
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'organization' AS entity_type, p.key AS entity_key,
+           p.name_en AS org_en, p.name_ja AS org_ja, p.founding_year AS founded, true AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.organization_launch_summary', 'key', p.key)
+           ) AS source_refs
+    FROM mart.organization_profile p
+    WHERE p.attempts >= 1 AND p.founding_year IS NOT NULL
+    ORDER BY p.founding_year, p.attempts DESC, p.key
+    LIMIT 1
+  params:
+    org: {type: name, from: org}
+    founded: {type: year, from: founded}
+  text:
+    en: "Oldest launch organization on record: {org}, founded in {founded}."
+    ja: "記録にある打ち上げ機関でもっとも古いのは、{founded}年に設立された{org}です。"
+  examples:
+    - params: {org: {en: United States Air Force, ja: アメリカ空軍}, founded: "1947"}
+      en: "Oldest launch organization on record: United States Air Force, founded in 1947."
+      ja: "記録にある打ち上げ機関でもっとも古いのは、1947年に設立されたアメリカ空軍です。"

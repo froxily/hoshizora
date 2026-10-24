@@ -1,0 +1,22 @@
+[
+  {
+    "file": "@fontsource-variable/m-plus-1 (woff2, unicode-range slices, wght 100–900)",
+    "kind": "font",
+    "name": "M PLUS 1",
+    "source_url": "https://github.com/coz-m/MPLUS_FONTS",
+    "credit": "Copyright 2021 The M+ FONTS Project Authors",
+    "license": "SIL Open Font License 1.1",
+    "license_url": "https://openfontlicense.org/open-font-license-official-text/",
+    "retrieved_at": "2026-10-18"
+  },
+  {
+    "file": "@fontsource/ibm-plex-sans-jp (woff2, unicode-range slices, weight 400)",
+    "kind": "font",
+    "name": "IBM Plex Sans JP",
+    "source_url": "https://github.com/IBM/plex",
+    "credit": "Copyright 2018 IBM Corp.",
+    "license": "SIL Open Font License 1.1",
+    "license_url": "https://openfontlicense.org/open-font-license-official-text/",
+    "retrieved_at": "2026-10-18"
+  }
+]

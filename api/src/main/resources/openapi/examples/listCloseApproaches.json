@@ -1,0 +1,68 @@
+{
+  "items": [
+    {
+      "designation": "2026 TE2",
+      "fullname": "(2026 TE2)",
+      "body": {
+        "code": "earth",
+        "name": "Earth",
+        "name_lang": "en"
+      },
+      "approach_tdb": "2026-10-16T03:46:00",
+      "approach_utc": "2026-10-16T03:44:50.816Z",
+      "time_uncertainty": {
+        "minutes": 1.0,
+        "less_than": true
+      },
+      "dist_au": 0.015316737211391,
+      "dist_km": 2291351.2728955494,
+      "dist_ld": 5.960851386304759,
+      "dist_min_km": 2279975.565935806,
+      "dist_max_km": 2302726.7980991006,
+      "v_rel_kms": 14.7104986280676,
+      "v_inf_kms": 14.6986683931841,
+      "h_mag": 25.772,
+      "size": {
+        "estimated_min_km": 0.018627517351171775,
+        "estimated_max_km": 0.04165239504927692,
+        "assumed_albedo_min": 0.05,
+        "assumed_albedo_max": 0.25
+      },
+      "sentry": false
+    },
+    {
+      "designation": "2026 TB2",
+      "fullname": "(2026 TB2)",
+      "body": {
+        "code": "earth",
+        "name": "Earth",
+        "name_lang": "en"
+      },
+      "approach_tdb": "2026-10-16T07:16:00",
+      "approach_utc": "2026-10-16T07:14:50.816Z",
+      "time_uncertainty": {
+        "minutes": 12.0,
+        "less_than": false
+      },
+      "dist_au": 0.0127281767390542,
+      "dist_km": 1904108.1380557779,
+      "dist_ld": 4.953455093797549,
+      "dist_min_km": 1893483.481615875,
+      "dist_max_km": 1914732.2096668305,
+      "v_rel_kms": 8.81719755880445,
+      "v_inf_kms": 8.79342360137459,
+      "h_mag": 25.205,
+      "size": {
+        "estimated_min_km": 0.024185494786565273,
+        "estimated_max_km": 0.05408041041222672,
+        "assumed_albedo_min": 0.05,
+        "assumed_albedo_max": 0.25
+      },
+      "sentry": false
+    }
+  ],
+  "page": 1,
+  "size": 2,
+  "total_items": 7,
+  "total_pages": 4
+}

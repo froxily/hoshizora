@@ -1,0 +1,101 @@
+{
+  "items": [
+    {
+      "name": "Proxima Cen b",
+      "host_name": "Proxima Cen",
+      "discovery": {
+        "year": 2016,
+        "method": {
+          "code": "radial_velocity",
+          "name": "Radial velocity",
+          "name_lang": "en"
+        },
+        "facility": "European Southern Observatory",
+        "locale": "ground"
+      },
+      "orbital_period_days": 11.18465,
+      "semi_major_axis_au": 0.04848,
+      "radius_earth": 1.02,
+      "mass_earth": 1.055,
+      "eccentricity": 0.0,
+      "equilibrium_temp_k": 218.0,
+      "insolation_earth": 0.641,
+      "star": {
+        "temp_k": 2900.0,
+        "radius_sun": 0.141,
+        "mass_sun": 0.1221,
+        "star_count": 3,
+        "planet_count": 2
+      },
+      "distance_pc": 1.30119,
+      "distance_ly": 4.2439092564,
+      "controversial": false
+    },
+    {
+      "name": "Proxima Cen d",
+      "host_name": "Proxima Cen",
+      "discovery": {
+        "year": 2025,
+        "method": {
+          "code": "radial_velocity",
+          "name": "Radial velocity",
+          "name_lang": "en"
+        },
+        "facility": "La Silla Observatory",
+        "locale": "ground"
+      },
+      "orbital_period_days": 5.12338,
+      "semi_major_axis_au": 0.02881,
+      "radius_earth": 0.692,
+      "mass_earth": 0.26,
+      "eccentricity": 0.0,
+      "equilibrium_temp_k": 282.0,
+      "insolation_earth": 1.814,
+      "star": {
+        "temp_k": 2900.0,
+        "radius_sun": 0.141,
+        "mass_sun": 0.1221,
+        "star_count": 3,
+        "planet_count": 2
+      },
+      "distance_pc": 1.30119,
+      "distance_ly": 4.2439092564,
+      "controversial": false
+    },
+    {
+      "name": "Barnard b",
+      "host_name": "Barnard's star",
+      "discovery": {
+        "year": 2024,
+        "method": {
+          "code": "radial_velocity",
+          "name": "Radial velocity",
+          "name_lang": "en"
+        },
+        "facility": "Paranal Observatory",
+        "locale": "ground"
+      },
+      "orbital_period_days": 3.1542,
+      "semi_major_axis_au": 0.0229,
+      "radius_earth": 0.72,
+      "mass_earth": 0.299,
+      "eccentricity": 0.03,
+      "equilibrium_temp_k": 438.0,
+      "insolation_earth": 6.76,
+      "star": {
+        "temp_k": 3195.0,
+        "radius_sun": 0.185,
+        "mass_sun": 0.162,
+        "star_count": 1,
+        "planet_count": 4
+      },
+      "distance_pc": 1.82655,
+      "distance_ly": 5.957402417999999,
+      "controversial": false
+    }
+  ],
+  "page": 1,
+  "size": 3,
+  "total_items": 6393,
+  "total_pages": 2131
+}

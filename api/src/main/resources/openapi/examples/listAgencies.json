@@ -1,0 +1,76 @@
+{
+  "items": [
+    {
+      "key": "mhi",
+      "name": "Mitsubishi Heavy Industries",
+      "name_lang": "en",
+      "abbrev": "MHI",
+      "type": {
+        "code": "company",
+        "name": "Company",
+        "name_lang": "en"
+      },
+      "countries": [
+        {
+          "code": "JP",
+          "name": "Japan"
+        }
+      ],
+      "programs": [
+        {
+          "slug": "japan",
+          "name": "Japan"
+        }
+      ],
+      "founding_year": 1884,
+      "launches": {
+        "attempts": 9,
+        "successes": 9,
+        "failures": 0,
+        "partial_failures": 0,
+        "scheduled": 0,
+        "success_rate": 1.0,
+        "first_launch_at": "2016-11-02T06:20:00Z",
+        "last_launch_at": "2021-12-22T15:32:00Z"
+      }
+    },
+    {
+      "key": "arianespace",
+      "name": "Arianespace",
+      "name_lang": "en",
+      "abbrev": "ASA",
+      "type": {
+        "code": "company",
+        "name": "Company",
+        "name_lang": "en"
+      },
+      "countries": [
+        {
+          "code": "FR",
+          "name": "France"
+        }
+      ],
+      "programs": [
+        {
+          "slug": "europe",
+          "name": "Europe"
+        }
+      ],
+      "founding_year": 1980,
+      "launches": {
+        "attempts": 4,
+        "successes": 3,
+        "failures": 0,
+        "partial_failures": 1,
+        "scheduled": 1,
+        "success_rate": 0.75,
+        "first_launch_at": "2018-01-25T22:20:00Z",
+        "last_launch_at": "2021-11-16T09:27:55Z"
+      }
+    }
+  ],
+  "page": 1,
+  "size": 2,
+  "total_items": 15,
+  "total_pages": 8
+}

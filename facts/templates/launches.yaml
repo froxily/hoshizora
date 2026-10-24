@@ -1,0 +1,206 @@
+- key: launches.year_to_date
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH cut AS (
+        SELECT %(as_of)s::timestamptz AS as_of,
+               %(as_of)s::timestamptz - date_trunc('year', %(as_of)s::timestamptz) AS elapsed
+    ),
+    ytd AS (
+        SELECT l.year, count(*) AS launches
+        FROM mart.launch_classified l, cut
+        WHERE l.attempted
+          AND l.net < cut.as_of
+          AND l.net - date_trunc('year', l.net) < cut.elapsed
+        GROUP BY l.year
+    ),
+    ranked AS (
+        SELECT year, launches,
+               percent_rank() OVER (ORDER BY launches) AS percentile,
+               launches = max(launches) OVER () AS is_record,
+               lag(year) OVER (ORDER BY year) AS previous_year,
+               lag(launches) OVER (ORDER BY year) AS previous
+        FROM ytd
+    )
+    SELECT NULL AS entity_type, NULL AS entity_key, year, launches,
+           launches::float8 / previous AS ratio, percentile, is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.launch_cadence_yearly', 'key', 'all|all|' || year)
+           ) AS source_refs
+    FROM ranked
+    WHERE year = extract(year FROM %(as_of)s::timestamptz)
+      AND previous_year = year - 1
+      AND launches >= 2
+  params:
+    launches: {type: integer, from: launches}
+    year: {type: year, from: year}
+    ratio: {type: number, from: ratio, decimals: 1}
+  text:
+    en: "{launches, number, integer} launches have lifted off worldwide so far in {year}, {ratio}× as many as by this date last year."
+    ja: "{year}年はこれまでに世界で{launches, number, integer}回の打ち上げがあり、前年の同じ時期の{ratio}倍です。"
+  examples:
+    - params: {launches: 260, year: "2026", ratio: 1.1}
+      en: "260 launches have lifted off worldwide so far in 2026, 1.1× as many as by this date last year."
+      ja: "2026年はこれまでに世界で260回の打ち上げがあり、前年の同じ時期の1.1倍です。"
+
+- key: launches.record_year
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT NULL AS entity_type, NULL AS entity_key, c.year, c.attempts, true AS is_record,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'mart.launch_cadence_yearly',
+               'key', concat_ws('|', c.group_kind, c.group_key, c.year)
+           )) AS source_refs
+    FROM mart.launch_cadence_yearly c
+    WHERE c.group_kind = 'all' AND c.year < extract(year FROM %(as_of)s::timestamptz)
+    ORDER BY c.attempts DESC, c.year DESC
+    LIMIT 1
+  params:
+    year: {type: year, from: year}
+    attempts: {type: integer, from: attempts}
+  text:
+    en: "The record for launch attempts in a single year belongs to {year}: {attempts, number, integer} worldwide."
+    ja: "1年間の打ち上げ回数の最多記録は{year}年の{attempts, number, integer}回です。"
+  examples:
+    - params: {year: "2025", attempts: 329}
+      en: "The record for launch attempts in a single year belongs to 2025: 329 worldwide."
+      ja: "1年間の打ち上げ回数の最多記録は2025年の329回です。"
+
+- key: launches.program_year
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.3}
+  query: |
+    WITH history AS (
+        SELECT c.group_key, c.year, c.attempts,
+               percent_rank() OVER (PARTITION BY c.group_key ORDER BY c.attempts) AS percentile,
+               c.attempts = max(c.attempts) OVER (PARTITION BY c.group_key) AS is_record
+        FROM mart.launch_cadence_yearly c
+        WHERE c.group_kind = 'program' AND c.year < extract(year FROM %(as_of)s::timestamptz)
+    )
+    SELECT 'program' AS entity_type, h.group_key AS entity_key,
+           n.name_en AS program_en, n.name_ja AS program_ja, h.year, h.attempts,
+           h.percentile, h.is_record,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'mart.launch_cadence_yearly',
+               'key', concat_ws('|', 'program', h.group_key, h.year)
+           )) AS source_refs
+    FROM history h
+    JOIN mart.launch_group_name n ON n.group_kind = 'program' AND n.group_key = h.group_key
+    WHERE h.year = extract(year FROM %(as_of)s::timestamptz) - 1 AND h.attempts >= 2
+  params:
+    program: {type: name, from: program}
+    attempts: {type: integer, from: attempts}
+    year: {type: year, from: year}
+  text:
+    en: "{program}: {attempts, number, integer} launch attempts in {year}."
+    ja: "{year}年、{program}は{attempts, number, integer}回の打ち上げを行いました。"
+  examples:
+    - params: {program: {en: Japan, ja: 日本}, attempts: 7, year: "2025"}
+      en: "Japan: 7 launch attempts in 2025."
+      ja: "2025年、日本は7回の打ち上げを行いました。"
+
+- key: launches.success_streak
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.4}
+  query: |
+    WITH latest AS (
+        SELECT DISTINCT ON (r.group_key) r.group_key, r.launch_id, r.net, r.success_streak
+        FROM mart.launch_success_rolling r
+        WHERE r.group_kind = 'vehicle_family' AND r.net <= %(as_of)s::timestamptz
+        ORDER BY r.group_key, r.net DESC, r.attempt_no DESC
+    )
+    SELECT 'vehicle_family' AS entity_type, l.group_key AS entity_key,
+           n.name_en AS family_en, n.name_ja AS family_ja, l.success_streak AS streak,
+           percent_rank() OVER (ORDER BY l.success_streak) AS percentile,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'core.launch', 'key', l.launch_id::text)
+           ) AS source_refs
+    FROM latest l
+    JOIN mart.launch_group_name n ON n.group_kind = 'vehicle_family' AND n.group_key = l.group_key
+    WHERE l.success_streak >= 10 AND l.net >= %(as_of)s::timestamptz - interval '2 years'
+  params:
+    family: {type: name, from: family}
+    streak: {type: integer, from: streak}
+  text:
+    en: "{family} rockets have flown {streak, number, integer} times in a row without a failure."
+    ja: "{family}ロケットは{streak, number, integer}回連続で打ち上げに成功しています。"
+  examples:
+    - params: {family: {en: Falcon}, streak: 412}
+      en: "Falcon rockets have flown 412 times in a row without a failure."
+      ja: "Falconロケットは412回連続で打ち上げに成功しています。"
+
+- key: launches.busiest_pad
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  query: |
+    SELECT 'launch_pad' AS entity_type, a.pad_id::text AS entity_key,
+           p.name AS pad, p.location_name AS location, a.attempts, true AS is_record,
+           jsonb_build_array(
+               jsonb_build_object('entity', 'mart.launch_pad_activity', 'key', a.pad_id::text),
+               jsonb_build_object('entity', 'core.launch_pad', 'key', a.pad_id::text)
+           ) AS source_refs
+    FROM mart.launch_pad_activity a
+    JOIN core.launch_pad p ON p.ll2_id = a.pad_id
+    ORDER BY a.attempts DESC, a.pad_id
+    LIMIT 1
+  params:
+    pad: {type: text, from: pad}
+    location: {type: text, from: location}
+    attempts: {type: integer, from: attempts}
+  text:
+    en: "{pad} at {location} has hosted {attempts, number, integer} launches, more than any other pad on record."
+    ja: "記録上もっとも多く使われた発射台は{location}の{pad}で、{attempts, number, integer}回の打ち上げが行われました。"
+  examples:
+    - params: {pad: "1/5", location: "Baikonur Cosmodrome, Republic of Kazakhstan", attempts: 1500}
+      en: "1/5 at Baikonur Cosmodrome, Republic of Kazakhstan has hosted 1,500 launches, more than any other pad on record."
+      ja: "記録上もっとも多く使われた発射台はBaikonur Cosmodrome, Republic of Kazakhstanの1/5で、1,500回の打ち上げが行われました。"
+
+- key: launches.site_country_share
+  module: launches
+  requires: [launch-library]
+  min_score: 0.5
+  valid_for: P1D
+  scoring: {base: 0.3}
+  query: |
+    WITH shares AS (
+        SELECT c.group_key AS code, c.year,
+               c.attempts::float8 / sum(c.attempts) OVER () AS share
+        FROM mart.launch_cadence_yearly c
+        WHERE c.group_kind = 'site_country'
+          AND c.year = extract(year FROM %(as_of)s::timestamptz) - 1
+    )
+    SELECT 'country' AS entity_type, s.code AS entity_key,
+           k.name_en AS country_en, k.name_ja AS country_ja, s.year, s.share,
+           percent_rank() OVER (ORDER BY s.share) AS percentile,
+           jsonb_build_array(jsonb_build_object(
+               'entity', 'mart.launch_cadence_yearly',
+               'key', concat_ws('|', 'site_country', s.code, s.year)
+           )) AS source_refs
+    FROM shares s
+    JOIN core.country k ON k.code = s.code
+    WHERE s.share >= 0.05
+  params:
+    share: {type: percent, from: share, decimals: 0}
+    year: {type: year, from: year}
+    country: {type: name, from: country}
+  text:
+    en: "{share, number, percent} of the world's launch attempts in {year} lifted off from {country} launch sites."
+    ja: "{year}年の世界の打ち上げのうち{share, number, percent}が{country}の発射場から行われました。"
+  examples:
+    - params: {share: 0.45, year: "2025", country: {en: United States, ja: アメリカ合衆国}}
+      en: "45% of the world's launch attempts in 2025 lifted off from United States launch sites."
+      ja: "2025年の世界の打ち上げのうち45%がアメリカ合衆国の発射場から行われました。"

@@ -1,0 +1,36 @@
+{
+  "source": "exoplanet-archive",
+  "period_step_dex": 0.25,
+  "radius_step_dex": 0.125,
+  "planets": 844,
+  "cells": [
+    {
+      "period_min_days": 5.623413251903491,
+      "period_max_days": 10.0,
+      "radius_min_earth": 1.7782794100389228,
+      "radius_max_earth": 2.371373705661655,
+      "planets": 202
+    },
+    {
+      "period_min_days": 5.623413251903491,
+      "period_max_days": 10.0,
+      "radius_min_earth": 2.371373705661655,
+      "radius_max_earth": 3.1622776601683795,
+      "planets": 198
+    },
+    {
+      "period_min_days": 10.0,
+      "period_max_days": 17.78279410038923,
+      "radius_min_earth": 1.7782794100389228,
+      "radius_max_earth": 2.371373705661655,
+      "planets": 231
+    },
+    {
+      "period_min_days": 10.0,
+      "period_max_days": 17.78279410038923,
+      "radius_min_earth": 2.371373705661655,
+      "radius_max_earth": 3.1622776601683795,
+      "planets": 213
+    }
+  ]
+}

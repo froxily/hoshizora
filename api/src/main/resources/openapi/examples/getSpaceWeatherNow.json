@@ -1,0 +1,37 @@
+{
+  "as_of": "2026-10-16T09:00:00Z",
+  "kp": {
+    "observed_at": "2026-10-16T03:00:00Z",
+    "kp": 2.0,
+    "g_scale": {
+      "code": "g0",
+      "name": "No geomagnetic storm",
+      "name_lang": "en"
+    }
+  },
+  "solar_wind": {
+    "observed_at": "2026-10-16T07:27:00Z",
+    "speed_kms": 433.9,
+    "density_cm3": 3.49,
+    "temperature_k": 78198.0,
+    "bt_nt": 4.61,
+    "bz_gsm_nt": 3.19
+  },
+  "strongest_flare_last_day": {
+    "id": "2026-10-16T04:20:00+00:00",
+    "begin_at": "2026-10-16T04:20:00Z",
+    "peak_at": "2026-10-16T04:31:00Z",
+    "end_at": "2026-10-16T04:45:00Z",
+    "xray_class": "C1.7",
+    "class_letter": "C",
+    "peak_flux_wm2": 1.7015463527059183e-06,
+    "r_scale": {
+      "code": "r0",
+      "name": "No radio blackout",
+      "name_lang": "en"
+    },
+    "in_progress": false,
+    "satellite": 18
+  },
+  "flares_last_day": 3
+}
